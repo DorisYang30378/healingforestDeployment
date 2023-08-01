@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="81f7da1e1456446c98fea99fbf939883" Name="Diagram1">
+        <EntityTypeShape EntityType="healingForestModel.Article" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Chatroom" Width="1.5" PointX="0.75" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ChatroomLog" Width="1.5" PointX="3" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Checkin" Width="1.5" PointX="3" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.CheckinReward" Width="1.5" PointX="0.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Collect" Width="1.5" PointX="5.25" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ExpertAnswer" Width="1.5" PointX="5.25" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ExpertApply" Width="1.5" PointX="3" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Message" Width="1.5" PointX="5.25" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Mood" Width="1.5" PointX="3" PointY="25.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Report" Width="1.5" PointX="5.25" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ThanksfulThing" Width="1.5" PointX="3" PointY="28" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.UserManage" Width="1.5" PointX="0.75" PointY="14.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.UserQuestion" Width="1.5" PointX="3" PointY="30.625" IsExpanded="true" />
+        <AssociationConnector Association="healingForestModel.CollectArticle" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.MessageArticle" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.reportsarticle" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.UserCreateArticle" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.chatLog" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.User_Send_Message" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.CheckinReward_Record" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.UserCheckin" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.UserCollect" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.Expert_answer_questions" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.Expert_received_Question" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.User_applies_to_be_an_expert" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.User_Message" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.UserMood" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.User_reports" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.Relationship1" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.User_asks_a_question" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

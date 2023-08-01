@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "dateView";
+}
+
+<p style="font-size:50px; color:red; ">@ViewBag.mg</p>
+@{int[] list = ViewBag.product;
+    }
+
+
+
+
+<style>
+
+    .body-list li {
+        width: 13%;
+        height: 30px;
+        background-color:skyblue;
+        display: inline-block;
+        list-style-type: none;
+    }
+</style>
+
+
+
+<div class="body-list">
+    <ul>
+        <li>星期一</li>
+        <li>星期二</li>
+        <li>星期三</li>
+        <li>星期四</li>
+        <li>星期五</li>
+        <li>星期六</li>
+        <li>星期日</li>
+    </ul>
+</div>
+
+<div class="body-list">
+    <ul class="day" id="day">
+
+        @{
+
+            for (int i = 1; i < int.Parse(ViewBag.firstweekdate); i++)
+            {
+                <li></li>
+
+            }
+
+            for (int i = 1; i <= ViewBag.date; i++)
+            {
+                int value = i;
+                bool index = Array.Exists(list, x => x == value);
+                if (@index)
+                {
+                    <li style="background-color:green;">@i</li>
+                }
+                else
+                {
+                    <li>@i</li>
+                }
+
+
+            }
+
+        }
+
+
+    </ul>
+</div>
+
+
+
+
+
+<!--button 簽到按鈕-->
+
+<input type="button" class="button" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+
+
+<script>
+
+    function myfun() {
+        
+        var btn = document.querySelector('.button');
+        var btn_text = document.getElementById("button");
+        btn.style = "background-color:#FFF"
+        btn_text.value = "已簽到"
+        sign = true;
+        if (btn_text.value = "已簽到") {
+            
+            window.alert("簽到成功");
+        }
+    }
+</script>
+

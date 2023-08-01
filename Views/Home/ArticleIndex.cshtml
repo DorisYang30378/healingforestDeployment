@@ -1,0 +1,298 @@
+﻿@model postArticle.viewmodel.ArticleIndexViewModel
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "首頁";
+    var articleList = Model.articles.ToList();
+    var ClassificationInput = "Classification";
+    var OrderInput = "Order";
+    var SearchInput = "Search";
+    var CollectInput = "Collect";
+    var MyArticleInput = "MyArticle";
+}
+
+
+<style>
+    body {
+        background-color: #A4DA8A;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    .button-container {
+        margin-bottom: 20px;
+    }
+
+        .button-container button {
+            font-size: 20px;
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #37a844;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+            .button-container button:hover,
+            .button-container button:focus {
+                background-color: #2f863a;
+            }
+
+    .select-container h {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .select-container button {
+        margin-right: 10px;
+        padding: 5px 10px;
+        background-color: #37a844;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+        .select-container button:hover,
+        .select-container button:focus {
+            background-color: #2f863a;
+        }
+
+    .article-container {
+        font-size: 16px;
+    }
+
+    .article-item {
+        margin-bottom: 20px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        transition: transform 0.2s;
+    }
+
+        .article-item:hover {
+            transform: scale(1.05);
+        }
+
+    .article-title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .article-content {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .article-info {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 10px;
+    }
+
+    .article-image {
+        width: 500px;
+        height: 300px;
+        overflow: hidden;
+    }
+
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .article-actions {
+        font-size: 14px;
+    }
+
+    
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        margin-right: 10px;
+    }
+
+        .search-input input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+    .search-button button {
+        padding: 5px 10px;
+        background-color: #37a844;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+        .search-button button:hover,
+        .search-button button:focus {
+            background-color: #2f863a;
+        }
+</style>
+
+
+<p style="font-size:25px">使用者:@Model.userName</p>
+
+
+@using (Html.BeginForm("ArticleIndex", "Home", FormMethod.Post, new { id = "SelectPanel" }))
+{
+<div class="button-container">
+    @if (Model.isUser)
+    {
+        <button type="button" onclick="location.href='@Url.Action("Logout", "SignIn")'">登出</button>
+        <button type="button" onclick="location.href='@Url.Action("ArticlePost", "ArticleManage")'">發布文章</button>
+        <button type="button" onclick="location.href='@Url.Action("FindChatUser", "CharRoom")'">聊天室</button>
+        <button type="button" onclick="location.href='@Url.Action("dateView", "DateView")'">簽到</button>
+        <hr>
+        if (Model.IsShowCollect)
+        {
+            @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+            <button onclick="changeClass('false','@CollectInput')" type="button">顯示全部</button>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+            <button onclick="changeClass('true','@CollectInput')" type="button">我的收藏</button>
+        }
+
+        if (Model.IsShowMyArticle)
+        {
+            @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+            <button onclick="changeClass('false','@MyArticleInput')" type="button">所有文章</button>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+            <button onclick="changeClass('true','@MyArticleInput')" type="button">我的文章</button>
+        }
+    }
+    else
+    {
+        <button type="button" onclick="location.href='@Url.Action("Login", "UserManages")'">登入</button>
+        <button type="button" onclick="location.href='@Url.Action("Create", "UserManages")'">註冊</button>
+    }
+
+
+</div>
+
+    <div class="search-container">
+        <div class="search-input">
+            @Html.TextBoxFor(model => model.ShowSearch, new { value = Model.ShowSearch, placeholder = "輸入關鍵字" })
+        </div>
+        <div class="search-button">
+            @Html.HiddenFor(model => model.IsShowSearch, new { id = "SearchInput", value = false })
+            <button type="button" onclick="changeClass(true,'@SearchInput')">搜尋</button>
+        </div>
+    </div>
+
+    <div class="select-container">
+        <h>分類</h>
+        <button type="button" onclick="changeClass('ALL','@ClassificationInput')">全部</button>
+        <button type="button" onclick="changeClass('工作','@ClassificationInput')">工作</button>
+        <button type="button" onclick="changeClass('健康','@ClassificationInput')">健康</button>
+        <button type="button" onclick="changeClass('學業','@ClassificationInput')">學業</button>
+        <button type="button" onclick="changeClass('家庭','@ClassificationInput')">家庭</button>
+        <button type="button" onclick="changeClass('經濟','@ClassificationInput')">經濟</button>
+        @Html.HiddenFor(model => model.Classification, new { id = "ClassificationInput", value = "" })
+        <br>
+        <h>排序</h>
+        <button type="button" onclick="changeClass('Default','@OrderInput')">默認</button>
+        <button type="button" onclick="changeClass('時間','@OrderInput')">時間</button>
+        <button type="button" onclick="changeClass('人氣','@OrderInput')">人氣</button>
+        @Html.HiddenFor(model => model.Order, new { id = "OrderInput", value = "" })
+    </div>
+}
+
+<hr>
+
+<div class="article-container">
+    @{int index = 0; }
+    <div class="row">
+        @foreach (var item in Model.articles)
+        {
+            <div class="col-xl-6">
+                <div class="article-item">
+                    <div class="article-title">
+                        <a href="@Url.Action("ArticleDetails","ArticleManage", new { id = item.ArticleID })">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </a>
+                    </div>
+                    <div class="article-content">
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </div>
+                    <div class="article-info">
+                        <div class="article-author">
+                            @Html.DisplayFor(modelItem => item.UserManage.UserName)
+                        </div>
+                        <div class="article-time">
+                            @Html.DisplayFor(modelItem => item.Time)
+                        </div>
+                        <div class="article-image">
+                            <img src="~/Uploads/@Html.DisplayFor(modelItem => item.ImageURL)" alt="Article Image">
+                            @Html.HiddenFor(modelItem => item.ImageURL)
+                        </div>
+                    </div>
+                    @if (Model.isUser)
+                    {
+                        <div class="article-actions">
+                            @if (!Model.IsCollect[index])
+                            {
+                                <button class="btn bi-star-fill" onclick="handleCollect('@Url.Action("ArticleCollect", new { id = item.ArticleID })', '@Model.Page', '收藏')">收藏|</button>
+                            }
+                            else
+                            {
+                                <button class="btn bi-star-fill" onclick="handleCollect('@Url.Action("CancelCollect", new { id = item.ArticleID })', '@Model.Page', '取消收藏')">取消收藏|</button>
+                            }
+
+                        </div>
+                    }
+                </div>
+            </div>
+
+            index += 1;
+        }
+    </div>
+    
+</div>
+
+
+        Page @(Model.articles.PageCount < Model.articles.PageNumber ? 0 : Model.articles.PageNumber) of
+@Model.articles.PageCount
+
+@Html.PagedListPager(Model.articles, page => Url.Action("ArticleIndex", new { page }))
+
+<script>
+    function handleCollect(url, page, action) {
+        var result = confirm("是否" + action + "此文章？");
+        if (result) {
+            var redirectUrl = url + '?page=' + encodeURIComponent(page);
+            makeAjaxRequest(redirectUrl, null);
+        }
+    }
+
+    function changeClass(value, input) {
+        document.getElementById(input + "Input").value = value;
+        var url = '@Url.Action("ArticleIndex", "Home")';
+        var data = $('#SelectPanel').serialize();
+        makeAjaxRequest(url, data);
+    }
+</script>
