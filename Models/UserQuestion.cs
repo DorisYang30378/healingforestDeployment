@@ -17,7 +17,7 @@ namespace postArticle.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserQuestion()
         {
-            this.ExpertAnswers = new HashSet<ExpertAnswer>();
+            this.ExpertAnswer = new HashSet<ExpertAnswer>();
         }
     
         public int UserQuestionID { get; set; }
@@ -27,7 +27,7 @@ namespace postArticle.Models
         public System.DateTime QuestionTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ExpertAnswer> ExpertAnswers { get; set; }
+        public virtual ICollection<ExpertAnswer> ExpertAnswer { get; set; }
         public virtual UserManage UserManage { get; set; }
     }
 }

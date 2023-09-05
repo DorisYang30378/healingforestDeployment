@@ -12,12 +12,12 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CheckinReward
+    public partial class CheckinRewards
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CheckinReward()
+        public CheckinRewards()
         {
-            this.Checkins = new HashSet<Checkin>();
+            this.Checkin = new HashSet<Checkin>();
         }
     
         public int CheckinRewardsID { get; set; }
@@ -25,6 +25,6 @@ namespace postArticle.Models
         public int ExperienceValue { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Checkin> Checkins { get; set; }
+        public virtual ICollection<Checkin> Checkin { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model postArticle.viewmodel.ArticleDetailsViewModel
+﻿﻿@model postArticle.viewmodel.ArticleDetailsViewModel
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
@@ -7,6 +7,8 @@
     ViewBag.Title = Model.article.Title;
     var messages = Model.messages;
     int UserID = 0;
+    ViewData["reporttxt"] = "";
+    
 
     if (Session["UserID"] != null)
     {
@@ -125,6 +127,38 @@
             .add-comment-button button:focus {
                 background-color: #2f863a;
             }
+
+/*report css */
+
+    .report_view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* 半透明背景色，可以根据需要调整透明度 */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+    }
+    .report_alert {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background-color: azure;
+        width: 40%;
+        height: 30%;
+        z-index: 4;
+        transform: translate(-50%,-50%);/*畫面至中*/
+        border-radius: 4px;
+    }
+        .report_alert button .report_cancel {
+            position: absolute;
+            bottom: 0;
+        }
+
+
 </style>
 
 
@@ -141,17 +175,23 @@
             <img src="~/Uploads/@Html.DisplayFor(model => article.ImageURL)" alt="Article Image">
         </div>
         <p class="article-time">@Html.DisplayFor(model => article.Time)</p>
-        @if (Model.isCreatedByUser)
-        {
+        @{ 
+            if (Model.isCreatedByUser)
+            {
             <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleEdit")','@Model.article.ArticleID','編輯')">
                 編輯文章|
             </button>
             <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleDelete")','@Model.article.ArticleID','刪除')">
                 刪除文章|
             </button>
-        }
+            }
+            else if (Model.isUser)
+            {
+            <button class="btn bi-star-fill report">檢舉文章</button>
+                }
+            }
     </div>
-    
+
     <div class="col-xl-5 comments-container">
         <h4>留言</h4>
         @foreach (var item in messages)
@@ -180,6 +220,34 @@
 
 
 
+<!--檢舉視窗-->
+<div class="report_view">
+<div class="report_alert">
+
+
+    <form>
+        @Html.Label("不實文章")
+        <input type="checkbox" name="report" value="不實文章">
+        <br>
+        @Html.Label("不當發言")
+        <input type="checkbox" name="report" value="不當發言">
+        <br>
+        @Html.Label("謾罵字眼")
+        <input type="checkbox" name="report" value="謾罵字眼">
+        <br>
+        @Html.Label("其他")
+        <br>
+        @Html.TextArea("report_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength="50" ,@style="width:50%; high:50%; resize:none;" })
+
+        <button class="report_cancel btn btn-danger">取消</button>
+        <button class="report_submit btn btn-success">送出</button>
+
+    </form>
+</div>
+</div>
+
+<div id="Div_Browser">test</div>
+
 
 
 <!-- 顯示留言的部分檢視區塊 -->
@@ -189,7 +257,7 @@
 
 @if (Model.isUser)
 {
-     <div class="add-comment-button">
+    <div class="add-comment-button">
         <button onclick="openPopup()">新增留言</button>
     </div>
 }
@@ -210,12 +278,12 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" , style = "color:#fff" })
+        @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2", style = "color:#fff" })
         @Html.EditorFor(model => model.Content, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Display)
 
-        <button  class="btn btn-success" type="submit">確定</button>
+        <button class="btn btn-success" type="submit">確定</button>
         <button class="btn btn-danger" type="button" onclick="closePopup()">取消</button>
     }
 </div>
@@ -226,6 +294,8 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
 
 
 <script>
+
+    
 
     function openPopup() {
         document.getElementById("messagePopup").style.display = "block";
@@ -258,11 +328,46 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
             window.location.href = redirectUrl;
         }
     }
+
+
+
+    //點擊檢舉按鈕
+    $(".report").click(function () {
+        $(".report_view").fadeIn("fast")
+        $("body").css("overflow", "hidden")
+    })
+    //點擊檢舉取消按鈕
+    $(".report_cancel").click(function () {
+        $(".report_view").fadeOut("fast")
+        $("body").css("overflow", "visible")
+
+    })
+    //點擊送出按鈕
+    $(".report_submit").click(function () {
+
+
+        $.post("/ArticleManage/ReportArticle",
+            { Name: report() , ID:@UserID},
+            function (data) { $("#Div_Browser").html(data); }
+        );
+
+    });
+
+
+    //將檢舉內容整理成字串
+     function report() {
+        var reportname = document.forms[0];
+        var reportadd = document.getElementById("report_other");
+        var txt = "";
+        for (var i = 0; i < reportname.length; i++) {
+            if (reportname[i].checked) {
+                txt = txt + reportname[i].value +",";
+            }
+        }
+         txt = txt + reportadd.value;
+         return txt;
+    };
+
+
+
 </script>
-
-
-
-
-
-
-

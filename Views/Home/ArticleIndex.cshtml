@@ -162,6 +162,8 @@
         <button type="button" onclick="location.href='@Url.Action("ArticlePost", "ArticleManage")'">發布文章</button>
         <button type="button" onclick="location.href='@Url.Action("FindChatUser", "CharRoom")'">聊天室</button>
         <button type="button" onclick="location.href='@Url.Action("dateView", "DateView")'">簽到</button>
+        //
+        <button type="button" onclick="location.href = '@Url.Action("ApplyExpert", "UserManages")'">專家申請</button>
         <hr>
         if (Model.IsShowCollect)
         {
@@ -289,10 +291,14 @@
         }
     }
 
+
+    
     function changeClass(value, input) {
-        document.getElementById(input + "Input").value = value;
-        var url = '@Url.Action("ArticleIndex", "Home")';
-        var data = $('#SelectPanel').serialize();
-        makeAjaxRequest(url, data);
+      document.getElementById(input).value = value;
+      var url = '@Url.Action("ArticleIndex", "Home")';
+      var data = $('#SelectPanel').serialize();
+      makeAjaxRequest(url, data);
     }
+    
+
 </script>

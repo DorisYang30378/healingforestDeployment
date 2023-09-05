@@ -33,7 +33,7 @@ namespace postArticle.Controllers
         private bool IsUserArticle(int id)
         {
             int userID = GetUserID();
-            var queryArticleList = from Articledb in db.Articles
+            var queryArticleList = from Articledb in db.Article
                                    where Articledb.UserID == userID && Articledb.ArticleID == id
                                    select Articledb;
 
@@ -47,7 +47,7 @@ namespace postArticle.Controllers
                 return null;
             }
 
-            Article article = db.Articles.Find(id);
+            Article article = db.Article.Find(id);
 
             if (article == null)
             {
@@ -91,7 +91,7 @@ namespace postArticle.Controllers
             #endregion
 
             //---------------該文章底下的留言-----------------------------------------
-            queryMessList = (from Messagedb in db.Messages.Include(m => m.Article).Include(m => m.UserManage)
+            queryMessList = (from Messagedb in db.Message.Include(m => m.Article).Include(m => m.UserManage)
                              where Messagedb.ArticleID == id
                              select Messagedb).ToList();
             //-----------------------------------------===============================
@@ -241,7 +241,7 @@ namespace postArticle.Controllers
                     //
 
 
-                    db.Articles.Remove(article);
+                    db.Article.Remove(article);
                     db.SaveChanges();
                 }
             }
@@ -277,7 +277,7 @@ namespace postArticle.Controllers
                 {
                     #region ===搜尋userID===
                     var UserID = Convert.ToInt32(Session["UserID"]);
-                    var queryUserSQL = from UserManagedb in db.UserManages.Include(u => u.ThanksfulThing)
+                    var queryUserSQL = from UserManagedb in db.UserManage.Include(u => u.ThanksfulThings)
                                        where UserManagedb.UserID == UserID
                                        select new
                                        {
@@ -318,7 +318,7 @@ namespace postArticle.Controllers
                     #endregion
                     //
 
-                    db.Articles.Add(articlePost.article);
+                    db.Article.Add(articlePost.article);
                     db.SaveChanges();
                 }
                 else
@@ -336,5 +336,29 @@ namespace postArticle.Controllers
 
 
         }
+    
+    
+    
+    
+    
+        public void  ReportArticle()
+        {
+            string name = Request.Form["Name"];
+            string id = Request.Form["ID"];
+            if (id == "1")
+            {
+                Response.Write("<script>alert('空');</script>");
+            }
+            
+            
+            } 
+
+    
+    
+    
+    
+    
+    
+    
     }
 }

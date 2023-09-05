@@ -29,7 +29,7 @@ namespace postArticle.Controllers
             if (ViewBag.CheckIn=="簽到")
             {
                 Checkin p = new Checkin { UserID = id, CheckInDate = DateTime.Now.Date, BoolCheckIn = 1 };
-                db.Checkins.Add(p);
+                db.Checkin.Add(p);
                 db.SaveChanges();
             }
         }
@@ -74,7 +74,7 @@ namespace postArticle.Controllers
         {
             using (var db =new healingForestEntities1())
             {
-                var product = from p in db.Checkins where p.UserID==id select p;
+                var product = from p in db.Checkin where p.UserID==id select p;
                 var my_day = DateTime.Now.ToString("dd");
                 var my_month = DateTime.Now.Month;
                 int count=1;

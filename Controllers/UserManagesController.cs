@@ -30,17 +30,20 @@ namespace postArticle.Controllers
         [HttpPost]
         public ActionResult Login(RegisterViewModel registerViewModel)
         {
-            if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password))
+
+            if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password) )
             {
-                var querySQL = from UserManagedb in db.UserManages
-                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account
+
+
+                var querySQL = from UserManagedb in db.UserManage
+                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account && UserManagedb.Status == "normal"
                                select new
                                {
                                    UserManagedb.UserID
                                };
 
-
                 #region ===如果有進入首頁===
+
                 if (querySQL.Any())
                 {
                     var user = querySQL.FirstOrDefault();
@@ -49,19 +52,35 @@ namespace postArticle.Controllers
                     return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
                 }
                 #endregion
+                return View();
             }
+            else {
 
-            ModelState.AddModelError("Password", "帳號或密碼並不存在!");
-            ViewData["Message"] = "Your application description page.";
+                
+                    var queryAccountSQL = from UserManagedb in db.UserManage
+                                      where UserManagedb.Account == registerViewModel.userManage.Account
+                                      select new
+                                      {
+                                          UserManagedb.UserID
+                                      };
 
-
-            return View();
+                if (queryAccountSQL.Any())
+                {
+                    ModelState.AddModelError("userManage.Password", "密碼錯誤");
+                    return View();
+                }
+                else
+                {
+                    ModelState.AddModelError("userManage.Account", "無此帳號");
+                    return View();
+                }
+            }
 
         }
 
         private bool IsValidUser(string account, string password)
         {
-            UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
+            UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
 
             if (user != null)
             {
@@ -148,7 +167,7 @@ namespace postArticle.Controllers
                     registerViewModel.userManage.UserType = "member";
 
 
-                    db.UserManages.Add(registerViewModel.userManage);
+                    db.UserManage.Add(registerViewModel.userManage);
                     db.SaveChanges();
                     return RedirectToAction("Login");
                 }
@@ -171,7 +190,7 @@ namespace postArticle.Controllers
                 MaillService ms = new MaillService();
                 try
                 {
-                    UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
+                    UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
                     string subject = "忘記密碼";
                     string body = @"
                         <p>您的密碼為: {Password} </p>
@@ -199,7 +218,7 @@ namespace postArticle.Controllers
         }
         private bool IsValidPassword(string account, string email)
         {
-            UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
+            UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
 
             if (user != null)
             {
@@ -211,6 +230,12 @@ namespace postArticle.Controllers
             }
 
             return false;
+        }
+
+        [HttpGet]
+        public ActionResult ApplyExpert()
+        {
+            return View();
         }
     }
 }

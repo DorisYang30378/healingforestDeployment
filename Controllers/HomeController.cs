@@ -73,7 +73,7 @@ namespace postArticle.Controllers
             //---------------訪客視圖-----------------------------------------
             ArticleIndexViewModel visitor()
             {
-                articles = db.Articles.Include(a => a.UserManage).ToList();
+                articles = db.Article.Include(a => a.UserManage).ToList();
 
                 #region ===篩選資料===
                 filter();
@@ -97,12 +97,12 @@ namespace postArticle.Controllers
                 #region ===獲取使用者===
                 //將session的值轉成int
                 UserID = GetUserID();
-                userManage = db.UserManages.Find(UserID);
+                userManage = db.UserManage.Find(UserID);
                 #endregion
 
                 #region ===收藏的文章===
                 //已收藏的文章列表
-                queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                queryCollectSQL = from Collectdb in db.Collect.Include(c => c.Article).Include(c => c.UserManage)
                                   where Collectdb.UserID == UserID
                                   select Collectdb;
 
@@ -118,7 +118,7 @@ namespace postArticle.Controllers
                 }
                 else
                 {
-                    articles = db.Articles.Include(a => a.UserManage).ToList();
+                    articles = db.Article.Include(a => a.UserManage).ToList();
                 }
                 #endregion
 
@@ -282,7 +282,7 @@ namespace postArticle.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Article article = db.Articles.Find(id);
+            Article article = db.Article.Find(id);
 
             if (article == null)
             {
@@ -296,7 +296,7 @@ namespace postArticle.Controllers
             {
 
                 var UserID = GetUserID();
-                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                var queryCollectSQL = from Collectdb in db.Collect.Include(c => c.Article).Include(c => c.UserManage)
                                       where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
                                       select Collectdb;
 
@@ -305,7 +305,7 @@ namespace postArticle.Controllers
                     article.Likes--;
                     db.Entry(article).CurrentValues.SetValues(article);
 
-                    db.Collects.RemoveRange(queryCollectSQL);
+                    db.Collect.RemoveRange(queryCollectSQL);
                     db.SaveChanges();
                 }
 
@@ -324,7 +324,7 @@ namespace postArticle.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Article article = db.Articles.Find(id);
+            Article article = db.Article.Find(id);
 
             if (article == null)
             {
@@ -338,7 +338,7 @@ namespace postArticle.Controllers
             {
                 #region ===存資料到collect===
                 var UserID = GetUserID();
-                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                var queryCollectSQL = from Collectdb in db.Collect.Include(c => c.Article).Include(c => c.UserManage)
                                       where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
                                       select Collectdb;
 
@@ -351,7 +351,7 @@ namespace postArticle.Controllers
 
                     article.Likes++;
                     db.Entry(article).CurrentValues.SetValues(article);
-                    db.Collects.Add(collect);
+                    db.Collect.Add(collect);
                     db.SaveChanges();
                 }
                 #endregion

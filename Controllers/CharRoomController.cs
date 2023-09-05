@@ -28,10 +28,10 @@ namespace postArticle.Controllers
             if (CheckLoggedIn())
             {
                 int MyUserId = GetUserID();
-                UserManage currentUser = db.UserManages.Find(MyUserId);
+                UserManage currentUser = db.UserManage.Find(MyUserId);
                 string currentUserUsername = currentUser.UserName;
 
-                var chatroom = db.Chatrooms.FirstOrDefault(cr => cr.member.Contains("/" + currentUserUsername + "/") ||
+                var chatroom = db.Chatroom.FirstOrDefault(cr => cr.member.Contains("/" + currentUserUsername + "/") ||
                                                    cr.member.StartsWith(currentUserUsername + "/") ||
                                                    cr.member.EndsWith("/" + currentUserUsername));
 
@@ -52,7 +52,7 @@ namespace postArticle.Controllers
                             break;
                         }
                     }
-                    var UserManageID = from UserManagedb in db.UserManages
+                    var UserManageID = from UserManagedb in db.UserManage
                                        where UserManagedb.UserName == otherUserName
                                        select UserManagedb.UserID;
 
@@ -73,9 +73,9 @@ namespace postArticle.Controllers
             {
                 int currentUserID = GetUserID();// 填入當前使用者的 userID
 
-                var userManage = db.UserManages
+                var userManage = db.UserManage
                             .Where(u => u.UserID != currentUserID)
-                            .Include(u => u.ThanksfulThing)
+                            .Include(u => u.ThanksfulThings)
                             .ToList();
 
                 return View(userManage.ToList());
@@ -92,8 +92,8 @@ namespace postArticle.Controllers
             }
 
             int MyUserId = GetUserID();
-            UserManage currentUser = db.UserManages.Find(MyUserId);
-            UserManage otherUser = db.UserManages.Find(id);
+            UserManage currentUser = db.UserManage.Find(MyUserId);
+            UserManage otherUser = db.UserManage.Find(id);
 
             if (otherUser == null || !CheckLoggedIn())
             {
@@ -106,7 +106,7 @@ namespace postArticle.Controllers
             string memberName1 = currentUserUsername + "/" + otherUserUsername;
             string memberName2 = otherUserUsername + "/" + currentUserUsername;
 
-            Chatroom chatroom = db.Chatrooms.FirstOrDefault(cr => cr.member == memberName1 || cr.member == memberName2);
+            Chatroom chatroom = db.Chatroom.FirstOrDefault(cr => cr.member == memberName1 || cr.member == memberName2);
 
             if (chatroom == null)
             {
@@ -116,18 +116,18 @@ namespace postArticle.Controllers
                     ChatRoomName = memberName2 + "的私聊"
                 };
 
-                db.Chatrooms.Add(chatroom);
+                db.Chatroom.Add(chatroom);
                 db.SaveChanges();
             }
 
             int chatRoomID = chatroom.ChatroomID;
 
-            var chatRoomLogList = db.ChatroomLogs.Where(cl => cl.ChatroomID == chatRoomID);
+            var chatRoomLogList = db.ChatroomLog.Where(cl => cl.ChatroomID == chatRoomID);
 
             TempData["ChatRoomID"] = chatRoomID;
             TempData["userManageID"] = id;
 
-            List<Chatroom> chatrooms = db.Chatrooms
+            List<Chatroom> chatrooms = db.Chatroom
                 .Where(cr => cr.member.Contains("/" + currentUserUsername + "/") ||
                              cr.member.StartsWith(currentUserUsername + "/") ||
                              cr.member.EndsWith("/" + currentUserUsername))
@@ -155,7 +155,7 @@ namespace postArticle.Controllers
             int ChatRoomID = (int)(TempData["ChatRoomID"]);
             int id = (int)TempData["userManageID"];
 
-            Chatroom Chatroom = db.Chatrooms.Find(ChatRoomID);
+            Chatroom Chatroom = db.Chatroom.Find(ChatRoomID);
 
             if (Chatroom == null || !CheckLoggedIn())
             {
@@ -177,7 +177,7 @@ namespace postArticle.Controllers
                     };
 
 
-                    db.ChatroomLogs.Add(ChatroomLog);
+                    db.ChatroomLog.Add(ChatroomLog);
                     db.SaveChanges();
                 }
             }
@@ -192,7 +192,7 @@ namespace postArticle.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Chatroom Chatroom = db.Chatrooms.Find(id);
+            Chatroom Chatroom = db.Chatroom.Find(id);
 
             if (Chatroom == null || !CheckLoggedIn())
             {
@@ -201,7 +201,7 @@ namespace postArticle.Controllers
 
             int UserID = GetUserID();
 
-            UserManage UserManage = db.UserManages.Find(UserID);
+            UserManage UserManage = db.UserManage.Find(UserID);
             string MyUserName = UserManage.UserName;
 
             string member = Chatroom.member;
@@ -220,7 +220,7 @@ namespace postArticle.Controllers
                 }
             }
 
-            var UserManageID = from UserManagedb in db.UserManages
+            var UserManageID = from UserManagedb in db.UserManage
                                where UserManagedb.UserName == otherUserName
                                select UserManagedb.UserID;
 

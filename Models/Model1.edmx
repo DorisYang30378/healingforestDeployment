@@ -113,6 +113,16 @@
           <Property Name="ArticleID" Type="int" Nullable="false" />
           <Property Name="ReportContent" Type="varchar" MaxLength="128" Nullable="false" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="ThanksfulThings">
           <Key>
             <PropertyRef Name="UserID" />
@@ -135,6 +145,7 @@
           <Property Name="LevelValue" Type="int" Nullable="false" />
           <Property Name="Experience" Type="float" Nullable="false" />
           <Property Name="Birthday" Type="date" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="10" />
         </EntityType>
         <EntityType Name="UserQuestion">
           <Key>
@@ -370,6 +381,7 @@
           <EntitySet Name="Message" EntityType="Self.Message" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mood" EntityType="Self.Mood" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ThanksfulThings" EntityType="Self.ThanksfulThings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserManage" EntityType="Self.UserManage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserQuestion" EntityType="Self.UserQuestion" Schema="dbo" store:Type="Tables" />
@@ -460,9 +472,9 @@
           <Property Name="ArticleType" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserID" Type="Int32" />
           <Property Name="Time" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Collects" Relationship="Self.CollectArticle" FromRole="Article" ToRole="Collect" />
-          <NavigationProperty Name="Messages" Relationship="Self.MessageArticle" FromRole="Article" ToRole="Message" />
-          <NavigationProperty Name="Reports" Relationship="Self.reportsarticle" FromRole="Article" ToRole="Report" />
+          <NavigationProperty Name="Collect" Relationship="Self.CollectArticle" FromRole="Article" ToRole="Collect" />
+          <NavigationProperty Name="Message" Relationship="Self.MessageArticle" FromRole="Article" ToRole="Message" />
+          <NavigationProperty Name="Report" Relationship="Self.reportsarticle" FromRole="Article" ToRole="Report" />
           <NavigationProperty Name="UserManage" Relationship="Self.UserCreateArticle" FromRole="Article" ToRole="UserManage" />
         </EntityType>
         <EntityType Name="Chatroom">
@@ -472,7 +484,7 @@
           <Property Name="ChatroomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ChatRoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="member" Type="String" MaxLength="56" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ChatroomLogs" Relationship="Self.chatLog" FromRole="Chatroom" ToRole="ChatroomLog" />
+          <NavigationProperty Name="ChatroomLog" Relationship="Self.chatLog" FromRole="Chatroom" ToRole="ChatroomLog" />
         </EntityType>
         <EntityType Name="ChatroomLog">
           <Key>
@@ -495,17 +507,17 @@
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="CheckInDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="BoolCheckIn" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="CheckinReward" Relationship="Self.CheckinReward_Record" FromRole="Checkin" ToRole="CheckinRewards" />
+          <NavigationProperty Name="CheckinRewards" Relationship="Self.CheckinReward_Record" FromRole="Checkin" ToRole="CheckinRewards" />
           <NavigationProperty Name="UserManage" Relationship="Self.UserCheckin" FromRole="Checkin" ToRole="UserManage" />
         </EntityType>
-        <EntityType Name="CheckinReward">
+        <EntityType Name="CheckinRewards">
           <Key>
             <PropertyRef Name="CheckinRewardsID" />
           </Key>
           <Property Name="CheckinRewardsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CheckinDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExperienceValue" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Checkins" Relationship="Self.CheckinReward_Record" FromRole="CheckinRewards" ToRole="Checkin" />
+          <NavigationProperty Name="Checkin" Relationship="Self.CheckinReward_Record" FromRole="CheckinRewards" ToRole="Checkin" />
         </EntityType>
         <EntityType Name="Collect">
           <Key>
@@ -575,7 +587,17 @@
           <NavigationProperty Name="Article" Relationship="Self.reportsarticle" FromRole="Report" ToRole="Article" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_reports" FromRole="Report" ToRole="UserManage" />
         </EntityType>
-        <EntityType Name="ThanksfulThing">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="ThanksfulThings">
           <Key>
             <PropertyRef Name="UserID" />
           </Key>
@@ -598,17 +620,18 @@
           <Property Name="LevelValue" Type="Int32" Nullable="false" />
           <Property Name="Experience" Type="Double" Nullable="false" />
           <Property Name="Birthday" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="Articles" Relationship="Self.UserCreateArticle" FromRole="UserManage" ToRole="Article" />
-          <NavigationProperty Name="ChatroomLogs" Relationship="Self.User_Send_Message" FromRole="UserManage" ToRole="ChatroomLog" />
-          <NavigationProperty Name="Checkins" Relationship="Self.UserCheckin" FromRole="UserManage" ToRole="Checkin" />
-          <NavigationProperty Name="Collects" Relationship="Self.UserCollect" FromRole="UserManage" ToRole="Collect" />
-          <NavigationProperty Name="ExpertAnswers" Relationship="Self.Expert_answer_questions" FromRole="UserManage" ToRole="ExpertAnswer" />
-          <NavigationProperty Name="ExpertApplies" Relationship="Self.User_applies_to_be_an_expert" FromRole="UserManage" ToRole="ExpertApply" />
-          <NavigationProperty Name="Messages" Relationship="Self.User_Message" FromRole="UserManage" ToRole="Message" />
-          <NavigationProperty Name="Moods" Relationship="Self.UserMood" FromRole="UserManage" ToRole="Mood" />
-          <NavigationProperty Name="Reports" Relationship="Self.User_reports" FromRole="UserManage" ToRole="Report" />
-          <NavigationProperty Name="ThanksfulThing" Relationship="Self.Relationship1" FromRole="UserManage" ToRole="ThanksfulThings" />
-          <NavigationProperty Name="UserQuestions" Relationship="Self.User_asks_a_question" FromRole="UserManage" ToRole="UserQuestion" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Article" Relationship="Self.UserCreateArticle" FromRole="UserManage" ToRole="Article" />
+          <NavigationProperty Name="ChatroomLog" Relationship="Self.User_Send_Message" FromRole="UserManage" ToRole="ChatroomLog" />
+          <NavigationProperty Name="Checkin" Relationship="Self.UserCheckin" FromRole="UserManage" ToRole="Checkin" />
+          <NavigationProperty Name="Collect" Relationship="Self.UserCollect" FromRole="UserManage" ToRole="Collect" />
+          <NavigationProperty Name="ExpertAnswer" Relationship="Self.Expert_answer_questions" FromRole="UserManage" ToRole="ExpertAnswer" />
+          <NavigationProperty Name="ExpertApply" Relationship="Self.User_applies_to_be_an_expert" FromRole="UserManage" ToRole="ExpertApply" />
+          <NavigationProperty Name="Message" Relationship="Self.User_Message" FromRole="UserManage" ToRole="Message" />
+          <NavigationProperty Name="Mood" Relationship="Self.UserMood" FromRole="UserManage" ToRole="Mood" />
+          <NavigationProperty Name="Report" Relationship="Self.User_reports" FromRole="UserManage" ToRole="Report" />
+          <NavigationProperty Name="ThanksfulThings" Relationship="Self.Relationship1" FromRole="UserManage" ToRole="ThanksfulThings" />
+          <NavigationProperty Name="UserQuestion" Relationship="Self.User_asks_a_question" FromRole="UserManage" ToRole="UserQuestion" />
         </EntityType>
         <EntityType Name="UserQuestion">
           <Key>
@@ -619,7 +642,7 @@
           <Property Name="QuestionTitle" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="QuestionContent" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="QuestionTime" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="ExpertAnswers" Relationship="Self.Expert_received_Question" FromRole="UserQuestion" ToRole="ExpertAnswer" />
+          <NavigationProperty Name="ExpertAnswer" Relationship="Self.Expert_received_Question" FromRole="UserQuestion" ToRole="ExpertAnswer" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_asks_a_question" FromRole="UserQuestion" ToRole="UserManage" />
         </EntityType>
         <Association Name="CollectArticle">
@@ -703,7 +726,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="CheckinReward_Record">
-          <End Role="CheckinRewards" Type="Self.CheckinReward" Multiplicity="0..1" />
+          <End Role="CheckinRewards" Type="Self.CheckinRewards" Multiplicity="0..1" />
           <End Role="Checkin" Type="Self.Checkin" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CheckinRewards">
@@ -812,7 +835,7 @@
         </Association>
         <Association Name="Relationship1">
           <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
-          <End Role="ThanksfulThings" Type="Self.ThanksfulThing" Multiplicity="0..1" />
+          <End Role="ThanksfulThings" Type="Self.ThanksfulThings" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
               <PropertyRef Name="UserID" />
@@ -835,87 +858,88 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="healingForestEntities1" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Articles" EntityType="Self.Article" />
-          <EntitySet Name="Chatrooms" EntityType="Self.Chatroom" />
-          <EntitySet Name="ChatroomLogs" EntityType="Self.ChatroomLog" />
-          <EntitySet Name="Checkins" EntityType="Self.Checkin" />
-          <EntitySet Name="CheckinRewards" EntityType="Self.CheckinReward" />
-          <EntitySet Name="Collects" EntityType="Self.Collect" />
-          <EntitySet Name="ExpertAnswers" EntityType="Self.ExpertAnswer" />
-          <EntitySet Name="ExpertApplies" EntityType="Self.ExpertApply" />
-          <EntitySet Name="Messages" EntityType="Self.Message" />
-          <EntitySet Name="Moods" EntityType="Self.Mood" />
-          <EntitySet Name="Reports" EntityType="Self.Report" />
-          <EntitySet Name="ThanksfulThings" EntityType="Self.ThanksfulThing" />
-          <EntitySet Name="UserManages" EntityType="Self.UserManage" />
-          <EntitySet Name="UserQuestions" EntityType="Self.UserQuestion" />
+          <EntitySet Name="Article" EntityType="Self.Article" />
+          <EntitySet Name="Chatroom" EntityType="Self.Chatroom" />
+          <EntitySet Name="ChatroomLog" EntityType="Self.ChatroomLog" />
+          <EntitySet Name="Checkin" EntityType="Self.Checkin" />
+          <EntitySet Name="CheckinRewards" EntityType="Self.CheckinRewards" />
+          <EntitySet Name="Collect" EntityType="Self.Collect" />
+          <EntitySet Name="ExpertAnswer" EntityType="Self.ExpertAnswer" />
+          <EntitySet Name="ExpertApply" EntityType="Self.ExpertApply" />
+          <EntitySet Name="Message" EntityType="Self.Message" />
+          <EntitySet Name="Mood" EntityType="Self.Mood" />
+          <EntitySet Name="Report" EntityType="Self.Report" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="ThanksfulThings" EntityType="Self.ThanksfulThings" />
+          <EntitySet Name="UserManage" EntityType="Self.UserManage" />
+          <EntitySet Name="UserQuestion" EntityType="Self.UserQuestion" />
           <AssociationSet Name="CollectArticle" Association="Self.CollectArticle">
-            <End Role="Article" EntitySet="Articles" />
-            <End Role="Collect" EntitySet="Collects" />
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Collect" EntitySet="Collect" />
           </AssociationSet>
           <AssociationSet Name="MessageArticle" Association="Self.MessageArticle">
-            <End Role="Article" EntitySet="Articles" />
-            <End Role="Message" EntitySet="Messages" />
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Message" EntitySet="Message" />
           </AssociationSet>
           <AssociationSet Name="reportsarticle" Association="Self.reportsarticle">
-            <End Role="Article" EntitySet="Articles" />
-            <End Role="Report" EntitySet="Reports" />
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Report" EntitySet="Report" />
           </AssociationSet>
           <AssociationSet Name="UserCreateArticle" Association="Self.UserCreateArticle">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Article" EntitySet="Articles" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Article" EntitySet="Article" />
           </AssociationSet>
           <AssociationSet Name="chatLog" Association="Self.chatLog">
-            <End Role="Chatroom" EntitySet="Chatrooms" />
-            <End Role="ChatroomLog" EntitySet="ChatroomLogs" />
+            <End Role="Chatroom" EntitySet="Chatroom" />
+            <End Role="ChatroomLog" EntitySet="ChatroomLog" />
           </AssociationSet>
           <AssociationSet Name="User_Send_Message" Association="Self.User_Send_Message">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="ChatroomLog" EntitySet="ChatroomLogs" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="ChatroomLog" EntitySet="ChatroomLog" />
           </AssociationSet>
           <AssociationSet Name="CheckinReward_Record" Association="Self.CheckinReward_Record">
             <End Role="CheckinRewards" EntitySet="CheckinRewards" />
-            <End Role="Checkin" EntitySet="Checkins" />
+            <End Role="Checkin" EntitySet="Checkin" />
           </AssociationSet>
           <AssociationSet Name="UserCheckin" Association="Self.UserCheckin">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Checkin" EntitySet="Checkins" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Checkin" EntitySet="Checkin" />
           </AssociationSet>
           <AssociationSet Name="UserCollect" Association="Self.UserCollect">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Collect" EntitySet="Collects" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Collect" EntitySet="Collect" />
           </AssociationSet>
           <AssociationSet Name="Expert_answer_questions" Association="Self.Expert_answer_questions">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="ExpertAnswer" EntitySet="ExpertAnswers" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
           </AssociationSet>
           <AssociationSet Name="Expert_received_Question" Association="Self.Expert_received_Question">
-            <End Role="UserQuestion" EntitySet="UserQuestions" />
-            <End Role="ExpertAnswer" EntitySet="ExpertAnswers" />
+            <End Role="UserQuestion" EntitySet="UserQuestion" />
+            <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
           </AssociationSet>
           <AssociationSet Name="User_applies_to_be_an_expert" Association="Self.User_applies_to_be_an_expert">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="ExpertApply" EntitySet="ExpertApplies" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="ExpertApply" EntitySet="ExpertApply" />
           </AssociationSet>
           <AssociationSet Name="User_Message" Association="Self.User_Message">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Message" EntitySet="Messages" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Message" EntitySet="Message" />
           </AssociationSet>
           <AssociationSet Name="UserMood" Association="Self.UserMood">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Mood" EntitySet="Moods" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Mood" EntitySet="Mood" />
           </AssociationSet>
           <AssociationSet Name="User_reports" Association="Self.User_reports">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Report" EntitySet="Reports" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Report" EntitySet="Report" />
           </AssociationSet>
           <AssociationSet Name="Relationship1" Association="Self.Relationship1">
-            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="UserManage" EntitySet="UserManage" />
             <End Role="ThanksfulThings" EntitySet="ThanksfulThings" />
           </AssociationSet>
           <AssociationSet Name="User_asks_a_question" Association="Self.User_asks_a_question">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="UserQuestion" EntitySet="UserQuestions" />
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="UserQuestion" EntitySet="UserQuestion" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -924,7 +948,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="healingForestModelStoreContainer" CdmEntityContainer="healingForestEntities1">
-          <EntitySetMapping Name="Articles">
+          <EntitySetMapping Name="Article">
             <EntityTypeMapping TypeName="healingForestModel.Article">
               <MappingFragment StoreEntitySet="Article">
                 <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
@@ -939,7 +963,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Chatrooms">
+          <EntitySetMapping Name="Chatroom">
             <EntityTypeMapping TypeName="healingForestModel.Chatroom">
               <MappingFragment StoreEntitySet="Chatroom">
                 <ScalarProperty Name="ChatroomID" ColumnName="ChatroomID" />
@@ -948,7 +972,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ChatroomLogs">
+          <EntitySetMapping Name="ChatroomLog">
             <EntityTypeMapping TypeName="healingForestModel.ChatroomLog">
               <MappingFragment StoreEntitySet="ChatroomLog">
                 <ScalarProperty Name="ChatroomLogID" ColumnName="ChatroomLogID" />
@@ -959,7 +983,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Checkins">
+          <EntitySetMapping Name="Checkin">
             <EntityTypeMapping TypeName="healingForestModel.Checkin">
               <MappingFragment StoreEntitySet="Checkin">
                 <ScalarProperty Name="CheckinID" ColumnName="CheckinID" />
@@ -971,7 +995,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CheckinRewards">
-            <EntityTypeMapping TypeName="healingForestModel.CheckinReward">
+            <EntityTypeMapping TypeName="healingForestModel.CheckinRewards">
               <MappingFragment StoreEntitySet="CheckinRewards">
                 <ScalarProperty Name="CheckinRewardsID" ColumnName="CheckinRewardsID" />
                 <ScalarProperty Name="CheckinDate" ColumnName="CheckinDate" />
@@ -979,7 +1003,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Collects">
+          <EntitySetMapping Name="Collect">
             <EntityTypeMapping TypeName="healingForestModel.Collect">
               <MappingFragment StoreEntitySet="Collect">
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
@@ -988,7 +1012,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ExpertAnswers">
+          <EntitySetMapping Name="ExpertAnswer">
             <EntityTypeMapping TypeName="healingForestModel.ExpertAnswer">
               <MappingFragment StoreEntitySet="ExpertAnswer">
                 <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
@@ -999,7 +1023,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ExpertApplies">
+          <EntitySetMapping Name="ExpertApply">
             <EntityTypeMapping TypeName="healingForestModel.ExpertApply">
               <MappingFragment StoreEntitySet="ExpertApply">
                 <ScalarProperty Name="ExpertApplyID" ColumnName="ExpertApplyID" />
@@ -1011,7 +1035,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Messages">
+          <EntitySetMapping Name="Message">
             <EntityTypeMapping TypeName="healingForestModel.Message">
               <MappingFragment StoreEntitySet="Message">
                 <ScalarProperty Name="MessageID" ColumnName="MessageID" />
@@ -1022,7 +1046,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Moods">
+          <EntitySetMapping Name="Mood">
             <EntityTypeMapping TypeName="healingForestModel.Mood">
               <MappingFragment StoreEntitySet="Mood">
                 <ScalarProperty Name="MoodID" ColumnName="MoodID" />
@@ -1032,7 +1056,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Reports">
+          <EntitySetMapping Name="Report">
             <EntityTypeMapping TypeName="healingForestModel.Report">
               <MappingFragment StoreEntitySet="Report">
                 <ScalarProperty Name="Report_ID" ColumnName="Report ID" />
@@ -1042,8 +1066,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="healingForestModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ThanksfulThings">
-            <EntityTypeMapping TypeName="healingForestModel.ThanksfulThing">
+            <EntityTypeMapping TypeName="healingForestModel.ThanksfulThings">
               <MappingFragment StoreEntitySet="ThanksfulThings">
                 <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
@@ -1052,7 +1087,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserManages">
+          <EntitySetMapping Name="UserManage">
             <EntityTypeMapping TypeName="healingForestModel.UserManage">
               <MappingFragment StoreEntitySet="UserManage">
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
@@ -1064,10 +1099,11 @@
                 <ScalarProperty Name="LevelValue" ColumnName="LevelValue" />
                 <ScalarProperty Name="Experience" ColumnName="Experience" />
                 <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserQuestions">
+          <EntitySetMapping Name="UserQuestion">
             <EntityTypeMapping TypeName="healingForestModel.UserQuestion">
               <MappingFragment StoreEntitySet="UserQuestion">
                 <ScalarProperty Name="UserQuestionID" ColumnName="UserQuestionID" />
@@ -1092,7 +1128,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="無" />

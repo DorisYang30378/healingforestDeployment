@@ -3,21 +3,36 @@
     ViewBag.Title = "dateView";
 }
 
-<p style="font-size:50px; color:red; ">@ViewBag.mg</p>
+<p style="font-size:50px;text-align:center; ">每日簽到</p>
 @{int[] list = ViewBag.product;
-    }
+}
 
 
 
 
 <style>
 
-    .body-list li {
-        width: 13%;
-        height: 30px;
-        background-color:skyblue;
-        display: inline-block;
-        list-style-type: none;
+    .body-list {
+        width: 80%;
+        margin: auto auto auto auto;
+    }
+
+        .body-list li {
+            width: 13%;
+            height: 40px;
+            background-color: aliceblue;
+            display: inline-block;
+            list-style-type: none;
+            text-align: center;
+            vertical-align: middle;
+            padding-top: 1%;
+        }
+
+    .CheckIn {
+        display: flex;
+        justify-content: center;
+        background-color: aquamarine;
+        border-radius: 30px;
     }
 </style>
 
@@ -25,13 +40,13 @@
 
 <div class="body-list">
     <ul>
-        <li>星期一</li>
-        <li>星期二</li>
-        <li>星期三</li>
-        <li>星期四</li>
-        <li>星期五</li>
-        <li>星期六</li>
-        <li>星期日</li>
+        <li>一</li>
+        <li>二</li>
+        <li>三</li>
+        <li>四</li>
+        <li>五</li>
+        <li>六</li>
+        <li>日</li>
     </ul>
 </div>
 
@@ -49,8 +64,7 @@
             for (int i = 1; i <= ViewBag.date; i++)
             {
                 int value = i;
-                bool index = Array.Exists(list, x => x == value);
-                if (@index)
+                if (Array.Exists(list, x => x == value))
                 {
                     <li style="background-color:green;">@i</li>
                 }
@@ -74,22 +88,28 @@
 
 <!--button 簽到按鈕-->
 
-<input type="button" class="button" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+
+<div>
+    <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+</div>
 
 
 <script>
-
     function myfun() {
-        
-        var btn = document.querySelector('.button');
         var btn_text = document.getElementById("button");
-        btn.style = "background-color:#FFF"
-        btn_text.value = "已簽到"
-        sign = true;
-        if (btn_text.value = "已簽到") {
-            
-            window.alert("簽到成功");
+        switch (btn_text.value) {
+            case "簽到":
+                btn_text.value = "已簽到";
+                alert("簽到成功");
+                location.assign(location.href);
+                break;
+            case "已簽到":
+                alert("您已簽到");
+                break;
         }
     }
 </script>
+
+
+
 

@@ -1,0 +1,69 @@
+﻿@using postArticle.Models
+@model IEnumerable<UserManage>
+
+@{
+    ViewBag.Title = "UserMange";
+    String a = "封鎖";
+}
+
+<style>
+
+    thead {
+        background-color: aquamarine;
+    }
+
+    th {
+        height: 30px;
+        border: solid;
+        font-size: 20px;
+        text-align: center;
+    }
+</style>
+
+<h2>顯示會員資料</h2>
+
+@using (Html.BeginForm("UserMange", "Manager", FormMethod.Get))
+{
+        @Html.TextBox("search", null,new { @class="form-control" ,  @placeholder="查詢"})
+
+              
+}
+<br>
+
+
+<table border="1">
+
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.UserID)</th>
+            <th>@Html.DisplayNameFor(m => m.UserName)</th>
+            <th>@Html.DisplayNameFor(m => m.Account)</th>
+            <th>@Html.DisplayNameFor(m => m.Birthday)</th>
+            <th>@Html.DisplayNameFor(m => m.Email)</th>
+            <th>@Html.DisplayNameFor(m => m.UserType)</th>
+            <th>@Html.DisplayNameFor(m => m.LevelValue)</th>
+            <th>@Html.DisplayNameFor(m => m.Status)</th>
+            <th style="width:80px;">封鎖</th>
+            <th style="width:80px;">修改</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@item.UserID</th>
+                <th>@item.UserName</th>
+                <th>@item.Account</th>
+                <th>@item.Birthday.ToString("M")</th>
+                <th>@item.Email</th>
+                <th>@item.UserType</th>
+                <th>@item.LevelValue</th>
+                <th>@item.Status</th>
+                <th>@Html.ActionLink(a, "Delete", new { id = item.UserID}, new { @class = "btn btn-outline-danger" })</th>
+                <th>@Html.ActionLink("修改", "Resize", new { id = item.UserID }, new { @class = "btn btn-outline-success" })</th>
+            </tr>
+        }
+    </tbody>
+</table>

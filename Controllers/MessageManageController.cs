@@ -29,7 +29,7 @@ namespace postArticle.Controllers
                 return null;
             }
 
-            Article article = db.Articles.Find(id);
+            Article article = db.Article.Find(id);
 
             if (article == null)
             {
@@ -70,7 +70,7 @@ namespace postArticle.Controllers
 
                         articleDetailsViewModel.Display = "none";
 
-                        db.Messages.Add(message);
+                        db.Message.Add(message);
                         db.SaveChanges();
                     }
                 }
