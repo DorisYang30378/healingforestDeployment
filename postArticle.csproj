@@ -318,6 +318,7 @@
     <Content Include="Views\Manager\UserMange.cshtml" />
     <Content Include="Views\Manager\Resize.cshtml" />
     <Content Include="Views\UserManages\ApplyExpert.cshtml" />
+    <Content Include="Views\Manager\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

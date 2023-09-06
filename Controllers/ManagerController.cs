@@ -84,6 +84,23 @@ namespace postArticle.Controllers
             }
             return View(emp);
         }
+
+
+
+
+        public ActionResult Report() {
+
+            var ReportArticle = db.Report.ToList();
+
+            return View(ReportArticle);
+
+        }
+
+        public void ArticleReview()
+        {
+
+        }
+
        
 
     }

@@ -3,7 +3,6 @@
 
 @{
     ViewBag.Title = "UserMange";
-    String a = "封鎖";
 }
 
 <style>
@@ -61,7 +60,7 @@
                 <th>@item.UserType</th>
                 <th>@item.LevelValue</th>
                 <th>@item.Status</th>
-                <th>@Html.ActionLink(a, "Delete", new { id = item.UserID}, new { @class = "btn btn-outline-danger" })</th>
+                <th>@Html.ActionLink("封鎖", "Delete", new { id = item.UserID}, new { @class = "btn btn-outline-danger" })</th>
                 <th>@Html.ActionLink("修改", "Resize", new { id = item.UserID }, new { @class = "btn btn-outline-success" })</th>
             </tr>
         }

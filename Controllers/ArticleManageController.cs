@@ -344,16 +344,17 @@ namespace postArticle.Controllers
         public void  ReportArticle()
         {
             string name = Request.Form["Name"];
-            string id = Request.Form["ID"];
-            if (id == "1")
-            {
-                Response.Write("<script>alert('空');</script>");
-            }
-            
-            
-            } 
+            int id = Int16.Parse(Request.Form["ID"]);
+            int ArticleID = Int16.Parse(Request.Form["ArticleID"]);
 
-    
+            Report report_submit = new Report { UserID = id, ArticleID = ArticleID, ReportContent = name };
+            db.Report.Add(report_submit);
+            db.SaveChanges();
+
+
+        } 
+
+   
     
     
     

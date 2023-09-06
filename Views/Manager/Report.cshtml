@@ -1,0 +1,97 @@
+﻿@using postArticle.Models;
+@model IEnumerable<Report>
+
+
+@{
+    ViewBag.Title = "檢舉";
+}
+
+<h2>(文章、會員)檢舉</h2>
+
+
+<style>
+
+    thead {
+        background-color: aquamarine;
+    }
+
+    th {
+        height: 30px;
+        border: solid;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .report_article {
+        display: none;
+    }
+</style>
+
+
+<header>
+
+    <button class="btn_reportmember">會員檢舉</button>
+    <button class="btn_reportarticle">文章檢舉</button>
+
+    <!---->
+    <table class="report_article">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Report_ID)</th>
+                <th>@Html.DisplayNameFor(m => m.UserID)</th>
+                <th>@Html.DisplayNameFor(m => m.ArticleID)</th>
+                <th>@Html.DisplayNameFor(m => m.ReportContent)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th>@item.Report_ID</th>
+                    <th>@item.UserID</th>
+                    <th>@item.ArticleID</th>
+                    <th>@item.ReportContent</th>
+                    <th>@Html.ActionLink("審查","ArticleReview", new { @class = "btn btn-outline-danger" })</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+    <!---->
+    <table class="report_member">
+        <thead>
+            <tr>
+                <th><h4>ReportID</h4></th>
+                <th><h4>UserID</h4></th>
+                <th><h4>UserID</h4></th>
+                <th><h4>ReportContent</h4></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        </tbody>
+    </table>
+
+</header>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        $(".btn_reportmember").click(function () {
+            $(".report_member").css('display', 'block');
+            $(".report_article").css('display', 'none');
+        });
+
+
+        $(".btn_reportarticle").click(function () {
+            $(".report_member").css('display', 'none');
+            $(".report_article").css('display', 'block');
+        });
+    });
+</script>

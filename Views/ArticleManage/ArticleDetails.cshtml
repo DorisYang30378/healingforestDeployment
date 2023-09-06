@@ -7,7 +7,8 @@
     ViewBag.Title = Model.article.Title;
     var messages = Model.messages;
     int UserID = 0;
-    ViewData["reporttxt"] = "";
+    int ArticleID = article.ArticleID;
+    
     
 
     if (Session["UserID"] != null)
@@ -246,7 +247,7 @@
 </div>
 </div>
 
-<div id="Div_Browser">test</div>
+<div id="report_item"></div>
 
 
 
@@ -347,8 +348,9 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
 
 
         $.post("/ArticleManage/ReportArticle",
-            { Name: report() , ID:@UserID},
+            { Name: report(), ID:@UserID , ArticleID:@ArticleID},
             function (data) { $("#Div_Browser").html(data); }
+            
         );
 
     });
