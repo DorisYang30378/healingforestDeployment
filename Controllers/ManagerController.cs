@@ -12,7 +12,9 @@ namespace postArticle.Controllers
     {
 
         //初始化資料庫
-        private healingForestEntities1 db = new healingForestEntities1();
+        private healingForestEntities db = new healingForestEntities();
+
+        int ArticleID = 0;
 
 
 
@@ -22,13 +24,13 @@ namespace postArticle.Controllers
 
             if (search != null)
             {
-                var searchinput = from p in db.UserManage where p.UserName == search select p;
+                var searchinput = from p in db.UserManages where p.UserName == search select p;
                 return View("UserMange", searchinput);
             }
 
             else
             {
-                var Name = db.UserManage.ToList().OrderBy(m=>m.UserName);
+                var Name = db.UserManages.ToList().OrderBy(m=>m.UserName);
                 return View(Name);
             }
 
@@ -37,10 +39,10 @@ namespace postArticle.Controllers
         public ActionResult Delete(int? id)
         {
                 var ID = id;
-                var p = db.UserManage.Find(ID);
-                p.Status = "off";
+                var p = db.UserManages.Find(ID);
+                p.Status = 1;
                 db.SaveChanges();
-                var Name = db.UserManage.ToList();
+                var Name = db.UserManages.ToList();
                 return View("UserMange", Name);
        
         }
@@ -55,7 +57,7 @@ namespace postArticle.Controllers
             ViewBag.UserID = TempData["UserID"];
             */
 
-            UserManage emp = db.UserManage.Find(id);
+            UserManage emp = db.UserManages.Find(id);
             
             return View(emp);
         }
@@ -88,19 +90,31 @@ namespace postArticle.Controllers
 
 
 
-        public ActionResult Report() {
+        public ActionResult Report(String sort) {
 
-            var ReportArticle = db.Report.ToList();
+
+            //ArticleID 由大至小
+            while (sort == "ID由小至大")
+            {
+                var RAsort= db.Reports.ToList().OrderBy(m=>m.ArticleID);
+                return View(RAsort);
+            }
+
+            var ReportArticle = db.Reports.ToList();
 
             return View(ReportArticle);
 
         }
 
-        public void ArticleReview()
+        public ActionResult ArticleReview(int? id)
         {
 
-        }
+            ArticleID = (int)id;
+            Article emp = db.Articles.Find(ArticleID);
+            return View(emp);
 
+           
+        }
        
 
     }

@@ -13,7 +13,7 @@ namespace postArticle.Controllers
     public class UserManagesController : Controller
     {
         #region 基礎屬性
-        private healingForestEntities1 db = new healingForestEntities1();
+        private healingForestEntities db = new healingForestEntities();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -35,8 +35,8 @@ namespace postArticle.Controllers
             {
 
 
-                var querySQL = from UserManagedb in db.UserManage
-                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account && UserManagedb.Status == "normal"
+                var querySQL = from UserManagedb in db.UserManages
+                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account && UserManagedb.Status == 0
                                select new
                                {
                                    UserManagedb.UserID
@@ -57,7 +57,7 @@ namespace postArticle.Controllers
             else {
 
                 
-                    var queryAccountSQL = from UserManagedb in db.UserManage
+                    var queryAccountSQL = from UserManagedb in db.UserManages
                                       where UserManagedb.Account == registerViewModel.userManage.Account
                                       select new
                                       {
@@ -80,7 +80,7 @@ namespace postArticle.Controllers
 
         private bool IsValidUser(string account, string password)
         {
-            UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
+            UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
 
             if (user != null)
             {
@@ -167,7 +167,7 @@ namespace postArticle.Controllers
                     registerViewModel.userManage.UserType = "member";
 
 
-                    db.UserManage.Add(registerViewModel.userManage);
+                    db.UserManages.Add(registerViewModel.userManage);
                     db.SaveChanges();
                     return RedirectToAction("Login");
                 }
@@ -190,7 +190,7 @@ namespace postArticle.Controllers
                 MaillService ms = new MaillService();
                 try
                 {
-                    UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
+                    UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
                     string subject = "忘記密碼";
                     string body = @"
                         <p>您的密碼為: {Password} </p>
@@ -218,7 +218,7 @@ namespace postArticle.Controllers
         }
         private bool IsValidPassword(string account, string email)
         {
-            UserManage user = db.UserManage.FirstOrDefault(u => u.Account == account);
+            UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
 
             if (user != null)
             {

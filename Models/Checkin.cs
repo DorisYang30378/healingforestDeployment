@@ -20,7 +20,7 @@ namespace postArticle.Models
         public System.DateTime CheckInDate { get; set; }
         public int BoolCheckIn { get; set; }
     
-        public virtual CheckinRewards CheckinRewards { get; set; }
+        public virtual CheckinReward CheckinReward { get; set; }
         public virtual UserManage UserManage { get; set; }
     }
 }

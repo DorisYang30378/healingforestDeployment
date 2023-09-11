@@ -19,7 +19,7 @@ namespace postArticle.Controllers
     {
         //---------------基礎屬性-----------------------------------------
         #region 基礎屬性
-        private healingForestEntities1 db = new healingForestEntities1();
+        private healingForestEntities db = new healingForestEntities();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -33,7 +33,7 @@ namespace postArticle.Controllers
         private bool IsUserArticle(int id)
         {
             int userID = GetUserID();
-            var queryArticleList = from Articledb in db.Article
+            var queryArticleList = from Articledb in db.Articles
                                    where Articledb.UserID == userID && Articledb.ArticleID == id
                                    select Articledb;
 
@@ -47,7 +47,7 @@ namespace postArticle.Controllers
                 return null;
             }
 
-            Article article = db.Article.Find(id);
+            Article article = db.Articles.Find(id);
 
             if (article == null)
             {
@@ -91,7 +91,7 @@ namespace postArticle.Controllers
             #endregion
 
             //---------------該文章底下的留言-----------------------------------------
-            queryMessList = (from Messagedb in db.Message.Include(m => m.Article).Include(m => m.UserManage)
+            queryMessList = (from Messagedb in db.Messages.Include(m => m.Article).Include(m => m.UserManage)
                              where Messagedb.ArticleID == id
                              select Messagedb).ToList();
             //-----------------------------------------===============================
@@ -241,7 +241,7 @@ namespace postArticle.Controllers
                     //
 
 
-                    db.Article.Remove(article);
+                    db.Articles.Remove(article);
                     db.SaveChanges();
                 }
             }
@@ -277,7 +277,7 @@ namespace postArticle.Controllers
                 {
                     #region ===搜尋userID===
                     var UserID = Convert.ToInt32(Session["UserID"]);
-                    var queryUserSQL = from UserManagedb in db.UserManage.Include(u => u.ThanksfulThings)
+                    var queryUserSQL = from UserManagedb in db.UserManages.Include(u => u.ThanksfulThing)
                                        where UserManagedb.UserID == UserID
                                        select new
                                        {
@@ -318,7 +318,7 @@ namespace postArticle.Controllers
                     #endregion
                     //
 
-                    db.Article.Add(articlePost.article);
+                    db.Articles.Add(articlePost.article);
                     db.SaveChanges();
                 }
                 else
@@ -348,7 +348,7 @@ namespace postArticle.Controllers
             int ArticleID = Int16.Parse(Request.Form["ArticleID"]);
 
             Report report_submit = new Report { UserID = id, ArticleID = ArticleID, ReportContent = name };
-            db.Report.Add(report_submit);
+            db.Reports.Add(report_submit);
             db.SaveChanges();
 
 

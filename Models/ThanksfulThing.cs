@@ -12,16 +12,13 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ChatroomLog
+    public partial class ThanksfulThing
     {
-        public int ChatroomLogID { get; set; }
-        public int UserID { get; set; }
-        public int ChatroomID { get; set; }
-        public string Content { get; set; }
         public System.DateTime Time { get; set; }
-        public int Status { get; set; }
+        public string Content { get; set; }
+        public string ImageURL { get; set; }
+        public int UserID { get; set; }
     
-        public virtual Chatroom Chatroom { get; set; }
         public virtual UserManage UserManage { get; set; }
     }
 }

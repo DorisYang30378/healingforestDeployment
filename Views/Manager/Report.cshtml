@@ -30,8 +30,15 @@
 
 <header>
 
+    
+    
     <button class="btn_reportmember">會員檢舉</button>
     <button class="btn_reportarticle">文章檢舉</button>
+    
+
+    <!--排序-->
+    @Html.ActionLink("文章排序由小至大","Report",new { sort="ID由小至大"})
+
 
     <!---->
     <table class="report_article">
@@ -41,6 +48,8 @@
                 <th>@Html.DisplayNameFor(m => m.UserID)</th>
                 <th>@Html.DisplayNameFor(m => m.ArticleID)</th>
                 <th>@Html.DisplayNameFor(m => m.ReportContent)</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
 
@@ -48,13 +57,14 @@
 
             @foreach (var item in Model)
             {
-                <tr>
-                    <th>@item.Report_ID</th>
-                    <th>@item.UserID</th>
-                    <th>@item.ArticleID</th>
-                    <th>@item.ReportContent</th>
-                    <th>@Html.ActionLink("審查","ArticleReview", new { @class = "btn btn-outline-danger" })</th>
-                </tr>
+            <tr>
+                <th>@item.Report_ID</th>
+                <th>@item.UserID</th>
+                <th>@item.ArticleID</th>
+                <th>@item.ReportContent</th>
+                <th>@Html.ActionLink("審查文章", "ArticleReview", new { id=item.ArticleID},new { title = "前往審查文章" })</th>
+                <th><button>刪除</button></th>
+            </tr>
             }
         </tbody>
     </table>

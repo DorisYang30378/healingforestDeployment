@@ -12,16 +12,12 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ChatroomLog
+    public partial class articleandmessage
     {
-        public int ChatroomLogID { get; set; }
-        public int UserID { get; set; }
-        public int ChatroomID { get; set; }
-        public string Content { get; set; }
-        public System.DateTime Time { get; set; }
-        public int Status { get; set; }
-    
-        public virtual Chatroom Chatroom { get; set; }
-        public virtual UserManage UserManage { get; set; }
+        public string 發布者 { get; set; }
+        public string 文章標題 { get; set; }
+        public string 文章內容 { get; set; }
+        public string 留言人 { get; set; }
+        public string 留言內容 { get; set; }
     }
 }

@@ -17,9 +17,9 @@ namespace postArticle.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Article()
         {
-            this.Collect = new HashSet<Collect>();
-            this.Message = new HashSet<Message>();
-            this.Report = new HashSet<Report>();
+            this.Collects = new HashSet<Collect>();
+            this.Messages = new HashSet<Message>();
+            this.Reports = new HashSet<Report>();
         }
     
         public int ArticleID { get; set; }
@@ -33,11 +33,11 @@ namespace postArticle.Models
         public Nullable<System.DateTime> Time { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Collect> Collect { get; set; }
+        public virtual ICollection<Collect> Collects { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Message> Message { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Report> Report { get; set; }
+        public virtual ICollection<Report> Reports { get; set; }
         public virtual UserManage UserManage { get; set; }
     }
 }

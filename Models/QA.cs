@@ -12,12 +12,14 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class QA
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string 發問者 { get; set; }
+        public string 標題 { get; set; }
+        public string 內容 { get; set; }
+        public System.DateTime 發問時間 { get; set; }
+        public string 回答者 { get; set; }
+        public string 專家回答 { get; set; }
+        public System.DateTime 回覆時間 { get; set; }
     }
 }

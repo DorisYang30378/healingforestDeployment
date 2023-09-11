@@ -12,7 +12,7 @@ namespace postArticle.Controllers
     {
         //---------------基礎屬性-----------------------------------------
         #region 基礎屬性
-        private healingForestEntities1 db = new healingForestEntities1();
+        private healingForestEntities db = new healingForestEntities();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -29,7 +29,7 @@ namespace postArticle.Controllers
                 return null;
             }
 
-            Article article = db.Article.Find(id);
+            Article article = db.Articles.Find(id);
 
             if (article == null)
             {
@@ -70,7 +70,7 @@ namespace postArticle.Controllers
 
                         articleDetailsViewModel.Display = "none";
 
-                        db.Message.Add(message);
+                        db.Messages.Add(message);
                         db.SaveChanges();
                     }
                 }

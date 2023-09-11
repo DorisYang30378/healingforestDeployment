@@ -1,0 +1,43 @@
+﻿@using postArticle.Models;
+@model postArticle.Models.Article
+
+
+@{
+    ViewBag.Title = "ArticleReview";
+}
+
+
+<style>
+
+    .article-image {
+        position:relative;
+    }
+
+
+    .article-image img{
+        width:50%;
+        height:50%;
+    }
+
+</style>
+
+
+
+<h2>管理員文章檢視</h2><br><br><hr>
+
+
+<p>@Html.DisplayTextFor(m=>m.Title)</p>
+<p>@Html.DisplayTextFor(m=>m.Content)</p>
+
+<div class="article-image" style="text-align:center;">
+    <img src="~/Uploads/@Html.DisplayFor(m=>m.ImageURL)" alt="Article Image">
+</div>
+
+
+<form>
+<div style="margin-top:30px; text-align:center;"><textarea placeholder="審閱結果"   style="resize:none; width:100%; height:50%"></textarea></div>
+<div style="text-align:center; margin-top:30px;">
+        <button class="btn btn-light">返回</button>
+        <button class="btn btn-danger">送出</button>
+</div>
+</form>

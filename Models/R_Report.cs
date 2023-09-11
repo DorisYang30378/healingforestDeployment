@@ -12,13 +12,15 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ThanksfulThings
+    public partial class R_Report
     {
-        public System.DateTime Time { get; set; }
-        public string Content { get; set; }
-        public string ImageURL { get; set; }
+        public int RR_ID { get; set; }
+        public int ReportID { get; set; }
         public int UserID { get; set; }
+        public int Article_ID { get; set; }
+        public string Content { get; set; }
+        public int Status { get; set; }
     
-        public virtual UserManage UserManage { get; set; }
+        public virtual Report Report { get; set; }
     }
 }

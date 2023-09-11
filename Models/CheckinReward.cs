@@ -12,22 +12,19 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserQuestion
+    public partial class CheckinReward
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public UserQuestion()
+        public CheckinReward()
         {
-            this.ExpertAnswers = new HashSet<ExpertAnswer>();
+            this.Checkins = new HashSet<Checkin>();
         }
     
-        public int UserQuestionID { get; set; }
-        public int UserID { get; set; }
-        public string QuestionTitle { get; set; }
-        public string QuestionContent { get; set; }
-        public System.DateTime QuestionTime { get; set; }
+        public int CheckinRewardsID { get; set; }
+        public System.DateTime CheckinDate { get; set; }
+        public int ExperienceValue { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ExpertAnswer> ExpertAnswers { get; set; }
-        public virtual UserManage UserManage { get; set; }
+        public virtual ICollection<Checkin> Checkins { get; set; }
     }
 }

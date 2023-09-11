@@ -25,11 +25,11 @@ namespace postArticle.Controllers
         //透過Enitity連接資料庫
         public void connectSQL()
         {
-            var db = new healingForestEntities1();
+            var db = new healingForestEntities();
             if (ViewBag.CheckIn=="簽到")
             {
                 Checkin p = new Checkin { UserID = id, CheckInDate = DateTime.Now.Date, BoolCheckIn = 1 };
-                db.Checkin.Add(p);
+                db.Checkins.Add(p);
                 db.SaveChanges();
             }
         }
@@ -72,9 +72,9 @@ namespace postArticle.Controllers
         //(透過資料庫判斷是否簽到和User當月Checkin日期)
         public void Read()
         {
-            using (var db =new healingForestEntities1())
+            using (var db =new healingForestEntities())
             {
-                var product = from p in db.Checkin where p.UserID==id select p;
+                var product = from p in db.Checkins where p.UserID==id select p;
                 var my_day = DateTime.Now.ToString("dd");
                 var my_month = DateTime.Now.Month;
                 int count=1;

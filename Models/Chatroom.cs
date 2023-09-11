@@ -17,7 +17,7 @@ namespace postArticle.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Chatroom()
         {
-            this.ChatroomLog = new HashSet<ChatroomLog>();
+            this.ChatroomLogs = new HashSet<ChatroomLog>();
         }
     
         public int ChatroomID { get; set; }
@@ -25,6 +25,6 @@ namespace postArticle.Models
         public string member { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChatroomLog> ChatroomLog { get; set; }
+        public virtual ICollection<ChatroomLog> ChatroomLogs { get; set; }
     }
 }
