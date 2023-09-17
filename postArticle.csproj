@@ -266,7 +266,9 @@
     <Compile Include="viewmodel\DemoCharViewModel.cs" />
     <Compile Include="viewmodel\LoginViewModel.cs" />
     <Compile Include="viewmodel\ArticlePostViewModel.cs" />
+    <Compile Include="viewmodel\RAViewModel.cs" />
     <Compile Include="viewmodel\RegisterViewModel.cs" />
+    <Compile Include="viewmodel\ReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -327,6 +329,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Uploads\Expert.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -353,10 +356,10 @@
     <Content Include="Views\UserManages\ApplyExpert.cshtml" />
     <Content Include="Views\Manager\Report.cshtml" />
     <Content Include="Views\Manager\ArticleReview.cshtml" />
+    <Content Include="Views\CharRoom\Charmember.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\" />
     <Folder Include="Views\MessageManage\" />
   </ItemGroup>
   <ItemGroup>

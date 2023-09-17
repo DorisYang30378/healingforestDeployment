@@ -1,43 +1,102 @@
 ﻿@using postArticle.Models;
-@model postArticle.Models.Article
+
+@model postArticle.viewmodel.RAViewModel
 
 
 @{
     ViewBag.Title = "ArticleReview";
+
 }
+
 
 
 <style>
 
     .article-image {
-        position:relative;
+        position: relative;
     }
 
 
-    .article-image img{
-        width:50%;
-        height:50%;
-    }
+        .article-image img {
+            width: 50%;
+            height: 50%;
+        }
 
+    input:checked + label {
+        background-color: #65f962;
+    }
 </style>
 
 
 
-<h2>管理員文章檢視</h2><br><br><hr>
+<h2>管理員文章檢視</h2>
+<br>
+<br>
+<hr>
 
 
-<p>@Html.DisplayTextFor(m=>m.Title)</p>
-<p>@Html.DisplayTextFor(m=>m.Content)</p>
+
+<!--檢舉ID-->
+<p>檢舉ID :@Model.ReportID</p>
+<!--檢舉人ID-->
+<p>檢舉人ID :@Model.RU_ID</p>
+<!--被檢舉人ID-->
+<p>檢舉人ID :@Model.RdU</p>
+<!--被檢舉文章ID-->
+<p>被檢舉文章ID :@Model.RA</p>
+<p id="Div_Browser"></p>
+
+
+<h2>@Model.Title</h2>
+<h5>@Model.Content</h5>
 
 <div class="article-image" style="text-align:center;">
-    <img src="~/Uploads/@Html.DisplayFor(m=>m.ImageURL)" alt="Article Image">
+    <img src="~/Uploads/@Model.ImageURL">
 </div>
 
 
-<form>
-<div style="margin-top:30px; text-align:center;"><textarea placeholder="審閱結果"   style="resize:none; width:100%; height:50%"></textarea></div>
-<div style="text-align:center; margin-top:30px;">
+
+
+<form method="post"> 
+    <div>@Model.ReportContent</div>
+    <input class="contentbtn " id="pass" type="radio" name="report" value="檢舉通過" style="display:none;">
+    <label class="btn btn-outline-primary" for="pass">檢舉通過</label>
+    <input class="contentbtn " id="nopass" type="radio" name="report" value="檢舉未通過" style="display:none;">
+    <label class="btn btn-outline-primary" for="nopass">檢舉未通過</label>
+
+    <div style="text-align:center; margin-top:30px;">
         <button class="btn btn-light">返回</button>
-        <button class="btn btn-danger">送出</button>
-</div>
+        <button class="btn btn-danger submit">送出</button>
+    </div>
 </form>
+
+
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        $(".submit").click(function() {
+
+
+            var contentbtn= $('input[name="report"]:checked').val();
+            alert(contentbtn);
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/Manager/RRA',
+                data: { Report_ID: @Model.ReportID, RU_ID: @Model.RU_ID, RA: @Model.RA, Report_Content: contentbtn },
+                success: function () { window.location.href = "/Manager/Report" },
+                error: function () { alert("失敗") }
+              });
+
+
+         });
+
+     });
+
+    </script> 
+    
+    

@@ -237,5 +237,24 @@ namespace postArticle.Controllers
             }
 
         }
+
+
+
+        public ActionResult Charmember()
+        {
+
+            var Expert = from a in db.UserManages
+                         where a.UserType == "Expert"
+                         select a;
+
+
+            return View(Expert);
+        }
+
+
+
+
+
+
     }
 }

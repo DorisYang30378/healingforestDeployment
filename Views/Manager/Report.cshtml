@@ -62,7 +62,7 @@
                 <th>@item.UserID</th>
                 <th>@item.ArticleID</th>
                 <th>@item.ReportContent</th>
-                <th>@Html.ActionLink("審查文章", "ArticleReview", new { id=item.ArticleID},new { title = "前往審查文章" })</th>
+                <th>@Html.ActionLink("審查文章", "ArticleReview", new { id=item.ArticleID ,RID=item.Report_ID},new { title = "前往審查文章" })</th>
                 <th><button>刪除</button></th>
             </tr>
             }

@@ -8,6 +8,8 @@ namespace postArticle.viewmodel
 {
     public class RegisterViewModel
     {
+     
+        
         public string ConfirmPassword { get; set; }
         public string code { get; set; }
         public bool rememberPassword { get; set; }

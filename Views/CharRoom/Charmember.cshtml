@@ -1,0 +1,66 @@
+﻿@using postArticle.Models;
+@model IEnumerable<postArticle.Models.UserManage>
+
+
+
+
+@{
+    ViewBag.Title = "Charmember";
+}
+
+@foreach(var item in Model)
+            {
+                @item.UserName;
+            }
+
+
+<style>
+
+    img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: none;
+    }
+
+
+    .Expert {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: none;
+        margin-right: 25px;
+    }
+
+    .box {
+        width: 90%;
+        height: 150px;
+        border-radius: 20px;
+        overflow:hidden;
+    }
+</style>
+
+
+
+
+<h2>Charmember</h2>
+
+<h2>Expert</h2>
+<hr>
+
+
+
+<div class="box">
+    @{
+        for (int i = 0; i < 5; i++)
+        {
+            <button class="Expert"><img src="~/Uploads/Expert.png"></button>
+        }
+    }
+
+    
+    </div>
+
+
+    <h2>Member</h2>
+    <hr>

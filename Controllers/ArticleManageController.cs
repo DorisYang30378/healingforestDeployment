@@ -13,6 +13,7 @@ using System.IO;
 using System.Web.UI;
 using PagedList;
 
+
 namespace postArticle.Controllers
 {
     public class ArticleManageController : Controller
@@ -213,7 +214,7 @@ namespace postArticle.Controllers
         // -----------------------------------------===============================
 
 
-
+        // // // 文章刪除 // // //
         public ActionResult ArticleDelete(int? id)
         {
             //---------------判斷文章是否存在-----------------------------------------
@@ -304,7 +305,7 @@ namespace postArticle.Controllers
 
                     articlePost.article.UserID = UserID;
                     #endregion
-
+                    articlePost.article.Status = 1;
 
                     #region ===上傳圖片====
                     if (file != null && file.ContentLength > 0)
@@ -317,7 +318,6 @@ namespace postArticle.Controllers
                     }
                     #endregion
                     //
-
                     db.Articles.Add(articlePost.article);
                     db.SaveChanges();
                 }
@@ -343,15 +343,31 @@ namespace postArticle.Controllers
     
         public void  ReportArticle()
         {
+            //ReportViewModel rvm = new ReportViewModel();
+            //var rid = (int)rvm.Report_ID;
+            var rid = from  a in db.Reports select a.Report_ID;
+            var ric = rid.Count()+1;
+            
             string name = Request.Form["Name"];
             int id = Int16.Parse(Request.Form["ID"]);
             int ArticleID = Int16.Parse(Request.Form["ArticleID"]);
 
-            Report report_submit = new Report { UserID = id, ArticleID = ArticleID, ReportContent = name };
-            db.Reports.Add(report_submit);
-            db.SaveChanges();
 
+            var rig = from a in db.Reports
+                      where a.UserID == id && a.ArticleID == ArticleID
+                      select a;
+            
 
+            if (ModelState.IsValid  && !rig.Any())
+            {
+                Report report_submit = new Report {Report_ID = ric , UserID = id, ArticleID = ArticleID, ReportContent = name, Status = 0 };
+                db.Reports.Add(report_submit);
+                db.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("無法重複檢舉");
+            }
         } 
 
    

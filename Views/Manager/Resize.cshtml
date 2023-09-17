@@ -1,7 +1,6 @@
 ﻿@using postArticle.Models
 @model postArticle.Models.UserManage
 
-
 @{
     ViewBag.Title= "Resize";
 }
@@ -15,25 +14,27 @@
     @Html.AntiForgeryToken();
 <div class="form-group">
 
-    <!--id, username, account, email, usertype, levelvalue, status-->
-    @Html.LabelFor(m => m.UserID)
-    @Html.TextBoxFor(m => m.UserID, "", new { @class = "form-control" })
-    @Html.Label("UserName")
-    @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
-    @Html.Label("UserAccount")
-    @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
-    @Html.Label("UserEmail")
-    @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
-    @Html.Label("UserType")
 
-    @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
+        <!--id, username, account, email, usertype, levelvalue, status-->
+        @Html.LabelFor(m => m.UserID)
+        @Html.TextBoxFor(m =>m.UserID, "", new { @class = "form-control" })
+        @Html.Label("UserName")
+        @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
+        @Html.Label("UserAccount")
+        @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
+        @Html.Label("UserEmail")
+        @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
+        @Html.Label("UserType")
 
-    @Html.Label("UserLevelValue")
-    @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
-    @Html.Label("UserStatus")
-    @Html.DropDownListFor(m => m.Status, new SelectList(new[] { 0, 1 }), new { @class = "form-control" })
-    @Html.HiddenFor(m => m.Password)
-    @Html.HiddenFor(m=>m.Birthday)
+        @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
+
+        @Html.Label("UserLevelValue")
+        @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
+        @Html.Label("UserStatus")
+        @Html.DropDownListFor(m => m.Status, new SelectList(new[] { 0, 1 }), new { @class = "form-control" })
+        @Html.HiddenFor(m => m.Password)
+        @Html.HiddenFor(m=>m.Birthday)
+
 
     <input type="submit" value="save" class="btn btn-light">
 </div>

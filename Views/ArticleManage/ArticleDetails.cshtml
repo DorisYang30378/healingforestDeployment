@@ -8,8 +8,8 @@
     var messages = Model.messages;
     int UserID = 0;
     int ArticleID = article.ArticleID;
-    
-    
+
+
 
     if (Session["UserID"] != null)
     {
@@ -226,7 +226,7 @@
 <div class="report_alert">
 
 
-    <form>
+    <form method="post">
         @Html.Label("不實文章")
         <input type="checkbox" name="report" value="不實文章">
         <br>
@@ -296,7 +296,7 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
 
 <script>
 
-    
+
 
     function openPopup() {
         document.getElementById("messagePopup").style.display = "block";
@@ -347,11 +347,13 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
     $(".report_submit").click(function () {
 
 
-        $.post("/ArticleManage/ReportArticle",
-            { Name: report(), ID:@UserID , ArticleID:@ArticleID},
-            function (data) { $("#Div_Browser").html(data); }
-            
-        );
+        $.ajax({
+            type: 'POST',
+            url: "/ArticleManage/ReportArticle",
+            data: { Name: report(), ID:@UserID , ArticleID:@ArticleID},
+            success: function () { alert("成功") },
+            error: function () { alert("失敗") }
+        });
 
     });
 
@@ -363,7 +365,7 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
         var txt = "";
         for (var i = 0; i < reportname.length; i++) {
             if (reportname[i].checked) {
-                txt = txt + reportname[i].value +",";
+                txt = txt + reportname[i].value +"  ";
             }
         }
          txt = txt + reportadd.value;

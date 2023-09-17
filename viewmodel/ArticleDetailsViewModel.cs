@@ -25,5 +25,7 @@ namespace postArticle.viewmodel
         public int? Page { get; set; }
 
         public string Display { get; set; }
+
+        public int iStatus { get; set; }
     }
 }
