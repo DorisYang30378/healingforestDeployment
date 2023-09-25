@@ -16,6 +16,8 @@ namespace postArticle.viewmodel
         public string ShowCollect { get; set; }
         public bool IsShowCollect { get; set; }
 
+        public bool IsStatus { get; set; }
+
         public string ShowMyArticle { get; set; }
         public bool IsShowMyArticle { get; set; }
 

@@ -26,6 +26,6 @@ namespace postArticle.viewmodel
 
         public string Display { get; set; }
 
-        public int iStatus { get; set; }
+        public bool iStatus { get; set; }
     }
 }

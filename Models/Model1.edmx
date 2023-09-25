@@ -27,6 +27,8 @@
           <Property Name="ChatroomID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ChatRoomName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="member" Type="varchar" MaxLength="56" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="OtherUserID" Type="int" />
         </EntityType>
         <EntityType Name="ChatroomLog">
           <Key>
@@ -247,6 +249,32 @@
           <Property Name="專家回答" Type="varchar" MaxLength="2048" Nullable="false" />
           <Property Name="回覆時間" Type="date" Nullable="false" />
         </EntityType>
+        <Association Name="Chat_OtherUserID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Chat_UserID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
+          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="chatLog">
           <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -619,6 +647,14 @@
     [QA].[回覆時間] AS [回覆時間]
     FROM [dbo].[QA] AS [QA]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="Chat_OtherUserID" Association="Self.Chat_OtherUserID">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Chatroom" EntitySet="Chatroom" />
+          </AssociationSet>
+          <AssociationSet Name="Chat_UserID" Association="Self.Chat_UserID">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Chatroom" EntitySet="Chatroom" />
+          </AssociationSet>
           <AssociationSet Name="chatLog" Association="Self.chatLog">
             <End Role="Chatroom" EntitySet="Chatroom" />
             <End Role="ChatroomLog" EntitySet="ChatroomLog" />
@@ -747,6 +783,10 @@
           <Property Name="ChatRoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="member" Type="String" MaxLength="56" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="ChatroomLogs" Relationship="Self.chatLog" FromRole="Chatroom" ToRole="ChatroomLog" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="OtherUserID" Type="Int32" />
+          <NavigationProperty Name="UserManage" Relationship="healingForestModel.Chat_OtherUserID" FromRole="Chatroom" ToRole="UserManage" />
+          <NavigationProperty Name="UserManage1" Relationship="healingForestModel.Chat_UserID" FromRole="Chatroom" ToRole="UserManage" />
         </EntityType>
         <EntityType Name="ChatroomLog">
           <Key>
@@ -961,6 +1001,8 @@
           <NavigationProperty Name="ReportMembers1" Relationship="Self.UserID" FromRole="UserManage" ToRole="ReportMember" />
           <NavigationProperty Name="ThanksfulThing" Relationship="Self.Relationship1" FromRole="UserManage" ToRole="ThanksfulThings" />
           <NavigationProperty Name="UserQuestions" Relationship="Self.User_asks_a_question" FromRole="UserManage" ToRole="UserQuestion" />
+          <NavigationProperty Name="Chatrooms" Relationship="healingForestModel.Chat_OtherUserID" FromRole="UserManage" ToRole="Chatroom" />
+          <NavigationProperty Name="Chatrooms1" Relationship="healingForestModel.Chat_UserID" FromRole="UserManage" ToRole="Chatroom" />
         </EntityType>
         <EntityType Name="UserQuestion">
           <Key>
@@ -1451,6 +1493,14 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <AssociationSet Name="Chat_OtherUserID" Association="healingForestModel.Chat_OtherUserID">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Chatroom" EntitySet="Chatrooms" />
+          </AssociationSet>
+          <AssociationSet Name="Chat_UserID" Association="healingForestModel.Chat_UserID">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Chatroom" EntitySet="Chatrooms" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1463,6 +1513,32 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <Association Name="Chat_OtherUserID">
+          <End Type="healingForestModel.UserManage" Role="UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="healingForestModel.Chatroom" Role="Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Chat_UserID">
+          <End Type="healingForestModel.UserManage" Role="UserManage" Multiplicity="0..1" />
+          <End Type="healingForestModel.Chatroom" Role="Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1488,6 +1564,8 @@
           <EntitySetMapping Name="Chatrooms">
             <EntityTypeMapping TypeName="healingForestModel.Chatroom">
               <MappingFragment StoreEntitySet="Chatroom">
+                <ScalarProperty Name="OtherUserID" ColumnName="OtherUserID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ChatroomID" ColumnName="ChatroomID" />
                 <ScalarProperty Name="ChatRoomName" ColumnName="ChatRoomName" />
                 <ScalarProperty Name="member" ColumnName="member" />

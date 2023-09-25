@@ -263,6 +263,8 @@
     <Compile Include="Service\MaillService.cs" />
     <Compile Include="viewmodel\ArticleDetailsViewModel.cs" />
     <Compile Include="viewmodel\ArticleIndexViewModel.cs" />
+    <Compile Include="viewmodel\ChatMemberViewModel.cs" />
+    <Compile Include="viewmodel\ChatRoomViewModel.cs" />
     <Compile Include="viewmodel\DemoCharViewModel.cs" />
     <Compile Include="viewmodel\LoginViewModel.cs" />
     <Compile Include="viewmodel\ArticlePostViewModel.cs" />
@@ -357,6 +359,7 @@
     <Content Include="Views\Manager\Report.cshtml" />
     <Content Include="Views\Manager\ArticleReview.cshtml" />
     <Content Include="Views\CharRoom\Charmember.cshtml" />
+    <Content Include="Views\CharRoom\ChatRoom.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

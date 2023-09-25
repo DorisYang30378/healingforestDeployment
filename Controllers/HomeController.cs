@@ -55,6 +55,9 @@ namespace postArticle.Controllers
             List<bool> IsCollect;
             //我的文章
             bool IsShowMyArticle;
+            //是否封鎖
+            bool IStatus;
+
             #endregion
             // -----------------------------------------===============================
 
@@ -73,7 +76,7 @@ namespace postArticle.Controllers
             //---------------訪客視圖-----------------------------------------
             ArticleIndexViewModel visitor()
             {
-                articles = db.Articles.Include(a => a.UserManage).ToList();
+                articles = db.Articles.Include(a => a.UserManage).Where(a=>a.Status!=1).ToList();
 
                 #region ===篩選資料===
                 filter();
@@ -118,7 +121,7 @@ namespace postArticle.Controllers
                 }
                 else
                 {
-                    articles = db.Articles.Include(a => a.UserManage).ToList();
+                    articles = db.Articles.Include(a => a.UserManage).Where(c=>c.Status!=1).ToList();
                 }
                 #endregion
 
@@ -138,7 +141,7 @@ namespace postArticle.Controllers
                 #endregion
 
 
-                IsCollect = articles.Select(a => queryCollectSQL.Select(c => c.Article).ToList().Contains(a)).ToList();
+                IsCollect = articles.Select(a => queryCollectSQL.Select(c => c.Article).Where(c=>c.Status!=1).ToList().Contains(a)).ToList();
 
 
                 #region ===將資料push到viewmodel===
@@ -176,10 +179,10 @@ namespace postArticle.Controllers
                     switch (OrderString)
                     {
                         case "時間":
-                            articles = articles.OrderBy(s => s.Time);
+                            articles = articles.Where(s=>s.Status!=1).OrderBy(s => s.Time);
                             break;
                         case "人氣":
-                            articles = articles.OrderByDescending(s => s.Likes);
+                            articles = articles.Where(s=>s.Status!=1).OrderByDescending(s => s.Likes);
                             break;
                     }
                 }
@@ -215,7 +218,7 @@ namespace postArticle.Controllers
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     articles = articles.Where(s => s.Title.Contains(searchString)
-                                           || s.Content.Contains(searchString));
+                                           || s.Content.Contains(searchString) && s.Status!=1);
                 }
             }
 
@@ -296,8 +299,8 @@ namespace postArticle.Controllers
             {
 
                 var UserID = GetUserID();
-                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
-                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
+                var queryCollectSQL = from at in db.Articles from Collectdb in db.Collects  .Include(c => c.Article).Include(c => c.UserManage)
+                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID  && at.Status!=1
                                       select Collectdb;
 
                 if (queryCollectSQL.Any())

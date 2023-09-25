@@ -1,0 +1,294 @@
+﻿@using postArticle.viewmodel
+@model postArticle.viewmodel.ChatRoomViewModel
+
+
+@{ 
+
+    var context = Model.ChatContext;
+    var MainUserID = Model.MainUserID;
+    var ChatRoom = Model.ChatRooms;
+    string contexts = null;
+
+
+}
+
+
+
+<style>
+
+        @@media screen and (max-width:700px){
+        .container-content{
+            display: none;
+        }
+    }
+
+
+    body{
+        margin: 0;
+    }
+
+    .header{
+        width: 100%;
+        height: 100px;
+        background-color: rgb(56, 153, 47);
+        position: sticky;
+    }
+
+    .container{
+        width: 100%;
+        height: 100vh;
+        background-color: rgb(139, 243, 139);
+    }
+
+    .footer{
+        width: 100%;
+        height: 50px;
+        background-color: rgb(56, 153, 47);
+    }
+
+    .return{
+        width: 200px;
+        height: 50px;
+        background-color: rgb(244, 92, 92);
+        margin-left: 5%;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: none;
+        font-size: 30px;
+        font-weight: bolder;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    }
+
+    .return:hover{
+        background-color: rgb(224, 69, 69);
+
+    }
+
+    .container .container-content{
+        position: relative;
+        width: 90%;
+        height: 90%;
+        background-color: rgb(206, 255, 230);
+        margin: auto;
+        top: 20px;
+        column-count: 2;
+        column-width: 30%;
+        overflow: hidden;
+    }
+
+    .member{
+
+        width: 50%;
+        height: 95%;
+        overflow: hidden;
+        border-radius: 10px;
+        background-color: blue;
+        position: relative;
+        top: 20px;
+        left: 70px;
+    }
+
+    .member:hover{
+        overflow: scroll;
+    }
+
+    .content{
+        width: 120%;
+        height: 80%;
+        overflow: hidden;
+        background-color: red;
+        border-radius: 10px;
+        position: relative;
+        top: 30px;
+        left: -30%;
+        margin: auto;
+        padding: 10px;
+    }
+
+    .content:hover{
+        overflow: scroll;
+    }
+
+    .content-title{
+        position: relative;
+        left: -30%;
+        top:30px;
+        overflow: hidden;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .member .info{
+        position: relative;
+        top: 10px;
+        margin: auto;
+        margin-top: 10px;
+        width: 90%;
+        height: 80px;
+        background-color: rgb(135, 138, 140);
+        border-radius: 10px;
+
+    }
+
+    .submit{
+        position: relative;
+        bottom: -10%;
+        display: inline;
+    }
+
+    .input{
+        position: relative;
+        width: 90%;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        left: -30%;
+
+    }
+
+    .submit-btn{
+        position: relative;
+        width: 30%;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+    }
+
+    .btn{
+        position: relative;
+        right: -62%;
+        top:-40px;
+    }
+
+    .content-box-left{
+        width: 45%;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: aliceblue;
+    }
+
+    .content-box-right{
+        position: relative;
+        right: -52%;
+        width: 45%;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: aliceblue;
+    }
+
+    .datetime{
+        direction:rtl;
+    }
+
+
+</style>
+
+
+
+<body style="background-color: rgb(139, 243, 139);">
+
+    <div class="header">
+        <h2>療癒之森</h2>
+        <button>首頁</button>
+    </div>
+
+    <div class="container">
+
+        <button class="return" onclick="location.href = '@Url.Action("ArticleIndex","Home")'">返  回</button>
+
+        <div class="container-content">
+
+            <div class="member">
+
+                @foreach(var i in ChatRoom)                 
+                { 
+                    <div class="info">@i.ChatRoomName </div>
+                }
+                
+            </div>
+
+
+
+
+            <div style="width: 100%; height: 90%;">
+                <div class="content-title">你/Gino的聊天室</div>
+
+
+                <div class="content" id="content">
+
+
+                    <h2 style="text-align:center;">開始聊天</h2> 
+
+
+                    @foreach(var i in context)
+                    {
+
+                        if (@i.UserID == MainUserID)
+                        {
+                            <div class="content-box-right">
+                            <h2>@i.UserManage.UserName</h2>
+                            <p style="position: relative; top: -20px;">                           
+                                    @i.Content
+                                </p>
+                                <div class="datetime"><p>@i.Time</p></div>
+
+                            </div>
+                        }
+
+                        else
+                        {
+                        
+                            <div class="content-box-left">                        
+                                <h2>@i.UserManage.UserName</h2>                        
+                                <p style="position: relative; top: -20px;">                                                         
+                                    @i.Content                        
+                                </p>            
+                                <div class="datetime"><p>@i.Time</p></div>
+
+                         </div>
+                        }
+
+                    }
+
+
+
+                </div>
+
+
+
+                <div class="submit">
+                    <form>
+                        <input type="text" class="input" placeholder="輸入內容" style="z-index: 999;">
+                    </form>
+                    <div class="btn">
+                        <button class="submit-btn">送出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>靜宜大學資傳系</p>
+    </div>
+
+</body>
+
+
+
+
+
+<script>
+
+    //將聊天室內文至底
+    var chatscolloer = document.getElementById('content');
+    chatscolloer.scrollTop = chatscolloer.scrollHeight;
+
+
+
+
+</script>

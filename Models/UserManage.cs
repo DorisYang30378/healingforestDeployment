@@ -29,6 +29,8 @@ namespace postArticle.Models
             this.ReportMembers = new HashSet<ReportMember>();
             this.ReportMembers1 = new HashSet<ReportMember>();
             this.UserQuestions = new HashSet<UserQuestion>();
+            this.Chatrooms = new HashSet<Chatroom>();
+            this.Chatrooms1 = new HashSet<Chatroom>();
         }
     
         public int UserID { get; set; }
@@ -67,5 +69,9 @@ namespace postArticle.Models
         public virtual ThanksfulThing ThanksfulThing { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserQuestion> UserQuestions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chatroom> Chatrooms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chatroom> Chatrooms1 { get; set; }
     }
 }

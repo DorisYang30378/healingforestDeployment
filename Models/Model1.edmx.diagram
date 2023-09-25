@@ -51,6 +51,8 @@
         <AssociationConnector Association="healingForestModel.UserID" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.Relationship1" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.User_asks_a_question" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.Chat_OtherUserID" />
+        <AssociationConnector Association="healingForestModel.Chat_UserID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

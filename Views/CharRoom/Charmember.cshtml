@@ -1,17 +1,19 @@
-﻿@using postArticle.Models;
-@model IEnumerable<postArticle.Models.UserManage>
+﻿@using postArticle.Models
+@model postArticle.viewmodel.ChatMemberViewModel
 
 
 
 
 @{
     ViewBag.Title = "Charmember";
+    var UserID = Model.UserID;
+    var Expert = Model.Expert;
+    var SearchMember = Model.SearchMember;
+    var Friend = Model.ChatRoom;
+    var SearchMemberChatRoom = Model.SMChatRoom;
+    var ExpertMemberChatRoom = Model.EChatRoom;
 }
 
-@foreach(var item in Model)
-            {
-                @item.UserName;
-            }
 
 
 <style>
@@ -36,14 +38,69 @@
         width: 90%;
         height: 150px;
         border-radius: 20px;
-        overflow:hidden;
+        overflow-x:scroll;
+        white-space:nowrap;
+        overflow-y:hidden;
+        
     }
 </style>
 
 
 
 
-<h2>Charmember</h2>
+<h2>聊天室</h2>
+
+
+
+@using (Html.BeginForm("Charmember", "CharRoom", FormMethod.Get))
+{
+    <p>
+        <input type="text" name="searchString" placeholder="搜尋使用者">
+        <input type="submit" value="查詢" />
+    </p>
+}
+
+
+
+
+
+<h2>Search</h2>
+<hr>
+
+<div class="box">
+
+
+    @if (SearchMember != null)
+                {
+                    foreach (var item in SearchMember)
+                    {
+
+                        int chatroomid= 0;
+                        foreach(var room in SearchMemberChatRoom)
+                        {
+                               if(room.UserID ==item.UserID ||room.OtherUserID == item.UserID)
+                                {
+                                    chatroomid = room.ChatroomID;
+                                }
+                        }
+
+
+
+                        if (item.UserType == "Member")
+                        {
+                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" href='@Url.Action("ChatRoom", "CharRoom", new { id= chatroomid} )'><img src="~/Uploads/Expert.png"></a>
+
+
+                        }
+
+    }
+
+    }
+
+
+</div>
+
+
 
 <h2>Expert</h2>
 <hr>
@@ -51,16 +108,54 @@
 
 
 <div class="box">
-    @{
-        for (int i = 0; i < 5; i++)
-        {
-            <button class="Expert"><img src="~/Uploads/Expert.png"></button>
+
+    @foreach (var item in Expert)
+                {
+
+                    int chatroomid = 0;
+
+                    if (item.UserType == "Expert")
+                    {
+
+                        foreach(var er in ExpertMemberChatRoom)
+                        {
+                            if(er.UserID ==item.UserID ||er.OtherUserID == item.UserID)
+                            {
+                                chatroomid = er.ChatroomID;
+                            }
+                        }
+
+            <a class="Expert Room" title="專家: @item.UserName @chatroomid" value="@item.UserID" href='@Url.Action("ChatRoom", "CharRoom", new { id=chatroomid})'><img src="~/Uploads/Expert.png"></a>
         }
     }
 
-    
-    </div>
+
+</div>
 
 
-    <h2>Member</h2>
-    <hr>
+
+<h2>Friends</h2>
+<hr>
+
+<div class="box">
+
+
+    @foreach (var item in Friend)
+    {
+
+
+        var title = item.ChatRoomName;
+        title = title.Replace("/Gino的私聊", "");
+        title = title.Replace("Gino的私聊", "");
+
+        <a class="Expert" title="@title @item.ChatroomID" value=@item.ChatroomID href='@Url.Action("ChatRoom", "CharRoom", new { id=item.ChatroomID})'><img src="~/Uploads/Expert.png"></a>
+        <p>@item.ChatRoomName</p>
+
+
+    }
+
+</div>
+
+
+<hr>
+

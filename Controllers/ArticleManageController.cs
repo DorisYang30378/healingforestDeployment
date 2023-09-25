@@ -27,6 +27,8 @@ namespace postArticle.Controllers
 
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
+       
+
         #endregion
         // -----------------------------------------===============================
 
@@ -58,6 +60,21 @@ namespace postArticle.Controllers
             return article;
         }
 
+        public  bool iStatus(int id)
+        {
+            int userID = GetUserID();
+            var queryArticleList = from Articledb in db.Articles
+                                   where Articledb.ArticleID == id
+                                   select Articledb.Status;
+
+            if (queryArticleList.FirstOrDefault() == 1)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
 
         //---------------文章內容與留言-----------------------------------------
 
@@ -69,6 +86,7 @@ namespace postArticle.Controllers
             //
             bool isUser;
             bool isCreatedByUser;
+            bool IStatus;
             List<Message> queryMessList = new List<Message>();
             string Display = "none";
             //---------------判斷文章是否存在-----------------------------------------
@@ -101,6 +119,10 @@ namespace postArticle.Controllers
             isCreatedByUser = IsUserArticle((int)id);
             //-----------------------------------------===============================
 
+            //判斷是否封鎖----------------------
+            IStatus = iStatus((int)id);
+            //-----------------------------------------===============================
+
             if (!string.IsNullOrEmpty(TempData["Display"] as string))
             {
                 Display = TempData["Display"] as string;
@@ -114,7 +136,9 @@ namespace postArticle.Controllers
                 Page = pageNumber,
                 isUser = isUser,
                 isCreatedByUser = isCreatedByUser,
-                Display = Display
+                Display = Display,
+                iStatus = IStatus
+
             };
             //-----------------------------------------===============================
 

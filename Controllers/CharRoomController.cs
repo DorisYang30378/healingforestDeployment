@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Data.Entity;
 using System.Web.Mvc;
+using System.Threading.Tasks;
+
 
 namespace postArticle.Controllers
 {
@@ -16,10 +18,16 @@ namespace postArticle.Controllers
         #region 基礎屬性
         private healingForestEntities db = new healingForestEntities();
 
+        public viewmodel.ChatMemberViewModel CMV = new ChatMemberViewModel();
+
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
 
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
+
+
+
+
 
         #endregion
         // -----------------------------------------===============================
@@ -240,19 +248,151 @@ namespace postArticle.Controllers
 
 
 
-        public ActionResult Charmember()
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                                        //
+        //                                                                                                                        //
+        //                                                                                                                        //
+        //                                                                                                                        //
+        //                                                                                                                        //
+        //                                                                                                                        //
+        //                                                                                                                        //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                        
+
+
+
+
+        ////////////////////////////////////////Chat_Room_Member 畫面//////////////////////////////////////////////////////////////
+
+        //ActionResult 
+
+        public ActionResult Charmember(string searchString)
         {
 
-            var Expert = from a in db.UserManages
-                         where a.UserType == "Expert"
-                         select a;
+            //Respone UserID
+            if (CheckLoggedIn())
+            {
+                int MyUserID = GetUserID();
+                ViewBag.UserID = MyUserID;
+
+                //UserName
+                string username = db.UserManages.Find(MyUserID).UserName;
+                CMV.UserName = username;
 
 
-            return View(Expert);
+                
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    searchmember(searchString);
+                }
+
+                Friend(username);
+
+                Expert();
+
+                return View(CMV);
+            }
+
+
+
+            //如果未登入狀態傳送錯誤
+            return HttpNotFound();
+
+
+
+
+
+        }
+
+
+        public ActionResult Search(string searchString)  
+        {
+            List<UserManage> Member = db.UserManages.Where(a => a.UserType == "Member").ToList();
+
+            return  RedirectToAction("Charmember", CMV);
+
         }
 
 
 
+
+        //Method
+
+
+
+        //搜尋要找的使用者
+        public void searchmember(string searchString)
+        {
+            var member = from m in db.UserManages
+                         select m;
+            member = member.Where(s => s.UserName.Contains(searchString));
+
+            int MyUserID = GetUserID();
+
+            var searchchatroom = from m in db.Chatrooms.Where(m=>m.UserID == MyUserID || m.OtherUserID ==MyUserID) select m;
+
+
+            CMV.SMChatRoom = searchchatroom;
+            CMV.SearchMember = member;
+
+        }
+
+
+
+        //曾經聊天過的人
+        public void Friend(string name)
+        {
+            var friend = from a in db.Chatrooms select a;
+            friend = friend.Where(s => s.member.Contains(name));
+            CMV.ChatRoom = friend;
+        }
+
+
+
+
+        public void Expert()
+        {
+            int MyUserID = GetUserID();
+
+            List<UserManage> Experts = db.UserManages.Where(a => a.UserType == "Expert").ToList();
+
+            var Expertchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
+            CMV.EChatRoom = Expertchatroom;
+            CMV.Expert = Experts;
+        }
+
+
+
+        ////////////////////////////////////////////////////進入聊天室畫面////////////////////////////////////////////////////////////
+
+        public ActionResult ChatRoom(int? id)
+        {
+
+            ChatRoomViewModel Message = new ChatRoomViewModel();
+
+            int MainUserNameID = (int)Session["UserID"];
+            Message.MainUserID = (int)MainUserNameID;
+
+            if (id != null)
+            {
+                var message = from a in db.ChatroomLogs where(a.ChatroomID ==id) select a;
+                Message.ChatContext = message;
+
+                var chatroom = from a in db.Chatrooms where (a.UserID == MainUserNameID  || a.OtherUserID == MainUserNameID) select a;
+                Message.ChatRooms = chatroom;
+
+
+                return PartialView(Message);
+            }
+
+            else
+            {
+                return HttpNotFound();
+            }
+
+           
+
+        }
 
 
 
