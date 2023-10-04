@@ -361,7 +361,7 @@ namespace postArticle.Controllers
             CMV.Expert = Experts;
         }
 
-
+        
 
         ////////////////////////////////////////////////////進入聊天室畫面////////////////////////////////////////////////////////////
 
@@ -372,17 +372,21 @@ namespace postArticle.Controllers
 
             int MainUserNameID = (int)Session["UserID"];
             Message.MainUserID = (int)MainUserNameID;
+            Message.ChatRoomID = (int)id;
+
+
 
             if (id != null)
             {
                 var message = from a in db.ChatroomLogs where(a.ChatroomID ==id) select a;
+                
                 Message.ChatContext = message;
 
-                var chatroom = from a in db.Chatrooms where (a.UserID == MainUserNameID  || a.OtherUserID == MainUserNameID) select a;
+                var chatroom = from a in db.Chatrooms where (a.ChatroomID == id) select a;
                 Message.ChatRooms = chatroom;
 
 
-                return PartialView(Message);
+                return View(Message);
             }
 
             else
@@ -392,6 +396,13 @@ namespace postArticle.Controllers
 
            
 
+        }
+ 
+
+        /////write message///
+        public ActionResult Writemessage(int ?id)
+        {
+            return RedirectToAction("ChatRoom", "CharRoom",new {id});
         }
 
 

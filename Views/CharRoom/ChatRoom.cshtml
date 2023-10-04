@@ -1,294 +1,317 @@
 ﻿@using postArticle.viewmodel
 @model postArticle.viewmodel.ChatRoomViewModel
 
-
-@{ 
-
+@{
     var context = Model.ChatContext;
     var MainUserID = Model.MainUserID;
     var ChatRoom = Model.ChatRooms;
-    string contexts = null;
+    var ChatRoomID = Model.ChatRoomID;
+    int OtherID = 0;
+}
 
 
+@{
+    foreach (var i in ChatRoom)
+    {
+
+        if (i.UserID == MainUserID)
+        {
+            OtherID = (int)i.OtherUserID;
+        }
+        else
+        {
+            OtherID = (int)i.UserID;
+        }
+    }
+
+    <p>@OtherID</p>
 }
 
 
 
+
+
+
+
+
 <style>
-
-        @@media screen and (max-width:700px){
-        .container-content{
-            display: none;
-        }
+    body {
+        background-color: #A4DA8A;
     }
 
-
-    body{
-        margin: 0;
-    }
-
-    .header{
-        width: 100%;
-        height: 100px;
-        background-color: rgb(56, 153, 47);
-        position: sticky;
-    }
-
-    .container{
+    .window_content {
+        position: relative;
         width: 100%;
         height: 100vh;
-        background-color: rgb(139, 243, 139);
-    }
-
-    .footer{
-        width: 100%;
-        height: 50px;
-        background-color: rgb(56, 153, 47);
-    }
-
-    .return{
-        width: 200px;
-        height: 50px;
-        background-color: rgb(244, 92, 92);
-        margin-left: 5%;
-        margin-top: 10px;
-        border-radius: 10px;
-        border: none;
-        font-size: 30px;
-        font-weight: bolder;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-
-    }
-
-    .return:hover{
-        background-color: rgb(224, 69, 69);
-
-    }
-
-    .container .container-content{
-        position: relative;
-        width: 90%;
-        height: 90%;
-        background-color: rgb(206, 255, 230);
-        margin: auto;
-        top: 20px;
         column-count: 2;
-        column-width: 30%;
-        overflow: hidden;
+        margin: auto;
+        border-radius: 5px;
+        background-color: #ffffff;
     }
 
-    .member{
-
-        width: 50%;
-        height: 95%;
-        overflow: hidden;
-        border-radius: 10px;
-        background-color: blue;
+    .container01 {
         position: relative;
-        top: 20px;
-        left: 70px;
-    }
-
-    .member:hover{
-        overflow: scroll;
-    }
-
-    .content{
-        width: 120%;
-        height: 80%;
-        overflow: hidden;
+        left: 5%;
+        margin-top: 20px;
+        width: 60%;
+        height: 90%;
         background-color: red;
         border-radius: 10px;
+        overflow: hidden;
+    }
+
+        .container01:hover {
+            overflow: scroll;
+        }
+
+    .container02 {
+        position: relative;
+        margin-top: 20%;
+        right: 35%;
+        width: 130%;
+        height: 100%;
+    }
+
+    .container02_context {
+        width: 100%;
+        height: 76%;
+        border-radius: 10px;
+        background-color: aquamarine;
+        overflow: hidden;
+    }
+
+        .container02_context:hover {
+            overflow: scroll;
+        }
+
+    .container02_header {
+        position: relative;
+        font-size: 30px;
+        font-weight: bolder;
+        top: 20px;
+    }
+
+    .container02_context {
+        position: relative;
+        top: 20px;
+    }
+
+    .container02_footer {
+        display: inline-block;
         position: relative;
         top: 30px;
-        left: -30%;
-        margin: auto;
-        padding: 10px;
+        width: 100%;
     }
 
-    .content:hover{
-        overflow: scroll;
-    }
-
-    .content-title{
-        position: relative;
-        left: -30%;
-        top:30px;
-        overflow: hidden;
-        font-size: 30px;
-        font-weight: bold;
-    }
-
-    .member .info{
-        position: relative;
-        top: 10px;
-        margin: auto;
-        margin-top: 10px;
-        width: 90%;
-        height: 80px;
-        background-color: rgb(135, 138, 140);
-        border-radius: 10px;
-
-    }
-
-    .submit{
-        position: relative;
-        bottom: -10%;
-        display: inline;
-    }
-
-    .input{
-        position: relative;
-        width: 90%;
-        height: 40px;
-        border-radius: 10px;
-        border: none;
-        left: -30%;
-
-    }
-
-    .submit-btn{
-        position: relative;
-        width: 30%;
-        height: 40px;
-        border-radius: 10px;
-        border: none;
-    }
-
-    .btn{
-        position: relative;
-        right: -62%;
-        top:-40px;
-    }
-
-    .content-box-left{
-        width: 45%;
-        margin-top: 10px;
-        padding: 10px;
+    .input {
+        width: 100%;
         border-radius: 10px;
         background-color: aliceblue;
     }
 
-    .content-box-right{
+    .member_list {
+        position: relative;
+        margin: auto;
+        margin-top: 5px;
+        top: 25px;
+        width: 90%;
+        border-radius: 10px;
+        height: 100px;
+        background-color: aliceblue;
+    }
+
+    .content-left-context {
+        margin-left: 5%;
+        margin-top: 20px;
+        width: 40%;
+        /*height:100px;*/
+        border-radius: 20px;
+        padding: 10px 10px 10px 10px;
+        background-color: antiquewhite;
+    }
+
+    .content-right-context {
         position: relative;
         right: -52%;
-        width: 45%;
-        margin-top: 10px;
-        padding: 10px;
-        border-radius: 10px;
-        background-color: aliceblue;
+        margin-left: 5%;
+        margin-top: 20px;
+        width: 40%;
+        /*height:100px;*/
+        border-radius: 20px;
+        padding: 10px 10px 10px 10px;
+        background-color: antiquewhite;
     }
 
-    .datetime{
-        direction:rtl;
+
+    .content-name {
+        font-size: 25px;
+        font-weight: bolder;
     }
 
-
+    .content-time {
+        direction: rtl;
+    }
 </style>
 
 
 
-<body style="background-color: rgb(139, 243, 139);">
 
-    <div class="header">
-        <h2>療癒之森</h2>
-        <button>首頁</button>
+<div class="window_content">
+
+    <div class="container01">
+
+        <div class="member_list"></div>
+        <div class="member_list"></div>
+        <div class="member_list"></div>
+        <div class="member_list"></div>
+        <div class="member_list"></div>
+
     </div>
 
-    <div class="container">
+    <div class="container02">
 
-        <button class="return" onclick="location.href = '@Url.Action("ArticleIndex","Home")'">返  回</button>
-
-        <div class="container-content">
-
-            <div class="member">
-
-                @foreach(var i in ChatRoom)                 
-                { 
-                    <div class="info">@i.ChatRoomName </div>
-                }
-                
-            </div>
+        <div class="container02_header">你/Gino的聊天室</div>
+        <div class="container02_context">
 
 
+            <h2 style="text-align:center;">開始聊天</h2>
 
 
-            <div style="width: 100%; height: 90%;">
-                <div class="content-title">你/Gino的聊天室</div>
+            @foreach (var i in context)
+            {
 
+                if (@i.UserID == MainUserID)
+                {
 
-                <div class="content" id="content">
+                    <div class="content-right-context">
 
+                        <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
+                        <div>
+                            <p>
+                                @i.Content
+                            </p>
+                        </div>
 
-                    <h2 style="text-align:center;">開始聊天</h2> 
-
-
-                    @foreach(var i in context)
-                    {
-
-                        if (@i.UserID == MainUserID)
-                        {
-                            <div class="content-box-right">
-                            <h2>@i.UserManage.UserName</h2>
-                            <p style="position: relative; top: -20px;">                           
-                                    @i.Content
-                                </p>
-                                <div class="datetime"><p>@i.Time</p></div>
-
-                            </div>
-                        }
-
-                        else
-                        {
-                        
-                            <div class="content-box-left">                        
-                                <h2>@i.UserManage.UserName</h2>                        
-                                <p style="position: relative; top: -20px;">                                                         
-                                    @i.Content                        
-                                </p>            
-                                <div class="datetime"><p>@i.Time</p></div>
-
-                         </div>
-                        }
-
-                    }
-
-
-
-                </div>
-
-
-
-                <div class="submit">
-                    <form>
-                        <input type="text" class="input" placeholder="輸入內容" style="z-index: 999;">
-                    </form>
-                    <div class="btn">
-                        <button class="submit-btn">送出</button>
+                        <div class="content-time"><p>@i.Time</p></div>
                     </div>
-                </div>
-            </div>
+                }
+
+
+                else
+                {
+                    <div class="content-left-context">
+
+                        <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
+                        <div>
+                            <p>
+                                @i.Content
+                            </p>
+                        </div>
+
+                        <div class="content-time"><p>@i.Time</p></div>
+                    </div>
+
+                }
+            }
+
+        </div>
+
+
+        <div class="container02_footer">
+
+
+            <input class="inputmessage" placeholder="請輸入要傳入訊息">
+            <button class="submit">送出</button>
+
+
         </div>
 
     </div>
 
-    <div class="footer">
-        <p>靜宜大學資傳系</p>
-    </div>
 
-</body>
+</div>
 
 
 
 
 
-<script>
-
-    //將聊天室內文至底
-    var chatscolloer = document.getElementById('content');
-    chatscolloer.scrollTop = chatscolloer.scrollHeight;
 
 
 
+@section scripts {
 
-</script>
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+
+
+        <script>
+
+
+            $(function () {
+                // 引用自动生成的hub代理
+                var chat = $.connection.chatHub;
+                // 创建一个函数，让hub调用它来显示消息
+                chat.client.addNewMessageToPage = function (UserID) {
+                    if (@ChatRoomID == UserID) {
+                        var Log = $('#Log').val();
+
+                        var url = '@Url.Action("ChatRoom", "CharRoom", new { id = ChatRoomID})';
+                        var data = null;
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data,
+                            success: function (result) {
+                                // 更新部分內容
+                                $('#PanelReload').html(result);
+                            }
+                        });
+
+
+
+                    }
+                };
+
+
+                $.connection.hub.start().done(function ()
+
+                {
+
+                    $(".submit").click(function () {
+
+                        var url = '@Url.Action("Writemessage", "CharRoom", new { id = ChatRoomID})';
+                        var data = $(".inputmessage").val();
+                        alert(data);
+
+                        $.ajax({
+
+                            url: url,
+                            type: 'POST',
+                            data: { userID:@MainUserID, ChatroomID:@ChatRoomID , inputcontext: data },
+                            success: function (result) {
+                                // 更新部分內容
+                                $('#PanelReload').html(result);
+                                console.log("成功");
+                            },
+                            error: function () {
+
+                                alert("沒有成功");
+                            }
+
+                        });
+
+                        // 调用hub上的Send方法
+                        chat.server.send(@ChatRoomID);
+
+
+                        
+                    });
+                });
+
+            });
+
+        </script>
+
+
+    }
