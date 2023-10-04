@@ -5,6 +5,7 @@
 
 @{
     ViewBag.Title = "ArticleReview";
+    ViewBag.Sussess ="";
 
 }
 
@@ -80,18 +81,21 @@
         $(".submit").click(function() {
 
 
-            var contentbtn= $('input[name="report"]:checked').val();
-            alert(contentbtn);
+            var contentbtn = $('input[name="report"]:checked').val();
 
 
             $.ajax({
                 type: 'POST',
-                url: '/Manager/RRA',
+                url: '@Url.Action("RRA", "Manager")',
                 data: { Report_ID: @Model.ReportID, RU_ID: @Model.RU_ID, RA: @Model.RA, Report_Content: contentbtn },
-                success: function () { window.location.href = "/Manager/Report" },
-                error: function () { alert("失敗") }
-              });
 
+                success: function (result) {
+                    console.log("成功");
+                    
+                }
+
+
+            });
 
          });
 

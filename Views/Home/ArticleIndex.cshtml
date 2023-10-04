@@ -1,18 +1,18 @@
 ﻿@model postArticle.viewmodel.ArticleIndexViewModel
-@using PagedList.Mvc;
+@using PagedList.Mvc
+
 
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "首頁";
-    ViewBag.UserID = 0;
     var articleList = Model.articles.ToList();
     var ClassificationInput = "Classification";
     var OrderInput = "Order";
     var SearchInput = "Search";
     var CollectInput = "Collect";
     var MyArticleInput = "MyArticle";
-    var Value = "";
+  
 
 }
 
@@ -301,7 +301,6 @@
 <script>
 
 
-
     function handleCollect(url, page, action) {
         var result = confirm("是否" + action + "此文章？");
         if (result) {
@@ -310,15 +309,12 @@
         }
     }
 
-
-
     function changeClass(value, input) {
-      document.getElementById(input).value = value;
-      var url = '@Url.Action("ArticleIndex", "Home")';
-      var data = $('#SelectPanel').serialize();
-      makeAjaxRequest(url, data);
+        document.getElementById(input + "Input").value = value;
+        var url = '@Url.Action("ArticleIndex", "Home")';
+        var data = $('#SelectPanel').serialize();
+        makeAjaxRequest(url, data);
     }
-
 
 
 </script>

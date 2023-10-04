@@ -161,8 +161,9 @@
     <Compile Include="App_Start\startup.cs" />
     <Compile Include="Controllers\DateViewController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
+    <Compile Include="Controllers\SignInController.cs" />
     <Compile Include="Controllers\UserManagesController.cs" />
-    <Compile Include="Hubs\chatHub.cs" />
+    <Compile Include="App_Start\chatHub.cs" />
     <Compile Include="Controllers\ArticleManageController.cs" />
     <Compile Include="Controllers\CharRoomController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -364,6 +365,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\MessageManage\" />
+    <Folder Include="Views\SignIn\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

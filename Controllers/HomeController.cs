@@ -249,9 +249,9 @@ namespace postArticle.Controllers
                 articles = articles.ToList()
                                 .Select(article =>
                                 {
-                                    if (article.Content.Length > 20)
+                                    if (article.Content.Length > 200)
                                     {
-                                        article.Content = article.Content.Substring(0, 35) + ".............顯示更多";
+                                        article.Content = article.Content.Substring(0, 350) + ".............顯示更多";
                                     }
                                     return article;
                                 })

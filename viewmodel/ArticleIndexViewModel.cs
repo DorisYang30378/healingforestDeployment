@@ -16,8 +16,6 @@ namespace postArticle.viewmodel
         public string ShowCollect { get; set; }
         public bool IsShowCollect { get; set; }
 
-        public bool IsStatus { get; set; }
-
         public string ShowMyArticle { get; set; }
         public bool IsShowMyArticle { get; set; }
 
@@ -30,9 +28,9 @@ namespace postArticle.viewmodel
         public PagedList.IPagedList<bool> IsCollect { get; set; }
 
 
-        public int? Page { get;set; }
+        public int? Page { get; set; }
 
-        public string Classification { get; set;}
-        public string Order { get; set;}
+        public string Classification { get; set; }
+        public string Order { get; set; }
     }
 }

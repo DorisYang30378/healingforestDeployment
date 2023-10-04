@@ -125,7 +125,7 @@
                             }
                         }
 
-            <a class="Expert Room" title="專家: @item.UserName @chatroomid" value="@item.UserID" href='@Url.Action("ChatRoom", "CharRoom", new { id=chatroomid})'><img src="~/Uploads/Expert.png"></a>
+            <a class="Expert Room" title="專家: @item.UserName @item.UserID" value="@item.UserID" onclick="IsChatroom(@chatroomid)"><img src="~/Uploads/Expert.png"></a>
         }
     }
 
@@ -158,4 +158,21 @@
 
 
 <hr>
+
+
+<script>
+
+    function IsChatroom(id) {
+
+
+        if (id == 0) {
+            alert("沒有房間，是否要創建房間");
+        }
+        else {
+            alert("是否要進行聊天");
+            window.location.href = '@Url.Action("ChatRoom", "CharRoom")/' + id;
+        }
+    }
+
+</script>
 

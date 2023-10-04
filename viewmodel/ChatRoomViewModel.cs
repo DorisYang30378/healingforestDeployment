@@ -12,8 +12,15 @@ namespace postArticle.viewmodel
         public IEnumerable<Chatroom> ChatRooms { get; set; }
         public IEnumerable<ChatroomLog> ChatContext { get; set; }
 
+        public IEnumerable<UserManage> UserMange { get; set; }
+
+
+        public string inputContext { get; set; }
 
         public int  MainUserID { get; set; }
+
+        public int OtherUserID { get; set; }
+        public int ChatRoomID { get; set; }
 
 
     }

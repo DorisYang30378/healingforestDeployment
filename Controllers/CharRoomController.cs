@@ -25,227 +25,14 @@ namespace postArticle.Controllers
 
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
+        public string GetUserName() => db.UserManages.Find(GetUserID()).UserName;
+
 
 
 
 
         #endregion
         // -----------------------------------------===============================
-        public ActionResult FindChatUser()
-        {
-            if (CheckLoggedIn())
-            {
-                int MyUserId = GetUserID();
-                UserManage currentUser = db.UserManages.Find(MyUserId);
-                string currentUserUsername = currentUser.UserName;
-
-                var chatroom = db.Chatrooms.FirstOrDefault(cr => cr.member.Contains("/" + currentUserUsername + "/") ||
-                                                   cr.member.StartsWith(currentUserUsername + "/") ||
-                                                   cr.member.EndsWith("/" + currentUserUsername));
-
-                if (chatroom != null)
-                {
-                    string member = chatroom.member;
-
-                    // 拆分 member 字符串，并选择非当前用户的用户名
-                    string[] usernames = member.Split('/');
-                    string otherUserName = "";
-                    int OtherUserID;
-
-                    foreach (string username in usernames)
-                    {
-                        if (username != currentUserUsername)
-                        {
-                            otherUserName = username;
-                            break;
-                        }
-                    }
-                    var UserManageID = from UserManagedb in db.UserManages
-                                       where UserManagedb.UserName == otherUserName
-                                       select UserManagedb.UserID;
-
-                    if (UserManageID.Any())
-                    {
-                        OtherUserID = UserManageID.FirstOrDefault();
-
-                        return RedirectToAction("DemoChar", "CharRoom", new { id = OtherUserID });
-                    }
-                }
-            }
-            return RedirectToAction("UserIndex", "CharRoom");
-        }
-
-        public ActionResult UserIndex()
-        {
-            if (CheckLoggedIn())
-            {
-                int currentUserID = GetUserID();// 填入當前使用者的 userID
-
-                var userManage = db.UserManages
-                            .Where(u => u.UserID != currentUserID)
-                            .Include(u => u.ThanksfulThing)
-                            .ToList();
-
-                return View(userManage.ToList());
-            }
-            return RedirectToAction("ArticleIndex", "Home");
-        }
-
-
-        public ActionResult DemoChar(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            int MyUserId = GetUserID();
-            UserManage currentUser = db.UserManages.Find(MyUserId);
-            UserManage otherUser = db.UserManages.Find(id);
-
-            if (otherUser == null || !CheckLoggedIn())
-            {
-                return HttpNotFound();
-            }
-
-            string currentUserUsername = currentUser.UserName;
-            string otherUserUsername = otherUser.UserName;
-
-            string memberName1 = currentUserUsername + "/" + otherUserUsername;
-            string memberName2 = otherUserUsername + "/" + currentUserUsername;
-
-            Chatroom chatroom = db.Chatrooms.FirstOrDefault(cr => cr.member == memberName1 || cr.member == memberName2);
-
-            if (chatroom == null)
-            {
-                chatroom = new Chatroom
-                {
-                    member = memberName1,
-                    ChatRoomName = memberName2 + "的私聊"
-                };
-
-                db.Chatrooms.Add(chatroom);
-                db.SaveChanges();
-            }
-
-            int chatRoomID = chatroom.ChatroomID;
-
-            var chatRoomLogList = db.ChatroomLogs.Where(cl => cl.ChatroomID == chatRoomID);
-
-            TempData["ChatRoomID"] = chatRoomID;
-            TempData["userManageID"] = id;
-
-            List<Chatroom> chatrooms = db.Chatrooms
-                .Where(cr => cr.member.Contains("/" + currentUserUsername + "/") ||
-                             cr.member.StartsWith(currentUserUsername + "/") ||
-                             cr.member.EndsWith("/" + currentUserUsername))
-                .ToList();
-
-            return View(new DemoCharViewModel
-            {
-                ChatRoomLog = chatRoomLogList,
-                OtherUser = otherUserUsername,
-                MyUser = currentUserUsername,
-                ChatRoom = chatrooms,
-                ChatRoomName = chatroom.ChatRoomName,
-                OtherUserId = (int)id,
-                myUserId = MyUserId
-            });
-        }
-
-        public ActionResult CreateCharLog(DemoCharViewModel demoCharViewModel)
-        {
-            if (demoCharViewModel == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            int ChatRoomID = (int)(TempData["ChatRoomID"]);
-            int id = (int)TempData["userManageID"];
-
-            Chatroom Chatroom = db.Chatrooms.Find(ChatRoomID);
-
-            if (Chatroom == null || !CheckLoggedIn())
-            {
-                return HttpNotFound();
-            }
-
-            int UserID = GetUserID();
-
-            if (!string.IsNullOrEmpty(demoCharViewModel.Log))
-            {
-                if (ModelState.IsValid)
-                {
-                    ChatroomLog ChatroomLog = new ChatroomLog
-                    {
-                        Content = demoCharViewModel.Log,
-                        UserID = UserID,
-                        ChatroomID = ChatRoomID,
-                        Time = DateTime.Now
-                    };
-
-
-                    db.ChatroomLogs.Add(ChatroomLog);
-                    db.SaveChanges();
-                }
-            }
-
-            return RedirectToAction("DemoChar", "CharRoom", new { id });
-        }
-
-        public ActionResult OtherChatRoom(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            Chatroom Chatroom = db.Chatrooms.Find(id);
-
-            if (Chatroom == null || !CheckLoggedIn())
-            {
-                return HttpNotFound();
-            }
-
-            int UserID = GetUserID();
-
-            UserManage UserManage = db.UserManages.Find(UserID);
-            string MyUserName = UserManage.UserName;
-
-            string member = Chatroom.member;
-
-            // 拆分 member 字符串，并选择非当前用户的用户名
-            string[] usernames = member.Split('/');
-            string otherUserName = "";
-            int OtherUserID;
-
-            foreach (string username in usernames)
-            {
-                if (username != MyUserName)
-                {
-                    otherUserName = username;
-                    break;
-                }
-            }
-
-            var UserManageID = from UserManagedb in db.UserManages
-                               where UserManagedb.UserName == otherUserName
-                               select UserManagedb.UserID;
-
-            if (UserManageID.Any())
-            {
-                OtherUserID = UserManageID.FirstOrDefault();
-
-                return RedirectToAction("DemoChar", "CharRoom", new { id = OtherUserID });
-            }
-            else
-            {
-                return HttpNotFound();
-
-            }
-
-        }
-
 
 
 
@@ -280,13 +67,13 @@ namespace postArticle.Controllers
                 CMV.UserName = username;
 
 
-                
+
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     searchmember(searchString);
                 }
 
-                Friend(username);
+                Friend();
 
                 Expert();
 
@@ -305,16 +92,6 @@ namespace postArticle.Controllers
         }
 
 
-        public ActionResult Search(string searchString)  
-        {
-            List<UserManage> Member = db.UserManages.Where(a => a.UserType == "Member").ToList();
-
-            return  RedirectToAction("Charmember", CMV);
-
-        }
-
-
-
 
         //Method
 
@@ -323,28 +100,34 @@ namespace postArticle.Controllers
         //搜尋要找的使用者
         public void searchmember(string searchString)
         {
-            var member = from m in db.UserManages
-                         select m;
-            member = member.Where(s => s.UserName.Contains(searchString));
 
             int MyUserID = GetUserID();
+            string MyUserName = GetUserName();
 
-            var searchchatroom = from m in db.Chatrooms.Where(m=>m.UserID == MyUserID || m.OtherUserID ==MyUserID) select m;
+            if (searchString != MyUserName)
+            {
+                var member = from m in db.UserManages select m;
+                member = member.Where(s => s.UserName.Contains(searchString));
+                var searchchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
+                CMV.SMChatRoom = searchchatroom;
+                CMV.SearchMember = member;
 
 
-            CMV.SMChatRoom = searchchatroom;
-            CMV.SearchMember = member;
+
+            }
 
         }
 
 
 
-        //曾經聊天過的人
-        public void Friend(string name)
+        //有創建過聊天室的人
+        public void Friend()
         {
-            var friend = from a in db.Chatrooms select a;
-            friend = friend.Where(s => s.member.Contains(name));
-            CMV.ChatRoom = friend;
+
+            int MyUserID = GetUserID();
+
+            var Memberchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
+            CMV.ChatRoom = Memberchatroom;
         }
 
 
@@ -354,35 +137,70 @@ namespace postArticle.Controllers
         {
             int MyUserID = GetUserID();
 
-            List<UserManage> Experts = db.UserManages.Where(a => a.UserType == "Expert").ToList();
+            List<UserManage> Experts = db.UserManages.Where(a => a.UserType == "Expert" && a.UserID != MyUserID).ToList();
 
             var Expertchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
             CMV.EChatRoom = Expertchatroom;
             CMV.Expert = Experts;
         }
 
+        public List<int> GetRoom(List<int> e)
+        {
+
+            List<int> f = new List<int>();
+            int MyUserID = GetUserID();
+            var Memberchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m.ChatroomID;
+            f = Memberchatroom.ToList();
+            return f;
+        }
 
 
         ////////////////////////////////////////////////////進入聊天室畫面////////////////////////////////////////////////////////////
 
+
         public ActionResult ChatRoom(int? id)
         {
 
+            //判斷是否為使用者的chatroom
+            List<int> f = new List<int>();
+
+            f = GetRoom(f);
+
+            f = GetRoom(f);
+
+
+
             ChatRoomViewModel Message = new ChatRoomViewModel();
+
+
 
             int MainUserNameID = (int)Session["UserID"];
             Message.MainUserID = (int)MainUserNameID;
+            Message.ChatRoomID = (int)id;
+
+            Message.UserMange = db.UserManages;
+
 
             if (id != null)
             {
-                var message = from a in db.ChatroomLogs where(a.ChatroomID ==id) select a;
-                Message.ChatContext = message;
 
-                var chatroom = from a in db.Chatrooms where (a.UserID == MainUserNameID  || a.OtherUserID == MainUserNameID) select a;
-                Message.ChatRooms = chatroom;
+                if (f.Contains((int)id) == true)
+                {
+                    //System.Diagnostics.Debug.WriteLine("PASS");
+                    var message = from a in db.ChatroomLogs where (a.ChatroomID == id) select a;
 
+                    Message.ChatContext = message;
 
-                return PartialView(Message);
+                    var chatroom = from a in db.Chatrooms where (a.ChatroomID == id) select a;
+                    Message.ChatRooms = chatroom;
+
+                    return View(Message);
+                }
+
+                else
+                {
+                    return HttpNotFound();
+                }
             }
 
             else
@@ -390,10 +208,65 @@ namespace postArticle.Controllers
                 return HttpNotFound();
             }
 
-           
+
 
         }
 
+
+        /////write message///
+        public ActionResult Writemessage(int? id)
+        {
+
+            int UserID = int.Parse(Request.Form["userID"]);
+            int ChatRoomID = int.Parse(Request.Form["ChatRoomID"]);
+            string Content = "";
+
+            try
+            {
+                Content = Request.Form["inputcontext"];
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { result = false, error = ex.Message });
+            }
+
+
+            ChatroomLog newMessage = new ChatroomLog { UserID = UserID, ChatroomID = ChatRoomID, Content = Content, Time = DateTime.Now };
+            db.ChatroomLogs.Add(newMessage);
+            db.SaveChanges();
+
+            return RedirectToAction("ChatRoom", "CharRoom", new { id });
+        }
+
+
+
+        /*
+        public ActionResult CreatChatRoom()
+        {
+
+            catch (Exception ex)
+            {
+                return Json(new { result = false, error = ex.Message });
+            }
+
+
+            ChatroomLog newMessage = new ChatroomLog { UserID = UserID, ChatroomID = ChatRoomID, Content = Content, Time = DateTime.Now };
+            db.ChatroomLogs.Add(newMessage);
+            db.SaveChanges();
+
+            return RedirectToAction("ChatRoom", "CharRoom", new { id });
+        }
+        */
+
+        public ActionResult CreatChatRoom()
+        {
+
+
+
+            return RedirectToAction("Charmember", "CharRoom");
+
+        }
 
 
     }
