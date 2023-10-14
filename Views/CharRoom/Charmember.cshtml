@@ -84,14 +84,8 @@
                                 }
                         }
 
+                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@chatroomid)"><img src="~/Uploads/Expert.png"></a>
 
-
-                        if (item.UserType == "Member")
-                        {
-                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" href='@Url.Action("ChatRoom", "CharRoom", new { id= chatroomid} )'><img src="~/Uploads/Expert.png"></a>
-
-
-                        }
 
     }
 
@@ -145,11 +139,8 @@
 
 
         var title = item.ChatRoomName;
-        title = title.Replace("/Gino的私聊", "");
-        title = title.Replace("Gino的私聊", "");
 
-        <a class="Expert" title="@title @item.ChatroomID" value=@item.ChatroomID href='@Url.Action("ChatRoom", "CharRoom", new { id=item.ChatroomID})'><img src="~/Uploads/Expert.png"></a>
-        <p>@item.ChatRoomName</p>
+        <a class="Expert" title="@title" value=@item.ChatroomID onclick="IsChatroom(@item.ChatroomID)"><img src="~/Uploads/Expert.png"></a>
 
 
     }
@@ -165,12 +156,23 @@
     function IsChatroom(id) {
 
 
+
         if (id == 0) {
-            alert("沒有房間，是否要創建房間");
+
+            if (confirm("沒有房間，是否創建房間")) {
+                window.location.href = '@Url.Action("CreatChatRoom", "CharRoom")';
+            }
+            else {
+            }
         }
         else {
-            alert("是否要進行聊天");
-            window.location.href = '@Url.Action("ChatRoom", "CharRoom")/' + id;
+
+           if (confirm("是否要進入聊天室")) {
+                window.location.href = '@Url.Action("ChatRoom", "CharRoom")/' + id;
+           }
+           else {
+            }
+
         }
     }
 

@@ -14,8 +14,9 @@ namespace postArticle.viewmodel
 
         public IEnumerable<UserManage> UserMange { get; set; }
 
+        //將會員曾經的聊天室加入資料庫
+        public IEnumerable<Chatroom> ChatRoom { get; set; }
 
-        public string inputContext { get; set; }
 
         public string inputContext { get; set; }
 

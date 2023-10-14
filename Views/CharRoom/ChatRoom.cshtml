@@ -5,6 +5,7 @@
     var context = Model.ChatContext;
     var MainUserID = Model.MainUserID;
     var ChatRoom = Model.ChatRooms;
+    var Friend = Model.ChatRoom;
     var ChatRoomID = Model.ChatRoomID;
     var UserManage = Model.UserMange;
     int OtherID = 0;
@@ -90,7 +91,7 @@
         overflow: hidden;
     }
 
-        .container02_context:hover {
+    .container02_context:hover {
             overflow: scroll;
         }
 
@@ -111,12 +112,18 @@
         position: relative;
         top: 30px;
         width: 100%;
+        padding-left:5%;
+        padding-top:10px; 
     }
 
-    .input {
-        width: 100%;
-        border-radius: 10px;
-        background-color: aliceblue;
+    .input_message{
+        width: 80%;
+        border-radius: 5px;
+    }
+
+    .submit_message{
+        width: 15%;
+        border-radius: 5px;
     }
 
     .member_list {
@@ -184,11 +191,12 @@
 
     <div class="container01">
 
-        <div class="member_list"></div>
-        <div class="member_list"></div>
-        <div class="member_list"></div>
-        <div class="member_list"></div>
-        <div class="member_list"></div>
+
+        @foreach(var i in Friend)
+            {
+                <div><nav class="member_list">@i.ChatRoomName chatroomlog count => @i.ChatroomLogs.Count())</nav></div>
+            }
+
 
     </div>
 
@@ -198,7 +206,7 @@
         <div class="container02_context" id="container_context">
 
 
-            <h2 style="text-align:center;">開始聊天</h2>
+            <h2 style="text-align:center; margin-top: 30px; margin-bottom: 30px;">開始聊天</h2>
 
 
             @foreach (var i in context)
@@ -243,11 +251,12 @@
 
         <div class="container02_footer">
 
-
-            <input class="inputmessage" placeholder="請輸入要傳入訊息">
-            <button class="submit">送出</button>
-
-
+            
+                
+                <input class="input_message" placeholder="請輸入要傳入訊息">
+            
+                <button class="submit_message">送出</button>
+                
         </div>
 
     </div>
@@ -307,12 +316,11 @@
 
                 $.connection.hub.start().done(function ()
                 {
-                    $(".submit").click(function () {
+                    $(".submit_message").click(function () {
 
                         var url = '@Url.Action("Writemessage", "CharRoom", new { id = ChatRoomID})';
 
-                        var data = $(".inputmessage").val();
-                        alert(data);
+                        var data = $(".input_message").val();
 
                         $.ajax({
 

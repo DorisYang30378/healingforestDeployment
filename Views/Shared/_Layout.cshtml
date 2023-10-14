@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 療癒之森</title>
-    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/css?version = 1.0")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
 </head>
@@ -69,11 +69,12 @@
                     {
 
 
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                            <li class="nav-item">@Html.ActionLink("發布文章", "ArticlePost", "ArticleManage", new { area = "" }, new { @class = "nav-link" })</li>
-                            <li class="nav-item">@Html.ActionLink("聊天室", "CharMember", "CharRoom", new { area = "" }, new { @class = "nav-link" })</li>
-                        </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("發布文章", "ArticlePost", "ArticleManage", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("聊天室", "CharMember", "CharRoom", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("每日簽到", "dateView", "DateView", new { area = "" }, new { @class = "nav-link" })</li>
+                    </ul>
                         @*
                                         using (Html.BeginForm("ArticleIndex", "Home", FormMethod.Post, new { id = "searchform", @class = "d-flex ms-xxl-auto" }))
                                         {

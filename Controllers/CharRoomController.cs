@@ -19,6 +19,7 @@ namespace postArticle.Controllers
         private healingForestEntities db = new healingForestEntities();
 
         public viewmodel.ChatMemberViewModel CMV = new ChatMemberViewModel();
+        public viewmodel.ChatRoomViewModel Message = new ChatRoomViewModel();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -26,10 +27,6 @@ namespace postArticle.Controllers
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
         public string GetUserName() => db.UserManages.Find(GetUserID()).UserName;
-
-
-
-
 
         #endregion
         // -----------------------------------------===============================
@@ -52,6 +49,9 @@ namespace postArticle.Controllers
         ////////////////////////////////////////Chat_Room_Member 畫面//////////////////////////////////////////////////////////////
 
         //ActionResult 
+
+
+
 
         public ActionResult Charmember(string searchString)
         {
@@ -127,7 +127,9 @@ namespace postArticle.Controllers
             int MyUserID = GetUserID();
 
             var Memberchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
+            
             CMV.ChatRoom = Memberchatroom;
+            Message.ChatRoom = Memberchatroom;
         }
 
 
@@ -170,15 +172,13 @@ namespace postArticle.Controllers
 
 
 
-            ChatRoomViewModel Message = new ChatRoomViewModel();
-
-
 
             int MainUserNameID = (int)Session["UserID"];
             Message.MainUserID = (int)MainUserNameID;
             Message.ChatRoomID = (int)id;
 
             Message.UserMange = db.UserManages;
+            Friend();
 
 
             if (id != null)
