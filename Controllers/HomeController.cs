@@ -299,8 +299,8 @@ namespace postArticle.Controllers
             {
 
                 var UserID = GetUserID();
-                var queryCollectSQL = from at in db.Articles from Collectdb in db.Collects  .Include(c => c.Article).Include(c => c.UserManage)
-                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID  && at.Status!=1
+                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
                                       select Collectdb;
 
                 if (queryCollectSQL.Any())
@@ -311,7 +311,7 @@ namespace postArticle.Controllers
                     db.Collects.RemoveRange(queryCollectSQL);
                     db.SaveChanges();
                 }
-
+                else { }
 
                 return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString, new { page });
 

@@ -12,6 +12,7 @@ using System.Web;
 using System.IO;
 using System.Web.UI;
 using PagedList;
+using HtmlAgilityPack;
 
 
 namespace postArticle.Controllers
@@ -27,10 +28,113 @@ namespace postArticle.Controllers
 
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
-       
+
 
         #endregion
         // -----------------------------------------===============================
+
+        private bool IsCollect(int id)
+        {
+            int userID = GetUserID();
+            var queryArticleList = from Articledb in db.Collects
+                                   where Articledb.UserID == userID && Articledb.ArticleID == id
+                                   select Articledb;
+
+            return queryArticleList.Any();
+        }
+
+        #region ===收藏管理===
+        //取消收藏文章
+        public ActionResult CancelCollect(int? id, int? page)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Article article = db.Articles.Find(id);
+
+            if (article == null)
+            {
+                return HttpNotFound();
+            }
+            else if (!CheckLoggedIn())
+            {
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
+            }
+            else
+            {
+
+                var UserID = GetUserID();
+                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
+                                      select Collectdb;
+
+                if (queryCollectSQL.Any())
+                {
+                    article.Likes--;
+                    db.Entry(article).CurrentValues.SetValues(article);
+
+                    db.Collects.RemoveRange(queryCollectSQL);
+                    db.SaveChanges();
+                }
+
+
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString, new { page });
+
+            }
+        }
+
+
+        //進行收藏文章
+        public ActionResult ArticleCollect(int? id, int? page)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Article article = db.Articles.Find(id);
+
+            if (article == null)
+            {
+                return HttpNotFound();
+            }
+            else if (!CheckLoggedIn())
+            {
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
+            }
+            else
+            {
+                #region ===存資料到collect===
+                var UserID = GetUserID();
+                var queryCollectSQL = from Collectdb in db.Collects.Include(c => c.Article).Include(c => c.UserManage)
+                                      where Collectdb.UserID == UserID && Collectdb.ArticleID == article.ArticleID
+                                      select Collectdb;
+
+                if (!queryCollectSQL.Any())
+                {
+                    Collect collect = new Collect();
+                    collect.UserID = UserID;
+                    collect.ArticleID = article.ArticleID;
+                    collect.Time = DateTime.Now;
+
+                    article.Likes++;
+                    db.Entry(article).CurrentValues.SetValues(article);
+                    db.Collects.Add(collect);
+                    db.SaveChanges();
+                }
+                #endregion
+
+
+
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString, new { page });
+            }
+
+        }
+        #endregion
+
+
 
         #region ===是否自己的文章====
         private bool IsUserArticle(int id)
@@ -137,6 +241,7 @@ namespace postArticle.Controllers
                 isUser = isUser,
                 isCreatedByUser = isCreatedByUser,
                 Display = Display,
+                IsCollect = IsCollect(article.ArticleID),
                 iStatus = IStatus
 
             };
@@ -151,7 +256,7 @@ namespace postArticle.Controllers
 
 
         //---------------文章編輯-----------------------------------------
-        #region ===文章編輯====
+        #region ===文章編輯(GET)====
         public ActionResult ArticleEdit(int? id)
         {
             //---------------判斷文章是否存在-----------------------------------------
@@ -179,7 +284,11 @@ namespace postArticle.Controllers
 
             return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
         }
+        #endregion
 
+
+        //---------------文章編輯-----------------------------------------
+        #region ===文章編輯(POST)====
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
@@ -211,6 +320,8 @@ namespace postArticle.Controllers
 
                             System.IO.File.Delete(path);
                         }
+                        string processedContent = ProcessHtmlContent(articleManageViewModel.article.Content);
+                        articleManageViewModel.article.Content = processedContent;
 
                         var fileName = Guid.NewGuid().ToString() + ".png";
                         path = Path.Combine(Server.MapPath("~/Uploads"), fileName);
@@ -236,10 +347,38 @@ namespace postArticle.Controllers
 
         }
         #endregion
-        // -----------------------------------------===============================
+
+        public string ProcessHtmlContent(string htmlContent)
+        {
+            // 創建 HtmlDocument 實例
+            HtmlDocument htmlDocument = new HtmlDocument();
+
+            // 載入 HTML 內容
+            htmlDocument.LoadHtml(htmlContent);
+
+            // 選擇要處理的 HTML 標籤，例如 <p>
+            var paragraphs = htmlDocument.DocumentNode.Descendants("p");
+
+            // 遍歷每個 <p> 標籤
+            foreach (var paragraph in paragraphs)
+            {
+                // 在這裡可以進行適當的處理，例如對內容進行分段
+                // 這裡只是一個示例，你可以根據具體需求進行處理
+
+                // 在每個 <p> 標籤後面插入分段符號 <br>
+                paragraph.InnerHtml += "<br/>";
+            }
+
+            // 獲取處理後的 HTML 內容
+            string processedContent = htmlDocument.DocumentNode.OuterHtml;
+
+            // 返回處理後的 HTML 內容
+            return processedContent;
+        }
 
 
-        // // // 文章刪除 // // //
+
+        //---------------文章刪除-----------------------------------------
         public ActionResult ArticleDelete(int? id)
         {
             //---------------判斷文章是否存在-----------------------------------------
