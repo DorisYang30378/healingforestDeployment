@@ -182,6 +182,7 @@ namespace postArticle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult ArticleEdit(ArticleManageViewModel articleManageViewModel, HttpPostedFileBase file)
         {
             int? id = (int)TempData["ArticleID"];
@@ -276,7 +277,7 @@ namespace postArticle.Controllers
 
 
 
-        //發布文章
+        //發布文章get
         public ActionResult ArticlePost()
         {
             if (CheckLoggedIn())
@@ -294,6 +295,7 @@ namespace postArticle.Controllers
         //發布文章post
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult ArticlePost(ArticleManageViewModel articlePost, HttpPostedFileBase file)
         {
             if (CheckLoggedIn())
@@ -329,7 +331,7 @@ namespace postArticle.Controllers
 
                     articlePost.article.UserID = UserID;
                     #endregion
-                    articlePost.article.Status = 1;
+                    articlePost.article.Status = 0;
 
                     #region ===上傳圖片====
                     if (file != null && file.ContentLength > 0)

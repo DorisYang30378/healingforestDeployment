@@ -22,6 +22,8 @@ namespace postArticle.viewmodel
         public bool isCreatedByUser { get; set; }
 
 
+        public bool IsCollect { get; set; }
+
         public int? Page { get; set; }
 
         public string Display { get; set; }

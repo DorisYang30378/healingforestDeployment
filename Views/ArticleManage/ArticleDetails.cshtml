@@ -1,4 +1,4 @@
-﻿﻿@model postArticle.viewmodel.ArticleDetailsViewModel
+﻿@model postArticle.viewmodel.ArticleDetailsViewModel
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
@@ -9,8 +9,6 @@
     int UserID = 0;
     int ArticleID = article.ArticleID;
 
-
-
     if (Session["UserID"] != null)
     {
         UserID = (int)Session["UserID"];
@@ -19,6 +17,10 @@
 
 <style>
     /* 弹出层的内容样式 */
+    .row {
+        margin-top: 60px;
+    }
+
     .popup-overlay form {
         position: absolute;
         left: 50%;
@@ -41,12 +43,12 @@
     }
 
     body {
-        background-color: #A4DA8A;
+        background-color: #DBF0D0;
         font-family: Arial, sans-serif;
     }
 
     .article-container {
-        max-width: 800px;
+        max-width: 2000px;
         padding: 20px;
         background-color: #fff;
         border-radius: 5px;
@@ -66,14 +68,19 @@
 
     .article-content {
         font-size: 18px;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
     }
 
-    .article-image img {
-        max-width: 100%;
-        height: auto;
-        margin-bottom: 20px;
+    .article-image {
+        display: flex;
+        justify-content: center;
     }
+
+        .article-image img {
+            max-width: 70%;
+            height: auto;
+            margin-bottom: 20px;
+        }
 
     .article-time {
         margin-left: auto;
@@ -83,14 +90,20 @@
     }
 
     .comments-container {
-        border-top: 1px solid #ccc;
         padding-top: 20px;
-        background-color: #d7ffd1
+        background-color: #fff
     }
 
     .comment-item {
-        margin-bottom: 20px;
-        padding-bottom: 20px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #ccc;
+    }
+
+    #comment {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
     }
 
@@ -116,7 +129,7 @@
 
         .add-comment-button button {
             padding: 10px 20px;
-            background-color: #37a844;
+            background-color: #97CD7D;
             border: none;
             border-radius: 5px;
             color: #fff;
@@ -124,12 +137,16 @@
             font-size: 16px;
         }
 
+
+
             .add-comment-button button:hover,
             .add-comment-button button:focus {
                 background-color: #2f863a;
             }
 
-/*report css */
+
+
+    /*report css */
 
     .report_view {
         position: fixed;
@@ -143,6 +160,7 @@
         justify-content: center;
         z-index: 3;
     }
+
     .report_alert {
         position: absolute;
         left: 50%;
@@ -151,125 +169,145 @@
         width: 40%;
         height: 30%;
         z-index: 4;
-        transform: translate(-50%,-50%);/*畫面至中*/
+        transform: translate(-50%,-50%); /*畫面至中*/
         border-radius: 4px;
     }
+
         .report_alert button .report_cancel {
             position: absolute;
             bottom: 0;
         }
-
-
 </style>
 
 
 <hr />
 
-<div class="row">
-    <div class="col-xl-7 article-container">
-        <h2 class="article-title">@Html.DisplayFor(model => article.Title)</h2>
+<div>
+    <div class="row  article-container">
+        <h2 class=" col-sm-10  article-title">@Html.DisplayFor(model => article.Title)</h2>
+
+        @if (Model.isUser)
+        {
+            <div class="col-sm-2 justify-content-end">
+                @if (!Model.IsCollect)
+                {
+                    <button class="btn bi-star-fill" style="float:right" onclick="handleCollect('@Url.Action("ArticleCollect", new { id = article.ArticleID })', '@Model.Page', '收藏')">收藏</button>
+                }
+                else
+                {
+                    <button class="btn bi-star-fill" onclick="handleCollect('@Url.Action("CancelCollect", new { id = article.ArticleID })', '@Model.Page', '取消收藏')">取消收藏</button>
+                }
+            </div>
+
+
+
+        }
+
+
         <p class="article-author">Author: @Html.DisplayFor(model => article.UserManage.UserName)</p>
         <div class="article-content">
-            @Html.DisplayFor(model => article.Content)
-        </div>
-        <div class="article-image">
-            <img src="~/Uploads/@Html.DisplayFor(model => article.ImageURL)" alt="Article Image">
-        </div>
-        <p class="article-time">@Html.DisplayFor(model => article.Time)</p>
-        @{ 
-            if (Model.isCreatedByUser)
+            @Html.Raw(Model.article.Content)
+
+            <div class="article-image  ">
+                <img src="~/Uploads/@Html.DisplayFor(model => article.ImageURL)" alt="Article Image">
+            </div>
+            <p class="article-time">@Html.DisplayFor(model => article.Time)</p>
+            @if (Model.isCreatedByUser)
             {
-            <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleEdit")','@Model.article.ArticleID','編輯')">
-                編輯文章|
-            </button>
-            <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleDelete")','@Model.article.ArticleID','刪除')">
-                刪除文章|
-            </button>
+                <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleEdit")','@Model.article.ArticleID','編輯')">
+                    編輯文章
+                </button>
+                <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleDelete")','@Model.article.ArticleID','刪除')">
+                    刪除文章
+                </button>
             }
             else if (Model.isUser)
             {
-            <button class="btn bi-star-fill report">檢舉文章</button>
-                }
+                <button class="btn bi-star-fill report">檢舉文章</button>
             }
-    </div>
 
-    <div class="col-xl-5 comments-container">
-        <h4>留言</h4>
-        @foreach (var item in messages)
+
+        </div>
+
+        <div class="col-xl comments-container">
+            <h4 id="comment">留言</h4>
+            @foreach (var item in messages)
+            {
+                <div class="comment-item">
+                    <div class="comment-header">
+                        @if (Model.isUser && UserID != item.UserID)
+                        {
+                            @Html.ActionLink(item.UserManage.UserName, "DemoChar", "CharRoom", new { id = item.UserID }, null)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.UserManage.UserName)
+                        }
+                    </div>
+                    <div class="comment-content">
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </div>
+                    <div class="comment-info">
+                        @Html.DisplayFor(modelItem => item.Time)
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @if (Model.isUser)
         {
-            <div class="comment-item">
-                <div class="comment-header">
-                    @if (Model.isUser && UserID != item.UserID)
-                    {
-                        @Html.ActionLink(item.UserManage.UserName, "DemoChar", "CharRoom", new { id = item.UserID }, null)
-                    }
-                    else
-                    {
-                        @Html.DisplayFor(modelItem => item.UserManage.UserName)
-                    }
-                </div>
-                <div class="comment-content">
-                    @Html.DisplayFor(modelItem => item.Content)
-                </div>
-                <div class="comment-info">
-                    @Html.DisplayFor(modelItem => item.Time)
-                </div>
+            <div class="add-comment-button">
+                <button onclick="openPopup()">新增留言</button>
             </div>
         }
     </div>
+
 </div>
+
 
 
 
 <!--檢舉視窗-->
 <div class="report_view">
-<div class="report_alert">
+    <div class="report_alert">
 
 
-    <form method="post">
-        @Html.Label("不實文章")
-        <input type="checkbox" name="report" value="不實文章">
-        <br>
-        @Html.Label("不當發言")
-        <input type="checkbox" name="report" value="不當發言">
-        <br>
-        @Html.Label("謾罵字眼")
-        <input type="checkbox" name="report" value="謾罵字眼">
-        <br>
-        @Html.Label("其他")
-        <br>
-        @Html.TextArea("report_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength="50" ,@style="width:50%; high:50%; resize:none;" })
+        <form method="post">
+            @Html.Label("不實文章")
+            <input type="checkbox" name="report" value="不實文章">
+            <br>
+            @Html.Label("不當發言")
+            <input type="checkbox" name="report" value="不當發言">
+            <br>
+            @Html.Label("謾罵字眼")
+            <input type="checkbox" name="report" value="謾罵字眼">
+            <br>
+            @Html.Label("其他")
+            <br>
+            @Html.TextArea("report_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
 
-        <button class="report_cancel btn btn-danger">取消</button>
-        <button class="report_submit btn btn-success">送出</button>
+            <button class="report_cancel btn btn-danger">取消</button>
+            <button class="report_submit btn btn-success">送出</button>
 
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 
 <div id="report_item"></div>
 
 
 
+
+
+
+
+
+
+
 <!-- 顯示留言的部分檢視區塊 -->
 @*@Html.Partial("MessageSection", Model)*@
-
-
-
-@if (Model.isUser)
-{
-    <div class="add-comment-button">
-        <button onclick="openPopup()">新增留言</button>
-    </div>
-}
-
-
-Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages.PageNumber) of
-@Model.messages.PageCount
-
-
-@Html.PagedListPager(Model.messages, page => Url.Action("ArticleDetails",
-    new { id = Model.article.ArticleID, page }))
+@Html.PagedListPager(Model.messages, page => Url.Action("ArticleDetails", new { id = Model.article.ArticleID, page }))
 
 
 
@@ -290,13 +328,18 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
 </div>
 
 <div>
-    <button class="btn btn-warning" type="button" onclick="location.href='@Url.Action("ArticleIndex", "Home")'">返回首頁</button>
+    <button class="btn " style="background-color: #6eb465; color:white" type="button" onclick="location.href='@Url.Action("ArticleIndex", "Home")'">返回首頁</button>
 </div>
 
 
 <script>
-
-
+			function handleCollect(url, page, action) {
+				var result = confirm("是否" + action + "此文章？");
+				if (result) {
+					var redirectUrl = url + '?page=' + encodeURIComponent(page);
+					makeAjaxRequest(redirectUrl, null);
+				}
+			}
 
     function openPopup() {
         document.getElementById("messagePopup").style.display = "block";
@@ -331,8 +374,7 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
     }
 
 
-
-    //點擊檢舉按鈕
+     //點擊檢舉按鈕
     $(".report").click(function () {
         $(".report_view").fadeIn("fast")
         $("body").css("overflow", "hidden")
@@ -374,4 +416,13 @@ Page @(Model.messages.PageCount < Model.messages.PageNumber ? 0 : Model.messages
 
 
 
+
+
 </script>
+
+
+
+
+
+
+
