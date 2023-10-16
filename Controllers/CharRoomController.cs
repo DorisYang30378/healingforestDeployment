@@ -160,6 +160,8 @@ namespace postArticle.Controllers
         ////////////////////////////////////////////////////進入聊天室畫面////////////////////////////////////////////////////////////
 
 
+
+
         public ActionResult ChatRoom(int? id)
         {
 
@@ -240,31 +242,33 @@ namespace postArticle.Controllers
         }
 
 
-
-        /*
-        public ActionResult CreatChatRoom()
+        [HttpGet]
+        public ActionResult CreatChatRoom(int? id)
         {
 
-            catch (Exception ex)
+            if (id!= null)
             {
-                return Json(new { result = false, error = ex.Message });
+
+                int MainID = GetUserID();
+                string MainName = GetUserName();
+                int OtherID = (int)id;
+                string OtherName = db.UserManages.Find(OtherID).UserName;
+                string member = MainName + "/" + OtherName;
+                string RoomName = MainName + "/" + OtherName + "的私聊";
+                Chatroom newchatroom = new Chatroom { ChatRoomName = RoomName, member = member, UserID = MainID, OtherUserID = OtherID };
+                db.Chatrooms.Add(newchatroom);
+                db.SaveChanges();
+
+
+                return RedirectToAction("Charmember", "CharRoom");
             }
 
+            else
+            {
+                return RedirectToAction("Charmember", "CharRoom");
 
-            ChatroomLog newMessage = new ChatroomLog { UserID = UserID, ChatroomID = ChatRoomID, Content = Content, Time = DateTime.Now };
-            db.ChatroomLogs.Add(newMessage);
-            db.SaveChanges();
+            }
 
-            return RedirectToAction("ChatRoom", "CharRoom", new { id });
-        }
-        */
-
-        public ActionResult CreatChatRoom()
-        {
-
-
-
-            return RedirectToAction("Charmember", "CharRoom");
 
         }
 

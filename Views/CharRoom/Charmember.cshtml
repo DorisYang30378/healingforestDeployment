@@ -76,15 +76,16 @@
                     {
 
                         int chatroomid= 0;
+                        int otherid = item.UserID;
                         foreach(var room in SearchMemberChatRoom)
                         {
-                               if(room.UserID ==item.UserID ||room.OtherUserID == item.UserID)
-                                {
-                                    chatroomid = room.ChatroomID;
-                                }
+                            if(room.UserID ==item.UserID ||room.OtherUserID == item.UserID)
+                            {
+                                chatroomid = room.ChatroomID;
+                            }
                         }
 
-                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@chatroomid)"><img src="~/Uploads/Expert.png"></a>
+                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@otherid, @chatroomid)"><img src="~/Uploads/Expert.png"></a>
 
 
     }
@@ -104,23 +105,28 @@
 <div class="box">
 
     @foreach (var item in Expert)
+    {
+
+        int chatroomid = 0;
+        int ExpertID = 0;
+
+        if (item.UserType == "Expert")
+        {
+
+            foreach (var er in ExpertMemberChatRoom)
+            {
+                if (er.UserID == item.UserID || er.OtherUserID == item.UserID)
                 {
+                    chatroomid = er.ChatroomID;
+                }
 
-                    int chatroomid = 0;
+                //Expert ID
+                ExpertID = item.UserID;
+            }
 
-                    if (item.UserType == "Expert")
-                    {
-
-                        foreach(var er in ExpertMemberChatRoom)
-                        {
-                            if(er.UserID ==item.UserID ||er.OtherUserID == item.UserID)
-                            {
-                                chatroomid = er.ChatroomID;
-                            }
-                        }
-
-            <a class="Expert Room" title="專家: @item.UserName @item.UserID" value="@item.UserID" onclick="IsChatroom(@chatroomid)"><img src="~/Uploads/Expert.png"></a>
+            <a class="Expert Room" title="專家: @item.UserName @ExpertID" value="@item.UserID" onclick="IsChatroom(@ExpertID ,@chatroomid)"><img src="~/Uploads/Expert.png"></a>
         }
+
     }
 
 
@@ -140,7 +146,7 @@
 
         var title = item.ChatRoomName;
 
-        <a class="Expert" title="@title" value=@item.ChatroomID onclick="IsChatroom(@item.ChatroomID)"><img src="~/Uploads/Expert.png"></a>
+        <a class="Expert" title="@title" value=@item.ChatroomID onclick="IsChatroom(0,@item.ChatroomID)"><img src="~/Uploads/Expert.png"></a>
 
 
     }
@@ -153,28 +159,36 @@
 
 <script>
 
-    function IsChatroom(id) {
 
 
+        function IsChatroom(expertid, id) {
 
-        if (id == 0) {
 
-            if (confirm("沒有房間，是否創建房間")) {
-                window.location.href = '@Url.Action("CreatChatRoom", "CharRoom")';
+            if (id == 0) {
+
+                if (confirm("沒有房間，是否創建房間")) {
+
+                    window.location.href = '@Url.Action("CreatChatRoom" , "CharRoom")/' + expertid;
+
+                }
+
+                else {
+                }
             }
-            else {
-            }
-        }
+
         else {
 
-           if (confirm("是否要進入聊天室")) {
-                window.location.href = '@Url.Action("ChatRoom", "CharRoom")/' + id;
-           }
-           else {
-            }
+                if (confirm("是否要進入聊天室")) {
+                    window.location.href = '@Url.Action("ChatRoom", "CharRoom")/' + id;
+                }
 
+                else {
+                }
+            }
         }
-    }
+
+
+
 
 </script>
 
