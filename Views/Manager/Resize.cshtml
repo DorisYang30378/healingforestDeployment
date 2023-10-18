@@ -5,42 +5,109 @@
     ViewBag.Title= "Resize";
 }
 
-<h1>@TempData["UserID"]</h1>
+
+<style>
+
+    .panel_container{
+        position:relative;
+        height:85vh;
+        top:70px;
+        overflow-x:scroll;
+    }
+
+    .form-control{
+        width: 400px;
+    }
+
+    .form-group {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+
+    }
+
+    .btn {
+        margin-top: 20px;
+        width: 200px;
+        position: absolute;
+        left: 50%;
+        top:440px;
+        transform: translateX(-50%);
+    }
+
+    .btn-cancel{
+        margin-left:-101px;
+    }
+    .btn-save{
+        margin-left:101px;
+    }
+
+    @@media screen and (max-width: 447px){
+
+        .form-control{
+            width:100%;
+        }
+
+        .btn-cancel {
+            margin-left: 0px;
+        }
+
+        .btn-save {
+            margin-top: 65px;
+            margin-left: 0px;
+        }
+        .btn{
+            display:block;
+            width:50%;
+        }
+
+    }
+
+    @@media screen and (max-height: 630px){
+        .panel_container{
+            height:130vh;
+           
+        }
+    }
+
+</style>
 
 
-@using (Html.BeginForm()){
+<div class="panel_container">
+    <h1>@TempData["UserID"]</h1>
+    @using (Html.BeginForm())
+    {
 
 
-    @Html.AntiForgeryToken();
-<div class="form-group">
+        @Html.AntiForgeryToken();
+        <div class="form-group">
 
 
-        <!--id, username, account, email, usertype, levelvalue, status-->
-        @Html.LabelFor(m => m.UserID)
-        @Html.TextBoxFor(m =>m.UserID, "", new { @class = "form-control" })
-        @Html.Label("UserName")
-        @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
-        @Html.Label("UserAccount")
-        @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
-        @Html.Label("UserEmail")
-        @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
-        @Html.Label("UserType")
+            <!--id, username, account, email, usertype, levelvalue, status-->
+            @Html.LabelFor(m => m.UserID)
+            @Html.TextBoxFor(m => m.UserID, "", new { @class = "form-control", @readonly = "readonly" })
+            @Html.Label("UserName")
+            @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
+            @Html.Label("UserAccount")
+            @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
+            @Html.Label("UserEmail")
+            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
+            @Html.Label("UserType")
 
-        @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
 
-        @Html.Label("UserLevelValue")
-        @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
-        @Html.Label("UserStatus")
-        @Html.DropDownListFor(m => m.Status, new SelectList(new[] { 0, 1 }), new { @class = "form-control" })
-        @Html.HiddenFor(m => m.Password)
-        @Html.HiddenFor(m=>m.Birthday)
+            @Html.Label("UserLevelValue")
+            @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
+            @Html.Label("UserStatus")
+            @Html.DropDownListFor(m => m.Status, new SelectList(new[] { new SelectListItem { Value = "0", Text = "解除封鎖" }, new SelectListItem { Value = "1", Text = "封鎖" } }, "Value", "Text"), new { @class = "form-control" })
+            @Html.HiddenFor(m => m.Password)
+            @Html.HiddenFor(m => m.Birthday)
 
-
-    <input type="submit" value="save" class="btn btn-light">
+        </div>
+        <input type="submit" value="save" class="btn btn-save btn-outline-success">
+    }
+        <a href="javascript:history.back()" class="btn btn-cancel btn-outline-danger">cancel</a>
 </div>
-
-            }
-
 
 
 

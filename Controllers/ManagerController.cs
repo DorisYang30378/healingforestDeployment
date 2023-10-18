@@ -44,7 +44,7 @@ namespace postArticle.Controllers
 
         }
 
-        public ActionResult Delete(int? id)
+        public ActionResult Lock(int? id)
         {
                 var ID = id;
                 var p = db.UserManages.Find(ID);
@@ -53,6 +53,16 @@ namespace postArticle.Controllers
                 var Name = db.UserManages.ToList();
                 return View("UserMange", Name);
        
+        }
+
+        public ActionResult Unlock(int? id)
+        {
+            var ID = id;
+            var p = db.UserManages.Find(ID);
+            p.Status = 0;
+            db.SaveChanges();
+            var Name = db.UserManages.ToList();
+            return View("UserMange", Name);
         }
 
 

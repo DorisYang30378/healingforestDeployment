@@ -7,6 +7,12 @@
 
 <style>
 
+    table {
+    
+        margin:auto;
+    
+    }
+
     thead {
         background-color: aquamarine;
     }
@@ -17,19 +23,30 @@
         font-size: 20px;
         text-align: center;
     }
+
+    .search_member {
+        width: 300px;
+        
+    }
+
+    .panel_container{
+        position:relative;
+        top: 70px;
+        height: 85vh;
+    }
+
 </style>
 
-<h2>顯示會員資料</h2>
 
+<div class="panel_container">
 @using (Html.BeginForm("UserMange", "Manager", FormMethod.Get))
+
 {
-        @Html.TextBox("search", null,new { @class="form-control" ,  @placeholder="查詢"})
+        @Html.TextBox("search", null,new { @class="form-control search_member" ,  @placeholder="查詢" })
 
               
 }
 <br>
-
-
 <table border="1">
 
     <thead>
@@ -59,10 +76,30 @@
                 <th>@item.Email</th>
                 <th>@item.UserType</th>
                 <th>@item.LevelValue</th>
-                <th>@item.Status</th>
-                <th>@Html.ActionLink("封鎖", "Delete", new { id = item.UserID}, new { @class = "btn btn-outline-danger" })</th>
+                
+                @if (item.Status == 0)
+                {
+                    <th>否</th>
+                }
+                else
+                {
+                    <th>是</th>
+                }
+
+
+                @if (item.Status == 0)
+                {
+                    <th>@Html.ActionLink("封鎖", "Lock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
+                }
+                else { 
+                    <th>@Html.ActionLink("已封鎖", "Unlock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
+                }
+                
                 <th>@Html.ActionLink("修改", "Resize", new { id = item.UserID }, new { @class = "btn btn-outline-success" })</th>
             </tr>
         }
     </tbody>
 </table>
+
+
+</div>

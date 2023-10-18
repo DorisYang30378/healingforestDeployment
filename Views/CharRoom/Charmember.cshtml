@@ -116,15 +116,15 @@
         if (item.UserType == "Expert")
         {
 
+            //Expert ID
+            ExpertID = item.UserID;
+
             foreach (var er in ExpertMemberChatRoom)
             {
                 if (er.UserID == item.UserID || er.OtherUserID == item.UserID)
                 {
                     chatroomid = er.ChatroomID;
                 }
-
-                //Expert ID
-                ExpertID = item.UserID;
             }
 
             <a class="Expert Room" title="專家: @item.UserName @ExpertID" value="@item.UserID" onclick="IsChatroom(@ExpertID ,@chatroomid)"><img src="~/Uploads/Expert.png"></a>
