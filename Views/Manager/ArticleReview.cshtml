@@ -73,7 +73,7 @@
 
 
 
-    <script>
+<script>
 
     $(document).ready(function () {
 
@@ -85,14 +85,24 @@
 
 
             $.ajax({
-                type: 'POST',
+
                 url: '@Url.Action("RRA", "Manager")',
+
+                type: 'POST',
+
                 data: { Report_ID: @Model.ReportID, RU_ID: @Model.RU_ID, RA: @Model.RA, Report_Content: contentbtn },
 
+
                 success: function (result) {
-                    console.log("成功");
-                    
+
+                    window.location.href = '@Url.Action("Report", "Manager")';
+
+                },
+
+                error: function () {
+                    console.log("錯誤");
                 }
+
 
 
             });
@@ -101,6 +111,6 @@
 
      });
 
-    </script> 
+</script> 
     
     

@@ -8,6 +8,7 @@
     var messages = Model.messages;
     int UserID = 0;
     int ArticleID = article.ArticleID;
+    var getRM = Model.RM;
 
     if (Session["UserID"] != null)
     {
@@ -127,7 +128,7 @@
         margin-top: 20px;
     }
 
-        .add-comment-button button {
+    .add-comment-button button {
             padding: 10px 20px;
             background-color: #97CD7D;
             border: none;
@@ -135,18 +136,18 @@
             color: #fff;
             cursor: pointer;
             font-size: 16px;
+            }
+
+            
+    .add-comment-button button:hover,        
+    .add-comment-button button:focus 
+    {            
+        background-color: #2f863a;    
         }
 
 
 
-            .add-comment-button button:hover,
-            .add-comment-button button:focus {
-                background-color: #2f863a;
-            }
-
-
-
-    /*report css */
+    /*reportArticle css */
 
     .report_view {
         position: fixed;
@@ -173,10 +174,46 @@
         border-radius: 4px;
     }
 
-        .report_alert button .report_cancel {
+    .report_alert button .report_cancel {
             position: absolute;
             bottom: 0;
         }
+
+
+    /*reportms css*/
+
+    .reportms_view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* 半透明背景色，可以根据需要调整透明度 */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+    }
+
+    .reportms_alert {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background-color: azure;
+        width: 40%;
+        height: 30%;
+        z-index: 4;
+        transform: translate(-50%,-50%); /*畫面至中*/
+        border-radius: 4px;
+    }
+
+    .reportms_alert button .reportms_cancel {
+        position: absolute;
+        bottom: 0;
+    }
+
+
+
 </style>
 
 
@@ -234,22 +271,45 @@
             @foreach (var item in messages)
             {
                 <div class="comment-item">
+
                     <div class="comment-header">
                         @if (Model.isUser && UserID != item.UserID)
                         {
-                            @Html.ActionLink(item.UserManage.UserName, "DemoChar", "CharRoom", new { id = item.UserID }, null)
+                            @Html.DisplayFor(modelItem => item.UserManage.UserName)
                         }
                         else
                         {
                             @Html.DisplayFor(modelItem => item.UserManage.UserName)
                         }
                     </div>
+
                     <div class="comment-content">
                         @Html.DisplayFor(modelItem => item.Content)
                     </div>
+
                     <div class="comment-info">
                         @Html.DisplayFor(modelItem => item.Time)
                     </div>
+
+                    <div>
+                        @if (Model.isUser && UserID != item.UserID)
+                        {
+                            if (!getRM.Any(i => i.Message_ID == item.MessageID))
+                            {
+                                <button class="ms_report" id="ms_report" value="@item.MessageID">檢舉</button>
+                            }
+                            else
+                            {
+                                <button>已檢舉成功</button>
+                            }
+
+                        }
+                        else
+                        {
+
+                        }
+                    </div>
+
                 </div>
             }
 
@@ -268,7 +328,7 @@
 
 
 
-<!--檢舉視窗-->
+<!--檢舉文章視窗-->
 <div class="report_view">
     <div class="report_alert">
 
@@ -289,6 +349,36 @@
 
             <button class="report_cancel btn btn-danger">取消</button>
             <button class="report_submit btn btn-success">送出</button>
+
+        </form>
+    </div>
+</div>
+
+<div id="report_item"></div>
+
+<!--檢舉留言視窗-->
+<!--檢舉視窗-->
+<div class="reportms_view">
+    <div class="reportms_alert">
+
+
+        <form method="post">
+            <input type="checkbox" name="reportms" value="不雅字眼">
+            @Html.Label("不雅字眼")
+            <br>
+            <input type="checkbox" name="reportms" value="恐嚇字詞">
+            @Html.Label("恐嚇字詞")
+            <br>
+            <input type="checkbox" name="reportms" value="不當發言">
+            @Html.Label("不當發言")
+            <br>
+            @Html.Label("其他")
+            <br>
+            @Html.TextArea("reportms_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
+
+            <button class="reportms_cancel btn btn-danger">取消</button>
+            <button class="reportms_submit btn btn-success">送出</button>
+            <span id="result"></span>
 
         </form>
     </div>
@@ -392,15 +482,54 @@
         $.ajax({
             type: 'POST',
             url: "/ArticleManage/ReportArticle",
-            data: { Name: report(), ID:@UserID , ArticleID:@ArticleID},
+            data: { Context: report(), ID:@UserID , ArticleID:@ArticleID},
             success: function () { alert("成功") },
             error: function () { alert("失敗") }
         });
 
     });
 
+    //點擊檢舉留言按鈕
+    var msid = 0;
+    $(".ms_report").click(function () {
 
-    //將檢舉內容整理成字串
+        msid = $(this).val();
+
+        $("body").css("display", "block")
+        $(".reportms_view").css("display", "block");
+
+    });
+
+    $(".reportms_cancel").click(function () {
+
+        $("body").css("display", "none")
+        $(".reportms_view").css("display", "none");
+
+    });
+
+    $(".reportms_submit").click(function () {
+
+        $.ajax({
+
+            url: '@Url.Action("ReportMessage", "ArticleManage")',
+            type: "post",
+            data: { MSID: msid, USERID: @UserID, CONTEXT: msreport() },
+            success: function (result) {
+                alert("成功");
+            },
+            error: function () {
+
+            }
+            
+
+        });
+
+    });
+
+    
+
+
+    //將檢舉文章內容整理成字串
      function report() {
         var reportname = document.forms[0];
         var reportadd = document.getElementById("report_other");
@@ -414,6 +543,22 @@
          return txt;
     };
 
+
+    //將檢舉留言內容整理成字串
+    function msreport() {
+
+        var reportadd = document.getElementById("reportms_other");
+        var txt = "";
+
+        const checkboxes = document.querySelectorAll('input[name="reportms"]:checked');
+        const selectedValues = Array.from(checkboxes).map(checkbox => checkbox.value);
+        if (selectedValues.length > 0) {
+            txt= selectedValues.join(", ")
+        }
+
+        txt += ","+reportadd.value;
+        return txt;
+    };
 
 
 

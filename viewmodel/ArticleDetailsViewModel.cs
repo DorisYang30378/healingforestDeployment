@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 namespace postArticle.viewmodel
 {
     public class ArticleDetailsViewModel
-    { 
+    {
         public bool isUser { get; set; }
 
         public Article article { get; set; }
@@ -29,5 +29,9 @@ namespace postArticle.viewmodel
         public string Display { get; set; }
 
         public bool iStatus { get; set; }
+
+
+        //[獲取使用者檢舉留言紀錄]
+        public IEnumerable<Report_Message> RM {get; set;}
     }
 }

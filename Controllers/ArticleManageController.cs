@@ -14,7 +14,6 @@ using System.Web.UI;
 using PagedList;
 using HtmlAgilityPack;
 
-
 namespace postArticle.Controllers
 {
     public class ArticleManageController : Controller
@@ -27,6 +26,7 @@ namespace postArticle.Controllers
         public bool CheckLoggedIn() => Session["UserID"] != null;
 
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
+
 
 
 
@@ -193,6 +193,7 @@ namespace postArticle.Controllers
             bool IStatus;
             List<Message> queryMessList = new List<Message>();
             string Display = "none";
+            int UserID = GetUserID();
             //---------------判斷文章是否存在-----------------------------------------
 
             #region 判斷文章是否存在
@@ -232,6 +233,8 @@ namespace postArticle.Controllers
                 Display = TempData["Display"] as string;
             }
 
+             
+
             //---------------建立viewModel-----------------------------------------
             ArticleDetailsViewModel articleDetailsViewModel = new ArticleDetailsViewModel
             {
@@ -242,14 +245,15 @@ namespace postArticle.Controllers
                 isCreatedByUser = isCreatedByUser,
                 Display = Display,
                 IsCollect = IsCollect(article.ArticleID),
-                iStatus = IStatus
+                iStatus = IStatus,
+                //
+                RM = db.Report_Message.Where(i => i.User_ID == UserID)
 
             };
             //-----------------------------------------===============================
 
             return View(articleDetailsViewModel);
         }
-
 
 
 
@@ -506,6 +510,8 @@ namespace postArticle.Controllers
     
     
     
+
+        //檢舉文章
         public void  ReportArticle()
         {
             //ReportViewModel rvm = new ReportViewModel();
@@ -513,7 +519,7 @@ namespace postArticle.Controllers
             var rid = from  a in db.Reports select a.Report_ID;
             var ric = rid.Count()+1;
             
-            string name = Request.Form["Name"];
+            string name = Request.Form["Context"];
             int id = Int16.Parse(Request.Form["ID"]);
             int ArticleID = Int16.Parse(Request.Form["ArticleID"]);
 
@@ -531,9 +537,24 @@ namespace postArticle.Controllers
             }
             else
             {
-                Console.WriteLine("無法重複檢舉");
+                System.Diagnostics.Debug.WriteLine("你重複檢舉了");
             }
         } 
+
+
+        //檢舉留言
+        public void ReportMessage()
+        {
+
+            int MSID = int.Parse(Request.Form["MSID"]);
+            int USERID = int.Parse(Request.Form["USERID"]);
+            string CONTEXT = Request.Form["CONTEXT"];
+
+            //將留言檢舉內容寫入資料庫
+            Report_Message Rm = new Report_Message {Message_ID = MSID, User_ID= USERID, Content=CONTEXT , Status= 0 };
+            db.Report_Message.Add(Rm);
+            db.SaveChanges();
+        }
 
    
     

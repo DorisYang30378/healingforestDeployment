@@ -159,8 +159,6 @@ namespace postArticle.Controllers
             String Report_Content = Request.Form["Report_Content"];
             var content = DateTime.Now.ToString();
 
-            //將檢舉設置為已閱
-            Read(ReportID);
             //判斷檢舉通過或未通過(Pass/Failed)
             PF(Report_Content, RA);
             R_Report r_Report = new R_Report { ReportID = ReportID, UserID = RU_ID, Article_ID = RA, Content = "已於"+content+Report_Content, Status = 0 };
@@ -169,6 +167,9 @@ namespace postArticle.Controllers
             try
             {
                 db.SaveChanges();
+
+                //將檢舉設置為已閱
+                Read(ReportID);
             }
             catch
             {
@@ -189,7 +190,7 @@ namespace postArticle.Controllers
         public void PF(string content, int articleID )
         {
 
-
+            //尋找被檢舉的文章
             var p = db.Articles.Find(articleID);
 
             if (content == "檢舉通過")
