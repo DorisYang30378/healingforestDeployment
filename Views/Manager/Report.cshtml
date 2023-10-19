@@ -13,7 +13,7 @@
         background-color: aquamarine;
     }
 
-    th {
+    td {
         height: 30px;
         border: solid;
         font-size: 20px;
@@ -30,16 +30,49 @@
         justify-content: center;
         margin-top: 20px;
     }
+
+    .report_member{
+        display: none;
+    }
+    .report_article {
+        display: none;
+    }
+
+
+    .btn-click {
+        border-radius:5px; 
+        border:none;
+        height:80%;
+        width:80%; 
+        margin:auto; 
+        display:flex; 
+        align-content:center;
+    }
+
+    .custom-link {
+        text-decoration: none; /* Remove the default underline */
+    }
+
+    a:-webkit-any-link {
+        text-decoration:none;
+    
+    }
+
+
 </style>
 
 
 
 
 <div header_panel style="margin-top: 60px; text-align:center;">
+
+
         <button class="btn_reportmember">留言檢舉</button>
         <button class="btn_reportarticle">文章檢舉</button>
         <!--排序-->
-        @Html.ActionLink("文章排序由小至大", "Report", new { sort = "ID由小至大" })
+    @*    
+    @Html.ActionLink("文章排序由小至大", "Report", new { sort = "ID由小至大" })
+    *@
 </div>
 
 
@@ -49,12 +82,12 @@
     <table class="report_article">
         <thead>
             <tr>
-                <th><h3>Report_ID</h3></th>
-                <th><h3>UserID</h3></th>
-                <th><h3>ArticleID</h3></th>
-                <th><h3>ReportContent</h3></th>
-                <th></th>
-                <th></th>
+                <td><h4>Report_ID</h4></td>
+                <td><h4>UserID</h4></td>
+                <td><h4>ArticleID</h4></td>
+                <td><h4>ReportContent</h4></td>
+                <td><button class="btn-click"></button></td>
+                <td><button class="btn-click"></button></td>
             </tr>
         </thead>
 
@@ -63,18 +96,19 @@
             @foreach (var item in RA)
             {
                 <tr>
-                    <th>@item.Report_ID</th>
-                    <th>@item.UserID</th>
-                    <th>@item.ArticleID</th>
-                    <th>@item.ReportContent</th>
-                    <th>@Html.ActionLink("審查文章", "ArticleReview", new { id = item.ArticleID, RID = item.Report_ID }, new { title = "前往審查文章" })</th>
-                    <th><button>刪除</button></th>
+                    <td>@item.Report_ID</td>
+                    <td>@item.UserID</td>
+                    <td>@item.ArticleID</td>
+                    <td>@item.ReportContent</td>
+                    <td>@Html.ActionLink("審查文章", "ArticleReview", new { id = item.ArticleID, RID = item.Report_ID }, new { title = "前往審查文章" })</td>
+                   @* <th>@Html.ActionLink("刪除","Delete_RA", new { id = item.Report_ID } ,new{ @class = "custom-link" })</th>  *@
+
+                    <td><button class="delete-button" value="@item.Report_ID">Delete</button></td>
+
                 </tr>
             }
         </tbody>
     </table>
-
-
 
     <!---->
     <table class="report_member">
@@ -84,6 +118,8 @@
                 <th><h4>UserID</h4></th>
                 <th><h4>Context</h4></th>
                 <th><h4>Status</h4></th>
+                <th><button class="btn-click"></button></th>
+                <th><button class="btn-click"></button></th>
             </tr>
         </thead>
 
@@ -107,8 +143,32 @@
 
 
 
+<table>
+    <thead>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td><button class="delete">Delete</button></td>
+        </tr>
+
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+        </tr>
+    </tbody>
+</table>
+
 <script>
-    $(document).ready(function () {
+
+
+    $(document).ready(function ()
+    {
 
         $(".btn_reportmember").click(function () {
             $(".report_member").css('display', 'block');
@@ -120,5 +180,49 @@
             $(".report_member").css('display', 'none');
             $(".report_article").css('display', 'block');
         });
+
+
+
+        $(document).on('click', '.delete', function () {
+            alert("1");
+            $(this).closest("tr").remove();
+        });
+
+
+
+
+
+    $(document).on('click', '.delete-button', function () {
+        var itemId = $(this).val();
+        var $button = $(this);
+        $.ajax({
+            url: '@Url.Action("Delete_RA", "Manager")',
+            type: 'POST',
+            data: { id: itemId },
+            success: function (data) {
+                if (data.success) {
+
+                    $button.closest("tr").remove();
+
+                    alert("成功");
+
+                } else {
+                    alert('删除失败');
+                }
+            },
+            error: function () {
+                alert('请求失败');
+            }
+        });
     });
+
+
+    });
+
+
+
+
+
+
+
 </script>

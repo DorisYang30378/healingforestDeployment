@@ -218,6 +218,28 @@ namespace postArticle.Controllers
             }
             db.SaveChanges();
         }
+
+
+
+        public ActionResult Delete_RA(int ?id)
+        {
+
+            var delete = db.Reports.Find(id);
+
+            if (delete != null)
+            {
+                db.Reports.Remove(delete);
+                db.SaveChanges();
+            }
+
+
+            ReportViewModel RMV = new ReportViewModel();
+            RMV.RA = db.Reports.OrderBy(p => p.UserID).ToList();
+            RMV.RM = db.Report_Message.OrderBy(p => p.Message_ID).ToList();
+
+            return Json(new { success = true, message = "数据删除成功" }, JsonRequestBehavior.AllowGet);
+
+        }
         
        
 
