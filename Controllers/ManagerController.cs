@@ -14,8 +14,8 @@ namespace postArticle.Controllers
 
         //初始化資料庫
         private healingForestEntities db = new healingForestEntities();
-        private RAViewModel emp = new RAViewModel(); 
-        
+        private RAViewModel emp = new RAViewModel();
+        private ReportViewModel RMV = new ReportViewModel();
 
 
 
@@ -111,6 +111,7 @@ namespace postArticle.Controllers
         public ActionResult Report(String sort) {
 
 
+            /*
             //ArticleID 由大至小
             while (sort == "ID由小至大")
             {
@@ -119,7 +120,14 @@ namespace postArticle.Controllers
             }
 
             var ReportArticle = db.Reports.ToList().Where(m => m.Status == 0);
-            return View(ReportArticle);
+            */
+
+            RMV.RA = db.Reports.ToList();
+            RMV.RM = db.Report_Message.ToList();
+            
+
+            
+            return View(RMV);
 
         }
 
@@ -152,9 +160,6 @@ namespace postArticle.Controllers
 
            
         }
-
-
-
 
         ///傳送文章檢舉回復 RRA:return review article///
         ///

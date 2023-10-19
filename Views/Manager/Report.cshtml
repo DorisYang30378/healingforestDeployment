@@ -1,13 +1,11 @@
-﻿@using postArticle.Models;
-@model IEnumerable<Report>
+﻿@model postArticle.viewmodel.ReportViewModel
 
 
 @{
     ViewBag.Title = "檢舉";
+    var RA = Model.RA;
+    var RM = Model.RM;
 }
-
-<h2>(文章、會員)檢舉</h2>
-
 
 <style>
 
@@ -25,29 +23,36 @@
     .report_article {
         display: none;
     }
+
+    .container_panel {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
 </style>
 
 
-<header>
-
-    
-    
-    <button class="btn_reportmember">會員檢舉</button>
-    <button class="btn_reportarticle">文章檢舉</button>
-    
-
-    <!--排序-->
-    @Html.ActionLink("文章排序由小至大","Report",new { sort="ID由小至大"})
 
 
+<div header_panel style="margin-top: 60px; text-align:center;">
+        <button class="btn_reportmember">留言檢舉</button>
+        <button class="btn_reportarticle">文章檢舉</button>
+        <!--排序-->
+        @Html.ActionLink("文章排序由小至大", "Report", new { sort = "ID由小至大" })
+</div>
+
+
+
+<div class="container_panel">
     <!---->
     <table class="report_article">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(m => m.Report_ID)</th>
-                <th>@Html.DisplayNameFor(m => m.UserID)</th>
-                <th>@Html.DisplayNameFor(m => m.ArticleID)</th>
-                <th>@Html.DisplayNameFor(m => m.ReportContent)</th>
+                <th><h3>Report_ID</h3></th>
+                <th><h3>UserID</h3></th>
+                <th><h3>ArticleID</h3></th>
+                <th><h3>ReportContent</h3></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -55,16 +60,16 @@
 
         <tbody>
 
-            @foreach (var item in Model)
+            @foreach (var item in RA)
             {
-            <tr>
-                <th>@item.Report_ID</th>
-                <th>@item.UserID</th>
-                <th>@item.ArticleID</th>
-                <th>@item.ReportContent</th>
-                <th>@Html.ActionLink("審查文章", "ArticleReview", new { id=item.ArticleID ,RID=item.Report_ID},new { title = "前往審查文章" })</th>
-                <th><button>刪除</button></th>
-            </tr>
+                <tr>
+                    <th>@item.Report_ID</th>
+                    <th>@item.UserID</th>
+                    <th>@item.ArticleID</th>
+                    <th>@item.ReportContent</th>
+                    <th>@Html.ActionLink("審查文章", "ArticleReview", new { id = item.ArticleID, RID = item.Report_ID }, new { title = "前往審查文章" })</th>
+                    <th><button>刪除</button></th>
+                </tr>
             }
         </tbody>
     </table>
@@ -75,18 +80,30 @@
     <table class="report_member">
         <thead>
             <tr>
-                <th><h4>ReportID</h4></th>
+                <th><h4>MessageID</h4></th>
                 <th><h4>UserID</h4></th>
-                <th><h4>UserID</h4></th>
-                <th><h4>ReportContent</h4></th>
+                <th><h4>Context</h4></th>
+                <th><h4>Status</h4></th>
             </tr>
         </thead>
 
         <tbody>
+
+            @foreach (var item in RM)
+            {
+                <tr>
+                    <th>@item.Message_ID</th>
+                    <th>@item.User_ID</th>
+                    <th>@item.Content</th>
+                    <th>@item.Status</th>
+                    <th><button>審核</button></th>
+                    <th><button>刪除</button></th>
+                </tr>
+            }
         </tbody>
     </table>
 
-</header>
+</div>
 
 
 

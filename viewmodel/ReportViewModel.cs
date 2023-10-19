@@ -9,8 +9,16 @@ namespace postArticle.viewmodel
 {
     public class ReportViewModel
     {
-
+        /*
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Report_ID{ get; set; }
+        */
+
+        public IEnumerable<Report> RA { get; set; }
+
+        public IEnumerable<Report_Message> RM { get; set; }
+
+
+
     }
 }

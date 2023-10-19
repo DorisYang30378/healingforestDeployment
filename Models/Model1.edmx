@@ -98,6 +98,7 @@
           <Property Name="ArticleID" Type="int" Nullable="false" />
           <Property Name="Content" Type="varchar" MaxLength="128" Nullable="false" />
           <Property Name="Time" Type="datetime" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Mood">
           <Key>
@@ -869,6 +870,7 @@
           <NavigationProperty Name="Article" Relationship="Self.MessageArticle" FromRole="Message" ToRole="Article" />
           <NavigationProperty Name="Report_Message" Relationship="Self.Message_ID" FromRole="Message" ToRole="Report_Message" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_Message" FromRole="Message" ToRole="UserManage" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Mood">
           <Key>
@@ -1639,6 +1641,7 @@
           <EntitySetMapping Name="Messages">
             <EntityTypeMapping TypeName="healingForestModel.Message">
               <MappingFragment StoreEntitySet="Message">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="MessageID" ColumnName="MessageID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />

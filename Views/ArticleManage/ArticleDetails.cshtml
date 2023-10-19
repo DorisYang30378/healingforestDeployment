@@ -213,6 +213,11 @@
     }
 
 
+    .remove_message{
+        opacity: 0.5;
+        font-style: italic;
+    }
+
 
 </style>
 
@@ -283,16 +288,26 @@
                         }
                     </div>
 
-                    <div class="comment-content">
+                    @if (item.Status == 0)
+                    {
+                        <div class="comment-content">
                         @Html.DisplayFor(modelItem => item.Content)
                     </div>
+                    }
+
+                    else { 
+                        <div class="comment-content">
+                        <p class="remove_message">此訊息已被移除</p>
+                    </div>
+                    
+                    }
 
                     <div class="comment-info">
                         @Html.DisplayFor(modelItem => item.Time)
                     </div>
 
                     <div>
-                        @if (Model.isUser && UserID != item.UserID)
+                        @if (Model.isUser && UserID != item.UserID &&item.Status==0)
                         {
                             if (!getRM.Any(i => i.Message_ID == item.MessageID))
                             {
