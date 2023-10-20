@@ -1,0 +1,65 @@
+﻿
+
+
+<style>
+
+    .container-panel{
+
+        position:relative;
+        height: 75vh;
+        margin-top: 80px;
+        
+    }
+
+
+</style>
+
+
+<div class="container-panel">
+
+
+    <div style="width:200px; margin:0 auto;">
+        <h2 style="left:%;">留言審查</h2>
+        <p>留言ID : @ViewBag.MessageID</p>
+        <p>檢舉人ID : @ViewBag.UserID</p>
+        <p style="word-wrap:break-word;">留言內容 : <br>@ViewBag.Context</p>
+        <p style="word-wrap:break-word;">檢舉內容 : <br>@ViewBag.Content</p>
+    </div>
+
+    <div >
+        <div style="text-align:center;">
+            <input class="contentbtn " id="pass" type="radio" name="report" value="檢舉通過" style="display:none;">
+            <label class="btn btn-outline-primary" for="pass">檢舉通過</label>
+            <input class="contentbtn " id="nopass" type="radio" name="report" value="檢舉未通過" style="display:none;">
+            <label class="btn btn-outline-primary" for="nopass">檢舉未通過</label>
+        </div>
+
+        <div style="text-align:center; margin-top:30px;">
+            <button class="btn btn-danger" style="width:97px;">返回</button>
+
+            <!-- 不能使用value 進行傳輸-->
+            <button class="btn btn-success" style="width:97px;" id="submit" value="@ViewBag.MS_ID">送出</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#submit").click(function () {
+
+            console.log($(this).val());
+
+            console.log(@ViewBag.MS_ID);
+
+        });
+
+    });
+
+
+    </script>
+

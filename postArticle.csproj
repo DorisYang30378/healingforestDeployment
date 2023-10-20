@@ -365,6 +365,7 @@
     <Content Include="Views\Manager\ArticleReview.cshtml" />
     <Content Include="Views\CharRoom\Charmember.cshtml" />
     <Content Include="Views\CharRoom\ChatRoom.cshtml" />
+    <Content Include="Views\Manager\MSReview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

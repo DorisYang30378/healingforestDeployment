@@ -67,7 +67,7 @@
 
     <div style="text-align:center; margin-top:30px;">
         <button class="btn btn-light">返回</button>
-        <button class="btn btn-danger submit">送出</button>
+        <button class="btn btn-danger" id="submit">送出</button>
     </div>
 </form>
 
@@ -78,7 +78,7 @@
     $(document).ready(function () {
 
 
-        $(".submit").click(function() {
+        $("#submit").click(function() {
 
 
             var contentbtn = $('input[name="report"]:checked').val();
@@ -93,14 +93,28 @@
                 data: { Report_ID: @Model.ReportID, RU_ID: @Model.RU_ID, RA: @Model.RA, Report_Content: contentbtn },
 
 
-                success: function (result) {
+                success: function (data) {
 
-                    window.location.href = '@Url.Action("Report", "Manager")';
+                    if (data.success) {
+                        alert("成功");
+
+                      
+
+                    }
+
+                    else {
+
+                        alert("失敗");
+
+                    }
+
 
                 },
 
                 error: function () {
-                    console.log("錯誤");
+
+                    alert("傳輸失敗");
+
                 }
 
 

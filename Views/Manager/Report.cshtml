@@ -95,17 +95,22 @@
 
             @foreach (var item in RA)
             {
-                <tr>
-                    <td>@item.Report_ID</td>
-                    <td>@item.UserID</td>
-                    <td>@item.ArticleID</td>
-                    <td>@item.ReportContent</td>
-                    <td>@Html.ActionLink("審查文章", "ArticleReview", new { id = item.ArticleID, RID = item.Report_ID }, new { title = "前往審查文章" })</td>
-                   @* <th>@Html.ActionLink("刪除","Delete_RA", new { id = item.Report_ID } ,new{ @class = "custom-link" })</th>  *@
 
-                    <td><button class="delete-button" value="@item.Report_ID">Delete</button></td>
+                if (item.Status == 0)
+                {
 
-                </tr>
+                    <tr>
+                        <td>@item.Report_ID</td>
+                        <td>@item.UserID</td>
+                        <td>@item.ArticleID</td>
+                        <td>@item.ReportContent</td>
+                        <td>@Html.ActionLink("審查文章", "ArticleReview", new { id = item.ArticleID, RID = item.Report_ID }, new { title = "前往審查文章" })</td>
+                        <td><button class="deleteRA-button" value="@item.Report_ID">刪除</button></td>
+
+                    </tr>
+
+
+                }
             }
         </tbody>
     </table>
@@ -114,12 +119,12 @@
     <table class="report_member">
         <thead>
             <tr>
-                <th><h4>MessageID</h4></th>
-                <th><h4>UserID</h4></th>
-                <th><h4>Context</h4></th>
-                <th><h4>Status</h4></th>
-                <th><button class="btn-click"></button></th>
-                <th><button class="btn-click"></button></th>
+                <td><h4>MessageID</h4></td>
+                <td><h4>UserID</h4></td>
+                <td><h4>Context</h4></td>
+                <td><h4>Status</h4></td>
+                <td><button class="btn-click"></button></td>
+                <td><button class="btn-click"></button></td>
             </tr>
         </thead>
 
@@ -127,42 +132,19 @@
 
             @foreach (var item in RM)
             {
-                <tr>
-                    <th>@item.Message_ID</th>
-                    <th>@item.User_ID</th>
-                    <th>@item.Content</th>
-                    <th>@item.Status</th>
-                    <th><button>審核</button></th>
-                    <th><button>刪除</button></th>
-                </tr>
+            <tr>
+                <td>@item.Message_ID</td>
+                <td>@item.User_ID</td>
+                <td>@item.Content</td>
+                <td>@item.Status</td>
+                <td>@Html.ActionLink("審查", "MSReview", new { id = item.MS_ID }, new { title = "前往審查文章" })</td>
+                <td><button class="deleteRM-button" value=@Html.Raw(HttpUtility.HtmlEncode(item.MS_ID))>刪除</button></td>
+            </tr>
             }
         </tbody>
     </table>
 
 </div>
-
-
-
-<table>
-    <thead>
-        <tr>
-            <td></td>
-            <td></td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Data 1</td>
-            <td>Data 2</td>
-            <td><button class="delete">Delete</button></td>
-        </tr>
-
-        <tr>
-            <td>Data 1</td>
-            <td>Data 2</td>
-        </tr>
-    </tbody>
-</table>
 
 <script>
 
@@ -182,36 +164,50 @@
         });
 
 
-
-        $(document).on('click', '.delete', function () {
-            alert("1");
-            $(this).closest("tr").remove();
-        });
-
-
-
-
-
-    $(document).on('click', '.delete-button', function () {
-        var itemId = $(this).val();
+    $(document).on('click', '.deleteRA-button', function () {
+        var Reportid = $(this).val();
         var $button = $(this);
         $.ajax({
             url: '@Url.Action("Delete_RA", "Manager")',
             type: 'POST',
-            data: { id: itemId },
+            data: { id: Reportid },
             success: function (data) {
                 if (data.success) {
 
                     $button.closest("tr").remove();
 
-                    alert("成功");
+                    alert("刪除成功");
 
                 } else {
                     alert('删除失败');
                 }
             },
             error: function () {
-                alert('请求失败');
+                alert('請求失敗');
+            }
+        });
+    });
+
+    $(document).on('click', '.deleteRM-button', function () {
+        var Reportid = $(this).val();
+        var $button = $(this);
+        $.ajax({
+            url: '@Url.Action("Delete_RM", "Manager")',
+            type: 'POST',
+            data: { id: Reportid },
+            success: function (data) {
+                if (data.success) {
+
+                    $button.closest("tr").remove();
+
+                    alert("刪除成功");
+
+                } else {
+                    alert('删除失败');
+                }
+            },
+            error: function () {
+                alert('請求失敗');
             }
         });
     });

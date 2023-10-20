@@ -38,7 +38,7 @@ namespace postArticle.Controllers
 
             else
             {
-                var Name = db.UserManages.ToList().OrderBy(m=>m.UserName);
+                var Name = db.UserManages.ToList().OrderBy(m => m.UserName);
                 return View(Name);
             }
 
@@ -46,13 +46,13 @@ namespace postArticle.Controllers
 
         public ActionResult Lock(int? id)
         {
-                var ID = id;
-                var p = db.UserManages.Find(ID);
-                p.Status = 1;
-                db.SaveChanges();
-                var Name = db.UserManages.ToList();
-                return View("UserMange", Name);
-       
+            var ID = id;
+            var p = db.UserManages.Find(ID);
+            p.Status = 1;
+            db.SaveChanges();
+            var Name = db.UserManages.ToList();
+            return View("UserMange", Name);
+
         }
 
         public ActionResult Unlock(int? id)
@@ -76,21 +76,21 @@ namespace postArticle.Controllers
             */
 
             UserManage emp = db.UserManages.Find(id);
-            
+
             return View(emp);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Resize([Bind(Include ="UserID, UserName, Account, Password, Email, UserType, Status, Birthday")]UserManage emp)
+        public ActionResult Resize([Bind(Include = "UserID, UserName, Account, Password, Email, UserType, Status, Birthday")] UserManage emp)
         {
 
             if (ModelState.IsValid)
             {
                 db.Entry(emp).State = EntityState.Modified;
-                try { 
-                    db.SaveChanges(); 
+                try {
+                    db.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
                 {
@@ -98,7 +98,7 @@ namespace postArticle.Controllers
                     Response.Write(errorMessages);
                     throw ex;
                 }
-                
+
 
                 return RedirectToAction("UserMange");
             }
@@ -124,12 +124,13 @@ namespace postArticle.Controllers
 
             RMV.RA = db.Reports.ToList();
             RMV.RM = db.Report_Message.ToList();
-            
 
-            
+
+
             return View(RMV);
 
         }
+
 
 
         public ActionResult ArticleReview(int ?id, int ?RID )
@@ -166,28 +167,33 @@ namespace postArticle.Controllers
 
 
         
-        public void RRA()
+        public ActionResult RRA(int ?Report_ID)
         {
-            int ReportID =Int16.Parse(Request.Form["Report_ID"]);
+            int ReportID = (int)Report_ID;
             int RU_ID = Int16.Parse(Request.Form["RU_ID"]);
             int RA = Int16.Parse(Request.Form["RA"]);
             String Report_Content = Request.Form["Report_Content"];
             var content = DateTime.Now.ToString();
 
             //判斷檢舉通過或未通過(Pass/Failed)
-            PF(Report_Content, RA);
-            R_Report r_Report = new R_Report { ReportID = ReportID, UserID = RU_ID, Article_ID = RA, Content = "已於"+content+Report_Content, Status = 0 };
-            db.R_Report.Add(r_Report);
 
-            try
+            if (Report_ID != null)
             {
-                db.SaveChanges();
 
+                PF(Report_Content, RA);
+                R_Report r_Report = new R_Report { ReportID = ReportID, UserID = RU_ID, Article_ID = RA, Content = "已於" + content + Report_Content, Status = 0 };
+                db.R_Report.Add(r_Report);
                 //將檢舉設置為已閱
                 Read(ReportID);
+                db.SaveChanges();
+
+                return Json(new { success = true}, JsonRequestBehavior.AllowGet);
+
             }
-            catch
-            {
+
+            else {
+
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
 
             }
         }
@@ -237,11 +243,54 @@ namespace postArticle.Controllers
             RMV.RA = db.Reports.OrderBy(p => p.UserID).ToList();
             RMV.RM = db.Report_Message.OrderBy(p => p.Message_ID).ToList();
 
-            return Json(new { success = true, message = "数据删除成功" }, JsonRequestBehavior.AllowGet);
+            //
+            return Json(new { success = true}, JsonRequestBehavior.AllowGet);
 
         }
-        
-       
+
+
+        public ActionResult Delete_RM(int? id)
+        {
+
+            var delete = db.Report_Message.Find(id);
+
+            if (delete != null)
+            {
+                db.Report_Message.Remove(delete);
+                db.SaveChanges();
+            }
+
+
+            ReportViewModel RMV = new ReportViewModel();
+            RMV.RA = db.Reports.OrderBy(p => p.UserID).ToList();
+            RMV.RM = db.Report_Message.OrderBy(p => p.Message_ID).ToList();
+
+            //
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+
+
+        [HttpGet]
+        public ActionResult MSReview(int? id) 
+        {
+
+            if (id != null)
+            {
+                ViewBag.MS_ID = db.Report_Message.Find(id).MS_ID;
+                ViewBag.MessageID = db.Report_Message.Find(id).Message_ID;
+                ViewBag.UserID = db.Report_Message.Find(id).User_ID;
+                ViewBag.Content = db.Report_Message.Find(id).Content;
+                ViewBag.Context = db.Messages.Find(ViewBag.MessageID).Content.ToString();
+
+            }
+            return View();
+        }
+
+
 
     }
 }
