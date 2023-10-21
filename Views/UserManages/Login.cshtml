@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Login";
 }
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
     body {
         background-color: #A4DA8A;
@@ -28,6 +32,15 @@
             background-color: #ffffff;
         }
     }
+
+
+    .alert-no-border {
+        border: none;
+        background-color: inherit;
+        color: red;
+    }
+
+
 </style>
 
 
@@ -36,51 +49,81 @@
 
 <div class="container-panel" style="height:73vh;">
     <div class="container">
-    <div class="window_content">
-        <div class="window_content_bodt">
-            @using (Html.BeginForm())
-            {
+        <div class="window_content">
+            <div class="window_content_bodt">
+                @using (Html.BeginForm())
+                {
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <div class="" style="background-color:#ffffff;">
-                        <div style=" padding-bottom:10px; padding-top:20px; text-align:center; font-size:30px; ">登入</div>
+                        <div class="" style="background-color:#ffffff;">
+                            <div style=" padding-bottom:10px; padding-top:20px; text-align:center; font-size:30px; ">登入</div>
 
 
-                        <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                            @Html.TextBoxFor(model => model.userManage.Account, new { @placeholder = "請輸入帳號", @class = "form-control", @style = "background-color:#F2ECE2;", @autofocus = "autofocus" })
-                            @Html.ValidationMessageFor(model => model.userManage.Account, "", new { @class = "text-danger" })
+                            <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                                @Html.TextBoxFor(model => model.userManage.Account, new { @placeholder = "請輸入帳號", @class = "form-control", @style = "background-color:#F2ECE2;", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(model => model.userManage.Account, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                                @Html.PasswordFor(model => model.userManage.Password, new { @placeholder = "請輸入密碼", @class = "form-control", @id = "passwordInput", @style = "background-color:#F2ECE2;", @required = "required" })
+                                @*  @Html.ValidationMessageFor(model => model.userManage.Password, "", new { @class = "text-danger" })  *@
+                                <span id="togglePassword" class="fa fa-eye-slash" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></span>
+                            </div>
+
+                            @if (ViewBag.InvalidPassword != null && ViewBag.InvalidPassword)
+                            {
+                                <p style="position: relative; display: table; margin: 15px auto;" class="alert alert-danger alert-no-border" role="alert">
+                                    帳號或密碼錯誤!
+                                </p>
+                            }
+
+                            <div class="text-right" style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                                @Html.CheckBoxFor(model => model.rememberPassword)
+                                @Html.Label("記住密碼")
+                            </div>
+                            <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                                <input type="submit" value="登入" class="btn btn-default  form-control" , style="background-color:#97CD7D;" />
+                            </div>
+
+                            @Html.ActionLink("註冊帳號", "Create", null, null, new { style = "float:left; padding-left:80px" })
+
+                            @Html.ActionLink("忘記密碼", "forget_password", null, null, new { style = "float:right; padding-right:80px" })
+
+
                         </div>
-
-                        <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                            @Html.PasswordFor(model => model.userManage.Password, new { @placeholder = "請輸入密碼", @class = "form-control", @style = "background-color:#F2ECE2;", @required = "required" })
-                            @Html.ValidationMessageFor(model => model.userManage.Password, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="text-right" style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                            @Html.CheckBoxFor(model => model.rememberPassword)
-                            @Html.Label("記住密碼")
-                        </div>
-                        <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                            <input type="submit" value="登入" class="btn btn-default  form-control" , style="background-color:#97CD7D;" />
-                        </div>
-
-                        @Html.ActionLink("註冊帳號", "Create", null, null, new { style = "float:left; padding-left:80px" })
-
-                        @Html.ActionLink("忘記密碼", "forget_password", null, null, new { style = "float:right; padding-right:80px" })
 
 
                     </div>
 
-
-                </div>
-
-            }
+                }
+            </div>
         </div>
     </div>
 </div>
-    </div>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+
+<script>
+    // 初始化密码显示/隐藏状态
+    var passwordVisible = false;
+
+    // 显示/隐藏密码功能
+    $(document).ready(function () {
+        $("#togglePassword").click(function () {
+            var passwordInput = $("#passwordInput");
+            if (passwordVisible) {
+                passwordInput.attr("type", "password");
+                $("#togglePassword").removeClass("fa-eye").addClass("fa-eye-slash");
+            } else {
+                passwordInput.attr("type", "text");
+                $("#togglePassword").removeClass("fa-eye-slash").addClass("fa-eye");
+            }
+            passwordVisible = !passwordVisible;
+        });
+    });
+</script>

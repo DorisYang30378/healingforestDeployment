@@ -3,6 +3,13 @@
 @{
     ViewBag.Title = "療癒之森";
 }
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
 <style>
     body {
         background-color: #A4DA8A;
@@ -65,57 +72,54 @@
 
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="UserName">請輸入名稱</label>
-                        @Html.EditorFor(model => model.userManage.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "暱稱", @style = "background-color:#F2ECE2;" } })
+                        @Html.EditorFor(model => model.userManage.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入暱稱", @style = "background-color:#F2ECE2;", @id = "username" } })
                         @Html.ValidationMessageFor(model => model.userManage.UserName, "", new { @class = "text-danger" })
+                        <span id="usernameError" class="text-danger"></span>
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="Account">請輸入帳號</label>
-                        @Html.EditorFor(model => model.userManage.Account, new { htmlAttributes = new { @class = "form-control", placeholder = "帳號", @style = "background-color:#F2ECE2;" } })
+                        @Html.EditorFor(model => model.userManage.Account, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入帳號", @style = "background-color:#F2ECE2;", @id = "account" } })
                         @Html.ValidationMessageFor(model => model.userManage.Account, "", new { @class = "text-danger" })
+                        <span id="accountError" class="text-danger"></span>
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="Password">請輸入密碼</label>
-                        @Html.PasswordFor(model => model.userManage.Password, new { @class = "form-control", placeholder = "密碼 ", @style = "background-color:#F2ECE2;" })
+                        @Html.PasswordFor(model => model.userManage.Password, new { @class = "form-control", @id = "passwordInput", placeholder = "請輸入密碼 ", @style = "background-color:#F2ECE2;" })
                         @Html.ValidationMessageFor(model => model.userManage.UserName, "", new { @class = "text-danger" })
+                        <span id="togglePassword" class="fa fa-eye-slash" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></span>
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="ConfirmPassword">再次輸入密碼</label>
-                        @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", placeholder = "確認密碼 ", @style = "background-color:#F2ECE2;" })
+                        @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", @id = "passwordInputs", placeholder = "再次輸入密碼 ", @style = "background-color:#F2ECE2;" })
                         @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                        <span id="togglePasswords" class="fa fa-eye-slash" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></span>
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="Email">請輸入信箱</label>
-                        @Html.EditorFor(model => model.userManage.Email, new { htmlattributes = new { @class = "form-control", placeholder = "信箱", @style = "background-color:#F2ECE2;", id = "Email" } })
+                        @Html.EditorFor(model => model.userManage.Email, new { htmlattributes = new { @class = "form-control", placeholder = "請輸入信箱", @style = "background-color:#F2ECE2;", id = "Email" } })
                         @Html.ValidationMessageFor(model => model.userManage.Email, "", new { @class = "text-danger" })
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <label class="form-label" for="code">請輸入驗證碼</label>
-                        @Html.EditorFor(model => model.code, new { htmlAttributes = new { @class = "form-control", placeholder = "驗證碼", @style = "background-color:#F2ECE2;" } })
+                        @Html.EditorFor(model => model.code, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入驗證碼", @style = "background-color:#F2ECE2;" } })
                         @Html.ValidationMessageFor(model => model.code, "", new { @class = "text-danger" })
                         <div class="verif">
                             <button type="button" id="sendCodeButton" class="verif_btn">傳送驗證碼</button>
                         </div>
                     </div>
-                    
+
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        
-                        <label class="form-label" for="Birthday">請選擇生日</label>
-                        @Html.EditorFor(model => model.userManage.Birthday, new { htmlAttributes = new { @class = "form-control", @style = "background-color:#F2ECE2;", type = "date" } })
+
+                        @Html.EditorFor(model => model.userManage.Birthday, new { htmlAttributes = new { @class = "form-control", placeholder = "生日", @style = "background-color:#F2ECE2;", type = "date" } })
                         @Html.ValidationMessageFor(model => model.userManage.Birthday, "", new { @class = "text-danger" })
                     </div>
 
 
 
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input id="submitButton" type="submit" value="註冊" class="btn btn-default  form-control" style="background-color:#97CD7D;" />
                     </div>
                 </div>
 
@@ -159,6 +163,89 @@
                         alert('發送驗證碼失敗，請重試！');
                     }
                 });
+            });
+        });
+
+
+          //限制暱稱帳號不重複
+        $(document).ready(function () {
+            $("#username").blur(function () {
+                var username = $(this).val();
+            $.ajax({
+                url: "@Url.Action("IsUserNameUnique", "UserManages")",
+                data: { username: username },
+                type: "GET",
+                success: function (data) {
+                    if (data) {
+                        $("#usernameError").text("");
+                        // 啟用提交按鈕
+                        $("#submitButton").prop("disabled", false);
+                    } else {
+                        $("#usernameError").text("此暱稱已被使用！");
+                        // 禁用提交按鈕
+                        $("#submitButton").prop("disabled", true);
+                    }
+                }
+            });
+        });
+
+        $("#account").blur(function () {
+            var account = $(this).val();
+            $.ajax({
+                url: "@Url.Action("IsAccountUnique", "UserManages")",
+                data: { account: account },
+                type: "GET",
+                success: function (data) {
+                    if (data) {
+                        $("#accountError").text("");
+                        // 啟用提交按鈕
+                        $("#submitButton").prop("disabled", false);
+                    } else {
+                        $("#accountError").text("此帳號已被使用！");
+                        // 禁用提交按鈕
+                        $("#submitButton").prop("disabled", true);
+                    }
+                }
+            });
+        });
+        });
+
+
+
+
+        // 初始化密码显示/隐藏状态
+        var passwordVisible = false;
+
+        // 显示/隐藏密码功能
+        $(document).ready(function () {
+            $("#togglePassword").click(function () {
+                var passwordInput = $("#passwordInput");
+                if (passwordVisible) {
+                    passwordInput.attr("type", "password");
+                    $("#togglePassword").removeClass("fa-eye").addClass("fa-eye-slash");
+                } else {
+                    passwordInput.attr("type", "text");
+                    $("#togglePassword").removeClass("fa-eye-slash").addClass("fa-eye");
+                }
+                passwordVisible = !passwordVisible;
+            });
+        });
+
+        // 初始化密码显示/隐藏状态
+        var passwordVisibles = false;
+
+        // 显示/隐藏密码功能
+        $(document).ready(function () {
+            $("#togglePasswords").click(function () {
+                var passwordInputs = $("#passwordInputs");
+                if (passwordVisibles) {
+                    passwordInputs.attr("type", "password");
+                    $("#togglePasswords").removeClass("fa-eye").addClass("fa-eye-slash");
+                } else {
+                    passwordInputs.attr("type", "text");
+                    $("#togglePasswords").removeClass("fa-eye-slash").addClass("fa-eye");
+                }
+                passwordVisibles = !passwordVisibles;
             });
         });
     </script>

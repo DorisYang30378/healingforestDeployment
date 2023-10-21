@@ -271,6 +271,7 @@
     <Compile Include="viewmodel\ChatMemberViewModel.cs" />
     <Compile Include="viewmodel\ChatRoomViewModel.cs" />
     <Compile Include="viewmodel\DemoCharViewModel.cs" />
+    <Compile Include="viewmodel\EditPasswordViewModel.cs" />
     <Compile Include="viewmodel\LoginViewModel.cs" />
     <Compile Include="viewmodel\ArticlePostViewModel.cs" />
     <Compile Include="viewmodel\RAViewModel.cs" />
@@ -366,6 +367,9 @@
     <Content Include="Views\CharRoom\Charmember.cshtml" />
     <Content Include="Views\CharRoom\ChatRoom.cshtml" />
     <Content Include="Views\Manager\MSReview.cshtml" />
+    <Content Include="Views\UserManages\EditPassword.cshtml" />
+    <Content Include="Views\UserManages\MemberDetails.cshtml" />
+    <Content Include="Views\UserManages\MemberEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

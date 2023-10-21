@@ -4,6 +4,7 @@ using postArticle.viewmodel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -67,11 +68,13 @@ namespace postArticle.Controllers
                 if (queryAccountSQL.Any())
                 {
                     ModelState.AddModelError("userManage.Password", "密碼錯誤");
+                    ViewBag.InvalidPassword = true;
                     return View();
                 }
                 else
                 {
                     ModelState.AddModelError("userManage.Account", "無此帳號");
+                    ViewBag.InvalidPassword = true;
                     return View();
                 }
             }
@@ -123,9 +126,11 @@ namespace postArticle.Controllers
         }
 
 
+
+        //password
         private string GenerateRandomCode(int length)
         {
-            const string chars = "0123456789";
+            const string chars = "0123456789abcdefghijklmnopqrstuvwxyz";
             var random = new Random();
             var code = new char[length];
 
@@ -164,7 +169,8 @@ namespace postArticle.Controllers
 
                     registerViewModel.userManage.Experience = 0.0;
                     registerViewModel.userManage.LevelValue = 0;
-                    registerViewModel.userManage.UserType = "member";
+                    registerViewModel.userManage.UserType = "Member";
+                    registerViewModel.userManage.Status = 0;
 
 
                     db.UserManages.Add(registerViewModel.userManage);
@@ -192,15 +198,26 @@ namespace postArticle.Controllers
                 {
                     UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
                     string subject = "忘記密碼";
+                    var RandomPassword = GenerateRandomCode(8);
+                    // 更新會員密碼為臨時密碼
+                    user.Password = RandomPassword;
+                    db.SaveChanges(); // 保存變更
                     string body = @"
-                        <p>您的密碼為: {Password} </p>
-                        ======================================================<br />
-                        此為系統自動發送的電子郵件，請勿直接回覆本信件。<br />
-                        ======================================================<br />
-                        </p>
-                        ";
-                    body = body.Replace("{Password}", user.Password);
+                <p>您的臨時密碼為: {RandomPassword}<br />
+                    登入後請記得至會員資料處進行密碼修改! <br />              
+                    若有任何問題，歡迎與我們聯繫。<br />
+                    我們的客服信箱為<p>healingforestweb@gmail.com<p/>
+                    最後，祝您使用愉快! 療癒之森開發團隊</p>
+                ===============================<br />
+                此為系統自動回覆之信件，若有問題可以聯繫開發團隊。<br />
+                ===============================<br />
+                ";
+                    /* body = body.Replace("{Password}", user.Password);
+                     ms.SendMail(email, subject, body);*/
+
+                    body = body.Replace("{RandomPassword}", RandomPassword);
                     ms.SendMail(email, subject, body);
+                    Session["RandomPassword"] = RandomPassword;
 
                 }
                 catch (Exception)
@@ -237,5 +254,152 @@ namespace postArticle.Controllers
         {
             return View();
         }
+
+
+
+        //限制暱稱不重複
+        public JsonResult IsUserNameUnique(string username)
+        {
+            bool isUnique = !db.UserManages.Any(u => u.UserName == username);
+            return Json(isUnique, JsonRequestBehavior.AllowGet);
+        }
+
+        //限制帳號不重複
+        public JsonResult IsAccountUnique(string account)
+        {
+            bool isUnique = !db.UserManages.Any(u => u.Account == account);
+            return Json(isUnique, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
+        // GET: UserManages/Details/5
+        public ActionResult MemberDetails(int? id)
+        {
+
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            UserManage userManage = db.UserManages.Find(id);
+            if (userManage == null)
+            {
+                return HttpNotFound();
+            }
+            return View(userManage);
+        }
+
+
+
+
+        public ActionResult MemberEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            UserManage userManage = db.UserManages.Find(id);
+
+            if (userManage == null)
+            {
+
+                return HttpNotFound();
+            }
+
+            return View(userManage);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MemberEdit(UserManage userManage)
+        {
+            if (ModelState.IsValid)
+            {
+
+                using (healingForestEntities db = new healingForestEntities())
+                {
+
+                    UserManage existingUser = db.UserManages.Find(userManage.UserID);
+
+                    if (existingUser != null)
+                    {
+                        existingUser.UserName = userManage.UserName;
+                        existingUser.Account = userManage.Account;
+                        existingUser.Email = userManage.Email;
+                        existingUser.Birthday = userManage.Birthday;
+
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return HttpNotFound();
+                    }
+                }
+
+                return RedirectToAction("MemberDetails", new { id = userManage.UserID });
+            }
+
+            return View(userManage);
+        }
+
+        public ActionResult EditPassword(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            UserManage user = db.UserManages.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            EditPasswordViewModel viewModel = new EditPasswordViewModel();
+            viewModel.userManage = user;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPassword(EditPasswordViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                UserManage existingUser = db.UserManages.Find(viewModel.userManage.UserID);
+
+                if (existingUser != null)
+                {
+                    if (existingUser.Password == viewModel.OldPassword)
+                    {
+                        if (viewModel.NewPassword == viewModel.ConfirmPassword)
+                        {
+                            existingUser.Password = viewModel.NewPassword;
+                            db.SaveChanges();
+                            return RedirectToAction("MemberDetails", new { id = viewModel.userManage.UserID });
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("ConfirmPassword", "新密碼和確認密碼不匹配");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("OldPassword", "舊密碼不正確");
+                    }
+                }
+                else
+                {
+                    return HttpNotFound();
+                }
+
+            }
+
+            return View(viewModel);
+        }
+
+
+
     }
 }

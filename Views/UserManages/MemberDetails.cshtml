@@ -1,0 +1,125 @@
+﻿@model postArticle.Models.UserManage
+@{
+    ViewBag.Title = "會員資料";
+    var usertype = "";
+
+}
+
+<style>
+    body {
+        background-color: #DBF0D0;
+    }
+
+    .window_content {
+        position: relative;
+        width: 800px;
+        height: 200px;
+        margin: 0 auto;
+        top: 20px;
+        border-radius: 5px;
+        background-color: #ffffff;
+    }
+
+    @@media screen and (max-width:769px) {
+        .window_content {
+            position: relative;
+            width: 100%;
+            height: 445px;
+            margin: 0 auto;
+            top: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+    }
+
+    .custom-btn {
+        padding: 10px 10px; /* Padding for the button */
+        border-radius: 5px; /* Rounded corners */
+        width: 150px; /* 指定按钮的宽度 */
+        transition: background-color 0.3s; /* 添加过渡效果 */
+    }
+
+        .custom-btn:hover {
+            background-color: #97CD7D; /* 鼠标悬停时的背景颜色 */
+        }
+
+    .circle-avatar {
+        width: 100px; /* 设置头像的宽度 */
+        height: 100px; /* 设置头像的高度 */
+        border-radius: 50%; /* 将头像变成圆形 */
+        background-size: cover; /* 保持图片比例并填充整个头像区域 */
+        background-position: center; /* 将图片居中 */
+        background-color: dimgrey;
+    }
+</style>
+
+<h1 style="padding:50px 0px 0px 0px; color:black; text-align:center;"></h1>
+
+@if (Model.UserType == "member")
+{
+    usertype = "會員";
+}
+@Html.AntiForgeryToken()
+<div class="container">
+    <div class="row">
+        <div class="col-md-2" style="padding-top:50px">
+            <div class="list-group">
+                <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">資料修改</a>
+                <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
+                <a href="#" class="list-group-item btn custom-btn">我的提問</a>
+                <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
+                <a href="#" class="list-group-item btn custom-btn">心情紀錄</a>
+                <a href="#" class="list-group-item btn custom-btn">我的好友</a>
+                <a href="#" class="list-group-item btn custom-btn">我的群組</a>
+                <!-- 在这里添加更多按钮 -->
+            </div>
+        </div>
+        <div class="col-md-6 offset-md-1">
+            <div class="window_content ">
+                <div class="window_content_body">
+
+
+                    <div style="position: relative; float: left; display: table; margin: 15px auto;">
+                        <div class="circle-avatar"></div><!-- 大頭貼預定地 -->
+                        <div style="position: relative; text-align: center; margin: 0 auto;">
+                            @Model.UserName
+                        </div>
+                    </div>
+
+                    <div style="position: relative; display: table; margin: 15px auto; ">
+                        @usertype 等級:@Model.LevelValue
+                    </div>
+
+
+                    <div style="position: relative; display: table; margin: 15px auto;">
+
+                        @usertype 經驗值:@Model.Experience
+                    </div>
+
+
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    function previewImage(input) {
+        var preview = document.getElementById('preview');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

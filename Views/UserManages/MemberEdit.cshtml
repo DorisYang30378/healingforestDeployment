@@ -1,0 +1,145 @@
+﻿@model postArticle.Models.UserManage
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<style>
+    body {
+        background-color: #DBF0D0;
+    }
+
+    .window_content {
+        position: relative;
+        width: 400px;
+        height: 450px;
+        margin: 0 auto;
+        top: 20px;
+        border-radius: 5px;
+        background-color: #ffffff;
+    }
+
+    @@media screen and (max-width:769px) {
+        .window_content {
+            position: relative;
+            width: 100%;
+            height: 445px;
+            margin: 0 auto;
+            top: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+    }
+</style>
+
+<h1 style="padding:50px 0px 0px 0px; color:black; text-align:center;">療癒之森</h1>
+
+
+
+
+
+<div class="container">
+    <div class="window_content">
+        <div class="window_content_body">
+
+            @using (Html.BeginForm("MemberEdit", "UserManages", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+
+
+                <div style=" padding-bottom:10px; padding-top:20px; text-align:center; font-size:30px; ">修改會員資料</div>
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                @Html.HiddenFor(model => model.UserID)
+                @Html.HiddenFor(model => model.Password)
+                @Html.HiddenFor(model => model.UserType)
+                @Html.HiddenFor(model => model.LevelValue)
+                @Html.HiddenFor(model => model.Experience)
+                @Html.HiddenFor(model => model.Status)
+
+
+                <div class="form-group">
+
+                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "修改暱稱", @style = "background-color:#F2ECE2;", @id = "username" } })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        <span id="usernameError" class="text-danger"></span>
+                    </div>
+
+                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                        @Html.EditorFor(model => model.Account, new { htmlAttributes = new { @class = "form-control", placeholder = "修改帳號", @style = "background-color:#F2ECE2;", @id = "account" } })
+                        @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger" })
+                        <span id="accountError" class="text-danger"></span>
+                    </div>
+
+                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                        @Html.EditorFor(model => model.Email, new { htmlattributes = new { @class = "form-control", placeholder = "修改信箱", @style = "background-color:#F2ECE2;", id = "Email" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+
+                        @Html.EditorFor(model => model.Birthday, new { htmlAttributes = new { @class = "form-control", placeholder = "修改生日", onfocus = "(this.type = 'date')", @style = "background-color:#F2ECE2;", type = "text" } })
+                        @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
+                    </div>
+
+
+
+                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
+                        <input id="submitButton" type="submit" value="修改" class="btn btn-default  form-control" style="background-color:#97CD7D;" />
+                    </div>
+                </div>
+
+
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+        //限制暱稱帳號不重複
+    $(document).ready(function () {
+        $("#username").blur(function () {
+            var username = $(this).val();
+        $.ajax({
+            url: "@Url.Action("IsUserNameUnique", "UserManages")",
+            data: { username: username },
+            type: "GET",
+            success: function (data) {
+                if (data) {
+                    $("#usernameError").text("");
+                    // 啟用提交按鈕
+                    $("#submitButton").prop("disabled", false);
+                } else {
+                    $("#usernameError").text("此暱稱已被使用！");
+                    // 禁用提交按鈕
+                    $("#submitButton").prop("disabled", true);
+                }
+            }
+        });
+    });
+
+    $("#account").blur(function () {
+        var account = $(this).val();
+        $.ajax({
+            url: "@Url.Action("IsAccountUnique", "UserManages")",
+            data: { account: account },
+            type: "GET",
+            success: function (data) {
+                if (data) {
+                    $("#accountError").text("");
+                    // 啟用提交按鈕
+                    $("#submitButton").prop("disabled", false);
+                } else {
+                    $("#accountError").text("此帳號已被使用！");
+                    // 禁用提交按鈕
+                    $("#submitButton").prop("disabled", true);
+                }
+            }
+        });
+    });
+});
+</script>
