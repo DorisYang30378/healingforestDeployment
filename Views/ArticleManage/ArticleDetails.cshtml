@@ -267,6 +267,8 @@
             {
                 <button class="btn bi-star-fill report">檢舉文章</button>
             }
+            <button class="btn bi-star-fill" id="copyButton">分享文章</button>
+            <input type="text" id="urlText" style="position: absolute; left: -9999px;">
 
 
         </div>
@@ -574,6 +576,19 @@
         txt += ","+reportadd.value;
         return txt;
     };
+
+
+
+    $("#copyButton").click(function () {
+
+        var url = window.location.href;
+        var urlText = document.getElementById('urlText');
+        urlText.value = url;
+        urlText.select();
+        document.execCommand('copy');
+        alert('文章網址已儲存在剪貼簿，可以按下鍵盤"Ctrl+V"貼上 ');
+
+    });
 
 
 

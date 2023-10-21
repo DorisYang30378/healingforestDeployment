@@ -39,8 +39,6 @@
         background-color: inherit;
         color: red;
     }
-
-
 </style>
 
 
@@ -102,7 +100,6 @@
     </div>
 </div>
 
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
@@ -114,6 +111,15 @@
 
     // 显示/隐藏密码功能
     $(document).ready(function () {
+
+        if (@TempData["UserStatus"]="封鎖") {
+            alert("此帳號已被封鎖,請聯繫管理員");
+        }
+
+
+
+
+
         $("#togglePassword").click(function () {
             var passwordInput = $("#passwordInput");
             if (passwordVisible) {

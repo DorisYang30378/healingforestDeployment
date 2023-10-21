@@ -37,15 +37,15 @@ namespace postArticle.Controllers
 
 
                 var querySQL = from UserManagedb in db.UserManages
-                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account && UserManagedb.Status == 0
+                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account
                                select new
                                {
-                                   UserManagedb.UserID
+                                   UserManagedb.UserID, UserManagedb.Status
                                };
 
                 #region ===如果有進入首頁===
 
-                if (querySQL.Any())
+                if (querySQL.Any() && querySQL.First().Status == 0)
                 {
                     var user = querySQL.FirstOrDefault();
                     Session["UserID"] = user.UserID;
@@ -53,7 +53,11 @@ namespace postArticle.Controllers
                     return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
                 }
                 #endregion
-                return View();
+                else
+                {
+                    TempData["UserStatus"] = "封鎖";
+                    return View();
+                }
             }
             else {
 
@@ -295,6 +299,9 @@ namespace postArticle.Controllers
 
         public ActionResult MemberEdit(int? id)
         {
+
+            int UserID = GetUserID();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -307,7 +314,13 @@ namespace postArticle.Controllers
                 return HttpNotFound();
             }
 
-            return View(userManage);
+            if( id == UserID)
+            {
+                return View(userManage);
+            }
+            
+
+            return View();
         }
 
         [HttpPost]
@@ -345,6 +358,8 @@ namespace postArticle.Controllers
 
         public ActionResult EditPassword(int? id)
         {
+
+            int UserID = GetUserID();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -356,9 +371,13 @@ namespace postArticle.Controllers
                 return HttpNotFound();
             }
 
-            EditPasswordViewModel viewModel = new EditPasswordViewModel();
-            viewModel.userManage = user;
-            return View(viewModel);
+            if (id == UserID) {
+                EditPasswordViewModel viewModel = new EditPasswordViewModel();
+                viewModel.userManage = user;
+                return View(viewModel);
+            }
+
+            return View();
         }
 
         [HttpPost]
