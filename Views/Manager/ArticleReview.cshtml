@@ -66,8 +66,15 @@
     <label class="btn btn-outline-primary" for="nopass">檢舉未通過</label>
 
     <div style="text-align:center; margin-top:30px;">
-        <button class="btn btn-light">返回</button>
-        <button class="btn btn-danger" id="submit">送出</button>
+        @Html.ActionLink("返回", "Report", "Manager", null, new { @class = "btn btn-light" })
+        @if (Model.RAStatus == 0) { 
+                <button class="btn btn-danger" id="submit">送出</button>
+            }
+            else
+            {
+               <button class="btn btn-danger" id="submit" disabled>送出</button>
+            }
+        
     </div>
 </form>
 
@@ -96,10 +103,10 @@
                 success: function (data) {
 
                     if (data.success) {
+
                         alert("成功");
 
-                      
-
+                         window.location.href = '@Url.Action("Report")';
                     }
 
                     else {

@@ -108,7 +108,7 @@ namespace postArticle.Controllers
 
 
 
-        public ActionResult Report(String sort) {
+        public ActionResult Report() {
 
 
             /*
@@ -122,13 +122,16 @@ namespace postArticle.Controllers
             var ReportArticle = db.Reports.ToList().Where(m => m.Status == 0);
             */
 
-            RMV.RA = db.Reports.ToList();
-            RMV.RM = db.Report_Message.ToList();
-
-
+            collectReport();
 
             return View(RMV);
 
+        }
+
+        public void collectReport()
+        {
+            RMV.RA = db.Reports.ToList();
+            RMV.RM = db.Report_Message.ToList();
         }
 
 
@@ -140,11 +143,11 @@ namespace postArticle.Controllers
             //檢舉ID
             Report empp = db.Reports.Find(RID);
             Article emps = db.Articles.Find(ArticleID);
-           
+
             ////////////////////////////////////
             RAViewModel emp = new RAViewModel
             {
-            ////////////////////////////////////
+                ////////////////////////////////////
                 Title = emps.Title,
                 Content = emps.Content,
                 ImageURL = emps.ImageURL,
@@ -152,7 +155,8 @@ namespace postArticle.Controllers
                 RU_ID = (int)empp.UserID,
                 RA = (int)empp.ArticleID,
                 RdU = (int)emps.UserID,
-                ReportContent = empp.ReportContent
+                ReportContent = empp.ReportContent,
+                RAStatus = empp.Status
             };
 
 
@@ -187,7 +191,8 @@ namespace postArticle.Controllers
                 Read(ReportID);
                 db.SaveChanges();
 
-                return Json(new { success = true}, JsonRequestBehavior.AllowGet);
+                //return Json(new { redirectUrl = Url.Action("Report", "Manager") });
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
 
             }
 

@@ -5,40 +5,33 @@
 
 }
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 <style>
     body {
         background-color: #DBF0D0;
     }
 
-    .container-panel{
-        position:relative;
-        display:flex;
-        height:75vh;
+    .container-panel {
+        position: relative;
+        display: flex;
+        height: max-content;
         margin-top: 70px;
-        margin-left:2%;
+        margin-left: 2%;
+        margin-bottom:300px;
     }
 
     .window_content {
         position: relative;
-        margin-left:6%;
-        height:300px;
-        width:900px;
+        margin-left: 6%;
+        height: 300px;
+        width: 900px;
         border-radius: 5px;
         background-color: #ffffff;
+        margin-bottom:70px;
+        
     }
-
-    /*
-    @@media screen and (max-width:769px) {
-        .window_content {
-            position: relative;
-            width: 100%;
-            height: 445px;
-            margin: 0 auto;
-            top: 20px;
-            border-radius: 5px;
-            background-color: #ffffff;
-        }
-    }*/
 
     .custom-btn {
         padding: 10px 10px; /* Padding for the button */
@@ -52,12 +45,39 @@
         }
 
     .circle-avatar {
-        width: 100px; /* 设置头像的宽度 */
-        height: 100px; /* 设置头像的高度 */
-        border-radius: 50%; /* 将头像变成圆形 */
+        width: 100px; 
+        height: 100px; 
+        border-radius: 50%; 
         background-size: cover; /* 保持图片比例并填充整个头像区域 */
         background-position: center; /* 将图片居中 */
-        background-color: dimgrey;
+        background-color: #d5f5c6;
+    }
+
+    .box {
+        width: 50px;
+        height: 40px;
+        background-color: #c5e5b6;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        .box:hover {
+            width: 230px;
+            transition: 0.5s;
+        }
+
+    .mood {
+        border: none;
+        background-color: transparent;
+        margin-top: -5px;
+    }
+
+    #mood-font {
+        font-size: 30px;
+    }
+
+    .mood-container {
+        display: none;
     }
 </style>
 
@@ -68,38 +88,66 @@
 }
 @Html.AntiForgeryToken()
 <div class="container-panel">
-        
-            <div class="list-group" style="height:100%;">
-                <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">資料修改</a>
-                <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
-                <a href="#" class="list-group-item btn custom-btn">我的提問</a>
-                <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
-                <a href="#" class="list-group-item btn custom-btn">心情紀錄</a>
-                <a href="#" class="list-group-item btn custom-btn">我的好友</a>
-                <a href="#" class="list-group-item btn custom-btn">我的群組</a>
-                <!-- 在这里添加更多按钮 -->
+
+    <div class="list-group" style="height:100%;">
+        <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">資料修改</a>
+        <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
+        <a href="#" class="list-group-item btn custom-btn">我的提問</a>
+        <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
+        <a href="#" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
+        <a href="#" class="list-group-item btn custom-btn">我的好友</a>
+        <a href="#" class="list-group-item btn custom-btn">我的群組</a>
+        <!-- 在这里添加更多按钮 -->
+    </div>
+
+    <div class="window_content">
+
+
+        <div style="position: relative; float: left;  margin: 15px 0 0 3%;">
+            <div class="circle-avatar"></div><!-- 大頭貼預定地 -->
+            <div style="position: relative; text-align: center; margin: 0 auto;">
+                <strong>
+                    @Model.UserName
+                </strong>
+            </div>
+        </div>
+
+        <div style="position: relative; float:left; margin: 30px 0 0 30px; ">
+            <p>@usertype 等級:@Model.LevelValue</p>
+            <p>@usertype 經驗值:@Model.Experience</p>
+            <div class="box" style="position:absolute; margin-left:-130px; margin-top:30px;">
+                <span title="喜"><button class="mood" value="喜"><p id="mood-font">&#128516;</p></button></span>
+                <span title="傷心"><button class="mood" value="選擇了傷心"><p id="mood-font">&#128557;</p></button></span>
+                <span title="悶"><button class="mood" value="悶"><p id="mood-font">&#128542;</p></button></span>
+                <span title="怒"><button class="mood" value="選擇了怒"><p id="mood-font">&#128545;</p></button></span>
+            </div>
+        </div>
+
+
+        <div class="window_content " style="margin-top:350px; margin-left:-4px; height: 500px;">
+
+
+        </div>
+
+
+
+        <div class="window_content mood-container" style="margin-top:30px; margin-bottom:100px;  margin-left:-4px; height: 500px;">
+
+            <div style="width: 450px; height: 450px; position:absolute; margin-top:30px;  margin-left:230px;">
+                <canvas id="myPieChart"></canvas>
             </div>
 
-            <div class="window_content">
+        </div>
 
-                
-                    <div style="position: relative; float: left;  margin: 15px 0 0 3%;">
-                        <div class="circle-avatar"></div><!-- 大頭貼預定地 -->
-                        <div style="position: relative; text-align: center; margin: 0 auto;">
-                            <strong>
-                                @Model.UserName
-                            </strong>
-                        </div>
-                    </div>
+        <div style="visibility:hidden">1</div>
 
-                    <div style="position: relative; float:left; margin: 30px 0 0 30px; ">                   
-                        <p>@usertype 等級:@Model.LevelValue</p>
-                        <p>@usertype 經驗值:@Model.Experience</p>
-                    </div>
-                    
 
-            </div>
+
+    </div>
+
+
 </div>
+
 
 
 
@@ -114,4 +162,60 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+
+
+    $(document).ready(function () {
+
+        $(".mood").click(function () {
+
+            var text = $(this).val();
+            if (confirm(text)) {
+
+            }
+            else {
+
+            }
+
+        });
+
+        $(".mood-reward").click(function () {
+
+            $(".mood-container").toggle();
+
+        });
+
+
+    });
+
+
+
+
+    // canvas元素
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    //表情
+    var encodedText = encodeURI('&#128516');
+    var happy = "😃";
+    var badmood = "😞";
+    var cry = "😭";
+    var angry = "😡";
+
+
+
+    //資料欄
+    var data = {
+        labels: ["開心" + happy, "傷心" + badmood, "哭泣" + cry, "憤怒" + angry],
+        datasets: [{
+            data: [7, 8, 9, 10],
+            backgroundColor: ['#f564', 'green', 'blue', 'red']
+        }]
+    };
+
+    // 创建圆饼图
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: data
+    });
+
+
 </script>

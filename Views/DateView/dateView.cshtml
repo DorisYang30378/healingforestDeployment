@@ -16,7 +16,7 @@
 
     .containers{
         padding-top: 10%;
-        height: 100vh;
+        height: 100%;
     }
 
     .body-list {
@@ -139,7 +139,15 @@
 
 <!--button 簽到按鈕-->
 <div>
-    <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+    @if(ViewBag.CheckIn == "簽到")
+            {
+                <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+            }
+            else
+            {
+                <input type="button" class="CheckIn" id="button" onclick="myfun()" disabled value=@ViewBag.CheckIn>
+            }
+    
 </div>
     </div>
 
@@ -159,6 +167,8 @@
                 break;
             case "已簽到":
                 alert("您已簽到");
+                break;
+            default:
                 break;
         }
     }

@@ -26,6 +26,8 @@ namespace postArticle.viewmodel
         public int ReportID { get; set; }
         public string ReportContent { get; set; }
 
+        public int RAStatus { get; set; }
+
 
         //檢舉人ID(Report_User_ID)
         public int RU_ID { get; set; } 
