@@ -24,7 +24,7 @@ namespace postArticle.Models
         public int UserID { get; set; }
         public string QuestionTitle { get; set; }
         public string QuestionContent { get; set; }
-        public System.DateTime QuestionTime { get; set; }
+        public Nullable<System.DateTime> QuestionTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExpertAnswer> ExpertAnswers { get; set; }

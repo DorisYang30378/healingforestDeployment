@@ -7,6 +7,7 @@
 @{
     ViewBag.Title = "Charmember";
     var UserID = Model.UserID;
+    var UserName = Model.UserName;
     var Expert = Model.Expert;
     var SearchMember = Model.SearchMember;
     var Friend = Model.ChatRoom;
@@ -17,6 +18,10 @@
 
 
 <style>
+
+    body {
+        background-color: #DBF0D0;
+    }
 
     img {
         width: 150px;
@@ -36,30 +41,41 @@
 
     .box {
         width: 90%;
-        height: 150px;
+        height: fit-content;
         border-radius: 20px;
-        overflow-x:scroll;
-        white-space:nowrap;
-        overflow-y:hidden;
+        overflow-x: scroll;
+        white-space: nowrap;
+        overflow-y: hidden;
+    }
+        /* 軌道大小和顏色設定*/
+        .box::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* 滑動條顏色 */
+        .box::-webkit-scrollbar-thumb {
+            background: #93bc44;
+            border-radius: 5px;
+        }
+
+    .search_member{
+
+        display:flex;
+        margin-top:70px;
+        align-content:center;
+        justify-content:center;
     }
 
-    .box::-webkit-scrollbar{
-        display: none;
-    }
+
+
 </style>
-
-
-
-
-<h2>聊天室</h2>
-
 
 
 @using (Html.BeginForm("Charmember", "CharRoom", FormMethod.Get))
 {
-    <p>
-        <input type="text" name="searchString" placeholder="搜尋使用者">
-        <input type="submit" value="查詢" />
+    <p class="search_member">
+        <input class="form-control" style="width:50%;" type="text" name="searchString" placeholder="搜尋使用者">
+        <input type="submit" class="btn btn-primary" style="margin-left:10px; width:80px;" value="查詢" />
     </p>
 }
 
@@ -67,31 +83,33 @@
 
 
 
-<h2>Search</h2>
+<p style="font-size: 30px; font-family: Georgia, serif;" >搜尋</p>
 <hr>
 
 <div class="box">
 
 
     @if (SearchMember != null)
+    {
+        foreach (var item in SearchMember)
+        {
+
+            int chatroomid = 0;
+            int otherid = item.UserID;
+            foreach (var room in SearchMemberChatRoom)
+            {
+                if (room.UserID == item.UserID || room.OtherUserID == item.UserID)
                 {
-                    foreach (var item in SearchMember)
-                    {
+                    chatroomid = room.ChatroomID;
+                }
+            }
 
-                        int chatroomid= 0;
-                        int otherid = item.UserID;
-                        foreach(var room in SearchMemberChatRoom)
-                        {
-                            if(room.UserID ==item.UserID ||room.OtherUserID == item.UserID)
-                            {
-                                chatroomid = room.ChatroomID;
-                            }
-                        }
+            <div style="width:150px; margin-left:20px; display:inline-block; ">
+                    <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@otherid, @chatroomid)"><img src="~/Uploads/Expert.png"></a>
+                    <p style="text-align:center; font-size:20px; font-weight:bolder;">@item.UserName</p>
+            </div>
 
-                             <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@otherid, @chatroomid)"><img src="~/Uploads/Expert.png"></a>
-
-
-    }
+        }
 
     }
 
@@ -100,7 +118,7 @@
 
 
 
-<h2>Expert</h2>
+<p style="font-size: 30px; font-family: Georgia, serif;">專家</p>
 <hr>
 
 
@@ -127,7 +145,12 @@
                 }
             }
 
-            <a class="Expert Room" title="專家: @item.UserName @ExpertID" value="@item.UserID" onclick="IsChatroom(@ExpertID ,@chatroomid)"><img src="~/Uploads/Expert.png"></a>
+
+            <div style="width:150px; margin-left:20px; display:inline-block; ">
+                    <a class="Expert Room" title="專家: @item.UserName" value="" onclick="IsChatroom(@ExpertID ,@chatroomid)"><img src="~/Uploads/Expert.png"></a>
+                    <p style="text-align:center; font-size:20px; font-weight:bolder;">@item.UserName</p>
+            </div>
+           
         }
 
     }
@@ -137,7 +160,7 @@
 
 
 
-<h2>Friends</h2>
+<p style="font-size: 30px; font-family: Georgia, serif;">好友</p>
 <hr>
 
 <div class="box">
@@ -146,19 +169,24 @@
     @foreach (var item in Friend)
     {
 
+        string name = item.ChatRoomName;
+        string removename = name.Replace("/", "");
+        removename = removename.Replace("的私聊", "");
+        removename = removename.Replace(UserName, "");
+
 
         var title = item.ChatRoomName;
 
-        <a class="Expert" title="@title" value=@item.ChatroomID onclick="IsChatroom(0,@item.ChatroomID)"><img src="~/Uploads/Expert.png"></a>
+        <div style="width:150px; margin-left:20px; display:inline-block; ">
+            <a class="Expert Room" title="專家: @removename" value="" onclick="IsChatroom(0,@item.ChatroomID)"><img src="~/Uploads/Expert.png"></a>
+            <p style="text-align:center; font-size:20px; font-weight:bolder;">@removename</p>
+        </div>
 
 
     }
 
 </div>
-
-
 <hr>
-
 
 <script>
 

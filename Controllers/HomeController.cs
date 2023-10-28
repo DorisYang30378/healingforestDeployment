@@ -251,7 +251,7 @@ namespace postArticle.Controllers
                                 {
                                     if (article.Content.Length > 200)
                                     {
-                                        article.Content = article.Content.Substring(0, 350) + ".............顯示更多";
+                                        article.Content = article.Content.Substring(0, 200) + ".............顯示更多";
                                     }
                                     return article;
                                 })

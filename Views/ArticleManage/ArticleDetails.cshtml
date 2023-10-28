@@ -248,7 +248,9 @@
 
         <p class="article-author">Author: @Html.DisplayFor(model => article.UserManage.UserName)</p>
         <div class="article-content">
-            @Html.Raw(Model.article.Content)
+            <div style="width: 100%; height: 500px; border-radius: 10px; border: none; white-space: pre-wrap; overflow:scroll; font-size: 18px;">
+                @Model.article.Content
+            </div>
 
             <div class="article-image  ">
                 <img src="~/Uploads/@Html.DisplayFor(model => article.ImageURL)" alt="Article Image">

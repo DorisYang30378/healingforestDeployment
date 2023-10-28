@@ -11,13 +11,16 @@ namespace postArticle.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class UserManage
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserManage()
         {
             this.Articles = new HashSet<Article>();
+            this.Chatrooms = new HashSet<Chatroom>();
+            this.Chatrooms1 = new HashSet<Chatroom>();
             this.ChatroomLogs = new HashSet<ChatroomLog>();
             this.Checkins = new HashSet<Checkin>();
             this.Collects = new HashSet<Collect>();
@@ -29,23 +32,36 @@ namespace postArticle.Models
             this.ReportMembers = new HashSet<ReportMember>();
             this.ReportMembers1 = new HashSet<ReportMember>();
             this.UserQuestions = new HashSet<UserQuestion>();
-            this.Chatrooms = new HashSet<Chatroom>();
-            this.Chatrooms1 = new HashSet<Chatroom>();
         }
     
         public int UserID { get; set; }
+
+
+        [Required(ErrorMessage ="請輸入暱稱")]
         public string UserName { get; set; }
+
+        [Required(ErrorMessage ="請輸入帳號")]
         public string Account { get; set; }
+
+        [Required(ErrorMessage ="請輸入密碼")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage ="請輸入信箱")]
         public string Email { get; set; }
         public string UserType { get; set; }
         public int LevelValue { get; set; }
         public double Experience { get; set; }
+
+        [Required(ErrorMessage = "請輸入生日")]
         public System.DateTime Birthday { get; set; }
         public Nullable<int> Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Article> Articles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chatroom> Chatrooms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chatroom> Chatrooms1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ChatroomLog> ChatroomLogs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -69,9 +85,5 @@ namespace postArticle.Models
         public virtual ThanksfulThing ThanksfulThing { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserQuestion> UserQuestions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Chatroom> Chatrooms { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Chatroom> Chatrooms1 { get; set; }
     }
 }

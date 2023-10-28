@@ -1,10 +1,13 @@
-﻿@model postArticle.Models.UserManage
+﻿@*@model postArticle.Models.UserManage*@
+@model postArticle.viewmodel.MemberDetailsViewModel
 @{
     ViewBag.Title = "會員資料";
     var usertype = "";
 
-}
+    var UQ = Model.UserQuestions;
+    var EQA = Model.ExpertAS;
 
+}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
@@ -54,35 +57,39 @@
     }
 
     .box {
-        width: 50px;
-        height: 40px;
+        width: 40px;
+        height: 35px;
         background-color: #c5e5b6;
         border-radius: 10px;
         overflow: hidden;
     }
 
         .box:hover {
-            width: 230px;
+            width: 180px;
             transition: 0.5s;
         }
 
     .mood {
         border: none;
         background-color: transparent;
-        margin-top: -5px;
+        width:30px;
+        height:30px;
     }
 
+    .mood-preform {
+        border: none;
+        background-color: transparent;
+        width: 30px;
+        height: 30px;
+    }
     #mood-font {
-        font-size: 30px;
+        font-size: 20px;
     }
 
-    .mood-container {
-        display: none;
-    }
 </style>
 
 
-@if (Model.UserType == "Member")
+@if (Model.UserManagesDetail.UserType == "Member")
 {
     usertype = "會員";
 }
@@ -90,11 +97,11 @@
 <div class="container-panel">
 
     <div class="list-group" style="height:100%;">
-        <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">資料修改</a>
-        <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
-        <a href="#" class="list-group-item btn custom-btn">我的提問</a>
+        <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">資料修改</a>
+        <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
+        <a href="#my-question" class="list-group-item btn custom-btn">我的提問</a>
         <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
-        <a href="#" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
+        <a href="#mood_container" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
         <a href="#" class="list-group-item btn custom-btn">我的好友</a>
         <a href="#" class="list-group-item btn custom-btn">我的群組</a>
         <!-- 在这里添加更多按钮 -->
@@ -107,31 +114,100 @@
             <div class="circle-avatar"></div><!-- 大頭貼預定地 -->
             <div style="position: relative; text-align: center; margin: 0 auto;">
                 <strong>
-                    @Model.UserName
+                    @Model.UserManagesDetail.UserName
                 </strong>
             </div>
         </div>
 
-        <div style="position: relative; float:left; margin: 30px 0 0 30px; ">
-            <p>@usertype 等級:@Model.LevelValue</p>
-            <p>@usertype 經驗值:@Model.Experience</p>
+        <div style="position: relative; float:left; margin: 40px 0 0 58px; ">
+            <p>@usertype 等級:@Model.UserManagesDetail.LevelValue</p>
+            <p>@usertype 經驗值:@Model.UserManagesDetail.Experience</p>
             <div class="box" style="position:absolute; margin-left:-130px; margin-top:30px;">
-                <span title="喜"><button class="mood" value="喜"><p id="mood-font">&#128516;</p></button></span>
-                <span title="傷心"><button class="mood" value="選擇了傷心"><p id="mood-font">&#128557;</p></button></span>
-                <span title="悶"><button class="mood" value="悶"><p id="mood-font">&#128542;</p></button></span>
-                <span title="怒"><button class="mood" value="選擇了怒"><p id="mood-font">&#128545;</p></button></span>
+                <span title="現在心情"><button class="mood-preform" disabled"><p id="mood-font" class="now-mood"></p></button></span>
+                <span title="喜"><button class="mood" value="&#128516;"><p id="mood-font">&#128516;</p></button></span>
+                <span title="傷心"><button class="mood" value="&#128557;"><p id="mood-font">&#128557;</p></button></span>
+                <span title="悶"><button class="mood" value="&#128542;"><p id="mood-font">&#128542;</p></button></span>
+                <span title="怒"><button class="mood" value="&#128545;"><p id="mood-font">&#128545;</p></button></span>
             </div>
         </div>
 
 
-        <div class="window_content " style="margin-top:350px; margin-left:-4px; height: 500px;">
+        <div class="window_content" id="my-question" style="margin-top:350px; margin-left:-4px; height:fit-content; padding-bottom:30px;">
+
+            <p style="padding:20px 0 0 0; font-size:30px; text-align:center;">我的提問</p>
+
+
+            @if (UQ.Count()<1)
+            {
+                <p style="text-align:center; font-size:30px;">開始我的第一則提問</p>
+            }
+
+
+            @foreach (var item in UQ)
+            {
+
+                <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
+                    問題 :
+                    <p>@item.QuestionTitle @item.QuestionContent @item.QuestionTime</p>
+                    <div class="card-body">
+
+
+                        <div class="card Question-info">
+
+
+                            @if (EQA != null)
+                            {
+
+                                foreach (var i in EQA)
+                                {
+                                    if (i.QuestionID == item.UserQuestionID)
+                                    {
+                                        <div class="list-group" style="padding:3px;">
+                                            回答 :
+                                            <br>
+                                            @i.AnswerContent
+                                        </div>
+                                    }
+                                }
+
+                            }
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+            }
+
+
+
+            @using (Html.BeginForm("Submit_UserQuestion", "UserManages", FormMethod.Post, new { @style = "text-align: center; margin: 30px 0 30px 0;" }))
+            {
+
+
+                @Html.AntiForgeryToken();
+
+                @Html.TextBoxFor(m => m.SubmitUQ.QuestionContent, new { @title = "輸入提問", @placeholder = "輸入提問", @style = "width: 400px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;" })
+
+
+                <button type="submit" style="background-color: transparent; border:none;">
+                    <img src="~/ICON/send-fill.svg" width="28" height="28">
+                </button>
+
+            }
 
 
         </div>
 
 
 
-        <div class="window_content mood-container" style="margin-top:30px; margin-bottom:100px;  margin-left:-4px; height: 500px;">
+        <div class="window_content" id="mood_container" style="margin-top:30px; margin-bottom:100px;  margin-left:-4px; height: 500px;">
 
             <div style="width: 450px; height: 450px; position:absolute; margin-top:30px;  margin-left:230px;">
                 <canvas id="myPieChart"></canvas>
@@ -140,8 +216,6 @@
         </div>
 
         <div style="visibility:hidden">1</div>
-
-
 
     </div>
 
@@ -167,21 +241,23 @@
 
     $(document).ready(function () {
 
+        //初始化
+        $(".Question-info").hide();
+
         $(".mood").click(function () {
 
             var text = $(this).val();
-            if (confirm(text)) {
 
-            }
-            else {
-
-            }
+            $('.now-mood').text(text);
 
         });
 
-        $(".mood-reward").click(function () {
+        //當點擊按鈕input清空
+        $(".Question").click(function () {
 
-            $(".mood-container").toggle();
+            $(".Question-info").hide();
+            $(this).find(".Question-info").toggle();
+            var value = $(this).data("value");
 
         });
 

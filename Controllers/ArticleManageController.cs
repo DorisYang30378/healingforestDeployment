@@ -10,7 +10,6 @@ using System.Net;
 using postArticle.viewmodel;
 using System.Web;
 using System.IO;
-using System.Web.UI;
 using PagedList;
 using HtmlAgilityPack;
 
@@ -295,7 +294,7 @@ namespace postArticle.Controllers
         #region ===文章編輯(POST)====
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)]
+        [ValidateInput(true)]
         public ActionResult ArticleEdit(ArticleManageViewModel articleManageViewModel, HttpPostedFileBase file)
         {
             int? id = (int)TempData["ArticleID"];
@@ -438,7 +437,7 @@ namespace postArticle.Controllers
         //發布文章post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)]
+        [ValidateInput(true)]
         public ActionResult ArticlePost(ArticleManageViewModel articlePost, HttpPostedFileBase file)
         {
             if (CheckLoggedIn())
@@ -505,11 +504,11 @@ namespace postArticle.Controllers
 
 
         }
-    
-    
-    
-    
-    
+
+
+
+
+
 
         //檢舉文章
         public void  ReportArticle()

@@ -91,7 +91,7 @@
 
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
                         @Html.PasswordFor(model => model.userManage.Password, new { @class = "form-control", @id = "passwordInput", placeholder = "請輸入密碼 ", @style = "background-color:#F2ECE2;" })
-                        @Html.ValidationMessageFor(model => model.userManage.UserName, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.userManage.Password, "", new { @class = "text-danger" })
                         <span id="togglePassword" class="fa fa-eye-slash" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></span>
                     </div>
 

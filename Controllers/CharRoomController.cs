@@ -56,6 +56,8 @@ namespace postArticle.Controllers
         public ActionResult Charmember(string searchString)
         {
 
+            string username;
+
             //Respone UserID
             if (CheckLoggedIn())
             {
@@ -63,7 +65,15 @@ namespace postArticle.Controllers
                 ViewBag.UserID = MyUserID;
 
                 //UserName
-                string username = db.UserManages.Find(MyUserID).UserName;
+                try
+                {
+                   username = db.UserManages.Find(MyUserID).UserName;
+                }
+
+                catch {
+                    return HttpNotFound();
+                }
+               
                 CMV.UserName = username;
 
 
@@ -127,7 +137,7 @@ namespace postArticle.Controllers
             int MyUserID = GetUserID();
 
             var Memberchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
-            
+
             CMV.ChatRoom = Memberchatroom;
             Message.ChatRoom = Memberchatroom;
         }
@@ -176,6 +186,9 @@ namespace postArticle.Controllers
 
 
             int MainUserNameID = (int)Session["UserID"];
+            var username = db.UserManages.Find(MainUserNameID).UserName;
+
+            Message.UserName = username;
             Message.MainUserID = (int)MainUserNameID;
             Message.ChatRoomID = (int)id;
 
@@ -216,6 +229,10 @@ namespace postArticle.Controllers
 
 
         /////write message///
+        
+
+        //
+        [HttpPost]
         public ActionResult Writemessage(int? id)
         {
 
@@ -236,7 +253,14 @@ namespace postArticle.Controllers
 
             ChatroomLog newMessage = new ChatroomLog { UserID = UserID, ChatroomID = ChatRoomID, Content = Content, Time = DateTime.Now };
             db.ChatroomLogs.Add(newMessage);
-            db.SaveChanges();
+            try
+            {
+                db.SaveChanges();
+            }
+            catch {
+                TempData["ErrorMessage"] ="輸入未成功,留言太長了";
+            }
+            
 
             return RedirectToAction("ChatRoom", "CharRoom", new { id });
         }
@@ -245,10 +269,8 @@ namespace postArticle.Controllers
         [HttpGet]
         public ActionResult CreatChatRoom(int? id)
         {
-
             if (id!= null)
             {
-
                 int MainID = GetUserID();
                 string MainName = GetUserName();
                 int OtherID = (int)id;
@@ -258,20 +280,12 @@ namespace postArticle.Controllers
                 Chatroom newchatroom = new Chatroom { ChatRoomName = RoomName, member = member, UserID = MainID, OtherUserID = OtherID };
                 db.Chatrooms.Add(newchatroom);
                 db.SaveChanges();
-
-
                 return RedirectToAction("Charmember", "CharRoom");
             }
-
             else
             {
                 return RedirectToAction("Charmember", "CharRoom");
-
             }
-
-
         }
-
-
     }
 }

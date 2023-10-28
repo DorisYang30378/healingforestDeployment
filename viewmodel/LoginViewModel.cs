@@ -10,10 +10,10 @@ namespace postArticle.viewmodel
 {
     public class LoginViewModel
     {
-        [Display(Name = "暱稱"), Required]
+        [Display(Name = "暱稱"), Required(ErrorMessage ="請輸入帳號")]
         public string username { get; set; }
 
-        [Display(Name = "密碼"), Required, DataType(DataType.Password)]
+        [Display(Name = "密碼"), Required(ErrorMessage ="請輸入密碼"), DataType(DataType.Password)]
         public string password { get; set; }
 
         public string ErrMessage { get; set; }

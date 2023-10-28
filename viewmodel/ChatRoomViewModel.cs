@@ -20,6 +20,8 @@ namespace postArticle.viewmodel
 
         public string inputContext { get; set; }
 
+        public string UserName { get; set; }
+
         public int  MainUserID { get; set; }
 
         public int OtherUserID { get; set; }

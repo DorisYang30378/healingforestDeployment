@@ -110,7 +110,7 @@
     </div>
     <div class="form-group">
         <label class="form-label" for="Content" name="editorDemo">內容</label>
-        @Html.TextAreaFor(model => model.article.Content, 18, 50, new { htmlAttributes = new { rows = 4 } })
+        @Html.TextAreaFor(model => model.article.Content, new { style = "resize: none; width: 100%; height: 500px; border-radius: 10px; border:none;" })
         @Html.ValidationMessageFor(model => model.article.Content, "", new { @class = "text-danger" })
     </div>
 

@@ -4,6 +4,7 @@
 @{
     var context = Model.ChatContext;
     var MainUserID = Model.MainUserID;
+    var UserName = Model.UserName;
     var ChatRoom = Model.ChatRooms;
     var Friend = Model.ChatRoom;
     var ChatRoomID = Model.ChatRoomID;
@@ -30,9 +31,9 @@
 
     var otherdb = UserManage.Where(m => m.UserID == OtherID);
     string othername = "";
-    foreach(var a in otherdb)
+    foreach (var a in otherdb)
     {
-        othername= a.UserName;
+        othername = a.UserName;
     }
 
 }
@@ -56,8 +57,8 @@
         height: 100vh;
         column-count: 2;
         margin: auto;
-        border-radius: 5px;
-        background-color: #ffffff;
+        border-radius: 10px;
+        background-color: #c9ffb0;
     }
 
     .container01 {
@@ -81,7 +82,7 @@
         right: 35%;
         width: 130%;
         height: 100%;
-        overflow:scroll;
+        overflow: scroll;
     }
 
     .container02_context {
@@ -92,7 +93,7 @@
         overflow: hidden;
     }
 
-    .container02_context:hover {
+        .container02_context:hover {
             overflow: scroll;
         }
 
@@ -113,16 +114,16 @@
         position: relative;
         top: 30px;
         width: 100%;
-        padding-left:5%;
-        padding-top:10px; 
+        padding-left: 5%;
+        padding-top: 10px;
     }
 
-    .input_message{
+    .input_message {
         width: 80%;
         border-radius: 5px;
     }
 
-    .submit_message{
+    .submit_message {
         width: 15%;
         border-radius: 5px;
     }
@@ -177,6 +178,7 @@
     .container01::-webkit-scrollbar {
         display: none;
     }
+
     .container02::-webkit-scrollbar {
         display: none;
     }
@@ -187,18 +189,37 @@
 </style>
 
 
+<!--////////////////////////////////////-->
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert('@TempData["ErrorMessage"]');
+    </script>
+}
+
+
+
+<!--////////////////////////////////////-->
+
+
+
+<div style="width:70px; margin-top:40px;">@Html.ActionLink("返回", "javascript:void(0);", null, new { onclick = "history.back(); return false;", @class = "form-control", style = "text-decoration: none; color: black; font-size: 20px;" })</div>
 
 <div class="window_content">
 
     <div class="container01">
 
 
-        @foreach(var i in Friend)
-            {
-                <div><button class="member_list" onclick="location.href = '@Url.Action("ChatRoom", "CharRoom", new { id= i.ChatroomID})'">@i.ChatroomID @i.ChatRoomName</button></div>
-                
-            }
+        @foreach (var i in Friend)
+        {
+            var friendname = i.ChatRoomName;
+            var removename = friendname.Replace("/", "");
+            removename = removename.Replace(UserName, "");
+            removename = removename.Replace("的私聊", "");
+            <div><button class="member_list" onclick="location.href = '@Url.Action("ChatRoom", "CharRoom", new { id= i.ChatroomID})'">@removename</button></div>
+
+        }
 
 
     </div>
@@ -254,12 +275,9 @@
 
         <div class="container02_footer">
 
-            
-                
-                <input class="input_message" placeholder="請輸入要傳入訊息">
-            
-                <button class="submit_message">送出</button>
-                
+            <input class="input_message" placeholder="請輸入要傳入訊息">
+            <button class="submit_message">送出</button>
+
         </div>
 
     </div>
@@ -281,7 +299,7 @@
 
 
 
-        <script>
+    <script>
 
 
             $(function () {
@@ -324,6 +342,7 @@
                         var url = '@Url.Action("Writemessage", "CharRoom", new { id = ChatRoomID})';
 
                         var data = $(".input_message").val();
+                        $(".input_message").val("");
 
                         $.ajax({
 
@@ -345,13 +364,13 @@
                         chat.server.send(@ChatRoomID);
 
 
-                        
+
                     });
                 });
 
             });
 
-        </script>
+    </script>
 
 
-    }
+}

@@ -3,6 +3,7 @@ using postArticle.Models;
 using postArticle.viewmodel;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -15,6 +16,8 @@ namespace postArticle.Controllers
     {
         #region 基礎屬性
         private healingForestEntities db = new healingForestEntities();
+
+        MemberDetailsViewModel UserManage = new MemberDetailsViewModel();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -55,7 +58,7 @@ namespace postArticle.Controllers
                 #endregion
                 else
                 {
-                    TempData["UserStatus"] = "封鎖";
+                    ViewBag.UserStatus = "封鎖";
                     return View();
                 }
             }
@@ -101,7 +104,7 @@ namespace postArticle.Controllers
             return false;
         }
 
-        // 发送验证码
+        // 發送驗證碼
         [HttpPost]
         public ActionResult SendVerificationCode(string email)
         {
@@ -111,10 +114,20 @@ namespace postArticle.Controllers
                 string subject = "註冊驗證碼";
                 var verificationCode = GenerateRandomCode(4);
                 string body = @"
-                        <p>您的驗證碼為:{verificationCode}
-                        ======================================================<br />
-                        此為系統自動發送的電子郵件，請勿直接回覆本信件。<br />
-                        ======================================================<br />
+                        <p>歡迎來到療癒之森!您的驗證碼為:{verificationCode}<br />
+                            療癒之森是一個以撫慰人心為出發點，由一群大學生開發的網站!<br />
+                           在這裡，你可以盡情地與各式各樣的人進行談心，結交更多志同道合的麻吉!<br />
+                        
+                           <br />
+                            <br />
+
+                            我們的客服信箱為<p>HealingForestWeb@gmail.com</p>
+                            若有任何問題，歡迎與我們聯繫。
+                            最後，祝您使用愉快! 療癒之森開發團隊<br />
+
+                        ==================================<br />
+                        此為系統自動回覆之信件，若有問題可以聯繫開發團隊<br />
+                        ==================================<br />
                         </p>
                         ";
                 body = body.Replace("{verificationCode}", verificationCode);
@@ -192,7 +205,10 @@ namespace postArticle.Controllers
         {
             return View();
         }
+        
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public ActionResult forget_password(string account, string email)
         {
             if (IsValidPassword(account, email))
@@ -282,16 +298,29 @@ namespace postArticle.Controllers
         public ActionResult MemberDetails(int? id)
         {
 
+            var UserID = GetUserID();
+
+            
+
             if (id == null)
             {
                 return HttpNotFound();
             }
-            UserManage userManage = db.UserManages.Find(id);
-            if (userManage == null)
+
+            //ViewModel
+            var userQuestionUserIDs = db.UserQuestions.Where(m => m.UserID == UserID).Select(m => m.UserQuestionID).ToList();
+            var expertAnswers = db.ExpertAnswers.Where(m => userQuestionUserIDs.Contains(m.QuestionID)).ToList();
+
+            UserManage.ExpertAS = expertAnswers;
+            UserManage.UserManagesDetail = db.UserManages.Find(id);
+            UserManage.UserQuestions = db.UserQuestions.Where(m=>m.UserID == UserID);
+
+
+            if (UserManage.UserManagesDetail == null)
             {
                 return HttpNotFound();
             }
-            return View(userManage);
+            return View(UserManage);
         }
 
 
@@ -366,6 +395,7 @@ namespace postArticle.Controllers
             }
 
             UserManage user = db.UserManages.Find(id);
+
             if (user == null)
             {
                 return HttpNotFound();
@@ -416,6 +446,37 @@ namespace postArticle.Controllers
             }
 
             return View(viewModel);
+        }
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(true)]
+        public ActionResult Submit_UserQuestion(MemberDetailsViewModel MQ) {
+
+            MemberDetailsViewModel QuestionModel = new MemberDetailsViewModel();
+            var Question = QuestionModel.SubmitUQ;
+
+            var UserID = GetUserID();
+
+            MQ.SubmitUQ.UserID = UserID;
+            MQ.SubmitUQ.QuestionTime = DateTime.Now;
+            
+            
+            db.UserQuestions.Add(MQ.SubmitUQ);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch { 
+            
+            }
+ 
+            return RedirectToAction("MemberDetails", "UserManages", new { id = UserID });
         }
 
 

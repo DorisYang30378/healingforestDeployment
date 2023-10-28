@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Article">
           <Key>
             <PropertyRef Name="ArticleID" />
@@ -170,16 +170,6 @@
           <Property Name="Content" Type="varchar(max)" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="ThanksfulThings">
           <Key>
             <PropertyRef Name="UserID" />
@@ -210,9 +200,9 @@
           </Key>
           <Property Name="UserQuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="QuestionTitle" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="QuestionTitle" Type="varchar" MaxLength="256" />
           <Property Name="QuestionContent" Type="varchar" MaxLength="1024" Nullable="false" />
-          <Property Name="QuestionTime" Type="date" Nullable="false" />
+          <Property Name="QuestionTime" Type="datetime" />
         </EntityType>
         <!--產生期間發現錯誤:
 警告 6002: 資料表/檢視 'healingForest.dbo.articleandmessage' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
@@ -249,6 +239,24 @@
           <Property Name="回答者" Type="varchar" MaxLength="16" Nullable="false" />
           <Property Name="專家回答" Type="varchar" MaxLength="2048" Nullable="false" />
           <Property Name="回覆時間" Type="date" Nullable="false" />
+        </EntityType>
+        <!--產生期間發現錯誤:
+警告 6002: 資料表/檢視 'healingForest.sys.database_firewall_rules' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="start_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="end_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" Nullable="false" />
         </EntityType>
         <Association Name="Chat_OtherUserID">
           <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
@@ -355,7 +363,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="Message_ID">
-          <End Role="Message" Type="Self.Message" Multiplicity="1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Message">
@@ -381,7 +391,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="MS_ID">
-          <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="1" />
+          <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="RReportMessage" Type="Self.RReportMessage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Report_Message">
@@ -576,37 +588,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
-        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
-        </Function>
-        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="healingForestModelStoreContainer">
           <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chatroom" EntityType="Self.Chatroom" Schema="dbo" store:Type="Tables" />
@@ -624,7 +605,6 @@
           <EntitySet Name="ReportMember" EntityType="Self.ReportMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RReportMember" EntityType="Self.RReportMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RReportMessage" EntityType="Self.RReportMessage" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ThanksfulThings" EntityType="Self.ThanksfulThings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserManage" EntityType="Self.UserManage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserQuestion" EntityType="Self.UserQuestion" Schema="dbo" store:Type="Tables" />
@@ -647,6 +627,16 @@
     [QA].[專家回答] AS [專家回答], 
     [QA].[回覆時間] AS [回覆時間]
     FROM [dbo].[QA] AS [QA]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" store:Type="Views" store:Schema="sys">
+            <DefiningQuery>SELECT 
+    [database_firewall_rules].[id] AS [id], 
+    [database_firewall_rules].[name] AS [name], 
+    [database_firewall_rules].[start_ip_address] AS [start_ip_address], 
+    [database_firewall_rules].[end_ip_address] AS [end_ip_address], 
+    [database_firewall_rules].[create_date] AS [create_date], 
+    [database_firewall_rules].[modify_date] AS [modify_date]
+    FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="Chat_OtherUserID" Association="Self.Chat_OtherUserID">
             <End Role="UserManage" EntitySet="UserManage" />
@@ -770,11 +760,11 @@
           <Property Name="ArticleType" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserID" Type="Int32" />
           <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Collects" Relationship="Self.CollectArticle" FromRole="Article" ToRole="Collect" />
           <NavigationProperty Name="Messages" Relationship="Self.MessageArticle" FromRole="Article" ToRole="Message" />
           <NavigationProperty Name="Reports" Relationship="Self.reportsarticle" FromRole="Article" ToRole="Report" />
           <NavigationProperty Name="UserManage" Relationship="Self.UserCreateArticle" FromRole="Article" ToRole="UserManage" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Chatroom">
           <Key>
@@ -783,11 +773,11 @@
           <Property Name="ChatroomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ChatRoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="member" Type="String" MaxLength="56" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ChatroomLogs" Relationship="Self.chatLog" FromRole="Chatroom" ToRole="ChatroomLog" />
           <Property Name="UserID" Type="Int32" />
           <Property Name="OtherUserID" Type="Int32" />
-          <NavigationProperty Name="UserManage" Relationship="healingForestModel.Chat_OtherUserID" FromRole="Chatroom" ToRole="UserManage" />
-          <NavigationProperty Name="UserManage1" Relationship="healingForestModel.Chat_UserID" FromRole="Chatroom" ToRole="UserManage" />
+          <NavigationProperty Name="UserManage" Relationship="Self.Chat_OtherUserID" FromRole="Chatroom" ToRole="UserManage" />
+          <NavigationProperty Name="UserManage1" Relationship="Self.Chat_UserID" FromRole="Chatroom" ToRole="UserManage" />
+          <NavigationProperty Name="ChatroomLogs" Relationship="Self.chatLog" FromRole="Chatroom" ToRole="ChatroomLog" />
         </EntityType>
         <EntityType Name="ChatroomLog">
           <Key>
@@ -867,10 +857,10 @@
           <Property Name="ArticleID" Type="Int32" Nullable="false" />
           <Property Name="Content" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Article" Relationship="Self.MessageArticle" FromRole="Message" ToRole="Article" />
           <NavigationProperty Name="Report_Message" Relationship="Self.Message_ID" FromRole="Message" ToRole="Report_Message" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_Message" FromRole="Message" ToRole="UserManage" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Mood">
           <Key>
@@ -892,7 +882,7 @@
           <Property Name="Article_ID" Type="Int32" Nullable="false" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Report" Relationship="Self.ReportID" FromRole="R_Report" ToRole="Report" />
+          <NavigationProperty Name="Report" Relationship="Self.FK_R_Report_Report" FromRole="R_Report" ToRole="Report" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -904,7 +894,7 @@
           <Property Name="ReportContent" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Article" Relationship="Self.reportsarticle" FromRole="Report" ToRole="Article" />
-          <NavigationProperty Name="R_Report" Relationship="Self.ReportID" FromRole="Report" ToRole="R_Report" />
+          <NavigationProperty Name="R_Report" Relationship="Self.FK_R_Report_Report" FromRole="Report" ToRole="R_Report" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_reports" FromRole="Report" ToRole="UserManage" />
         </EntityType>
         <EntityType Name="Report_Message">
@@ -956,16 +946,6 @@
           <NavigationProperty Name="Report_Message" Relationship="Self.MS_ID" FromRole="RReportMessage" ToRole="Report_Message" />
           <NavigationProperty Name="Report_Message1" Relationship="Self.RMS_ID" FromRole="RReportMessage" ToRole="Report_Message" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="ThanksfulThing">
           <Key>
             <PropertyRef Name="UserID" />
@@ -991,6 +971,8 @@
           <Property Name="Birthday" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Status" Type="Int32" />
           <NavigationProperty Name="Articles" Relationship="Self.UserCreateArticle" FromRole="UserManage" ToRole="Article" />
+          <NavigationProperty Name="Chatrooms" Relationship="Self.Chat_OtherUserID" FromRole="UserManage" ToRole="Chatroom" />
+          <NavigationProperty Name="Chatrooms1" Relationship="Self.Chat_UserID" FromRole="UserManage" ToRole="Chatroom" />
           <NavigationProperty Name="ChatroomLogs" Relationship="Self.User_Send_Message" FromRole="UserManage" ToRole="ChatroomLog" />
           <NavigationProperty Name="Checkins" Relationship="Self.UserCheckin" FromRole="UserManage" ToRole="Checkin" />
           <NavigationProperty Name="Collects" Relationship="Self.UserCollect" FromRole="UserManage" ToRole="Collect" />
@@ -1003,8 +985,6 @@
           <NavigationProperty Name="ReportMembers1" Relationship="Self.UserID" FromRole="UserManage" ToRole="ReportMember" />
           <NavigationProperty Name="ThanksfulThing" Relationship="Self.Relationship1" FromRole="UserManage" ToRole="ThanksfulThings" />
           <NavigationProperty Name="UserQuestions" Relationship="Self.User_asks_a_question" FromRole="UserManage" ToRole="UserQuestion" />
-          <NavigationProperty Name="Chatrooms" Relationship="healingForestModel.Chat_OtherUserID" FromRole="UserManage" ToRole="Chatroom" />
-          <NavigationProperty Name="Chatrooms1" Relationship="healingForestModel.Chat_UserID" FromRole="UserManage" ToRole="Chatroom" />
         </EntityType>
         <EntityType Name="UserQuestion">
           <Key>
@@ -1012,9 +992,9 @@
           </Key>
           <Property Name="UserQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="QuestionTitle" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="QuestionTitle" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="QuestionContent" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="QuestionTime" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="QuestionTime" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ExpertAnswers" Relationship="Self.Expert_received_Question" FromRole="UserQuestion" ToRole="ExpertAnswer" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_asks_a_question" FromRole="UserQuestion" ToRole="UserManage" />
         </EntityType>
@@ -1049,6 +1029,22 @@
           <Property Name="回答者" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="專家回答" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="回覆時間" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="start_ip_address" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="end_ip_address" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <Association Name="CollectArticle">
           <End Role="Article" Type="Self.Article" Multiplicity="1">
@@ -1100,6 +1096,32 @@
               <PropertyRef Name="UserID" />
             </Principal>
             <Dependent Role="Article">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Chat_OtherUserID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Chat_UserID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
+          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -1238,8 +1260,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="ReportID">
-          <End Role="Report" Type="Self.Report" Multiplicity="1" />
+        <Association Name="FK_R_Report_Report">
+          <End Role="Report" Type="Self.Report" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="R_Report" Type="Self.R_Report" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Report">
@@ -1251,7 +1275,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="User_reports">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Report" Type="Self.Report" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -1363,12 +1389,12 @@
           <EntitySet Name="ReportMembers" EntityType="Self.ReportMember" />
           <EntitySet Name="RReportMembers" EntityType="Self.RReportMember" />
           <EntitySet Name="RReportMessages" EntityType="Self.RReportMessage" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="ThanksfulThings" EntityType="Self.ThanksfulThing" />
           <EntitySet Name="UserManages" EntityType="Self.UserManage" />
           <EntitySet Name="UserQuestions" EntityType="Self.UserQuestion" />
           <EntitySet Name="articleandmessages" EntityType="Self.articleandmessage" />
           <EntitySet Name="QAs" EntityType="Self.QA" />
+          <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" />
           <AssociationSet Name="CollectArticle" Association="Self.CollectArticle">
             <End Role="Article" EntitySet="Articles" />
             <End Role="Collect" EntitySet="Collects" />
@@ -1384,6 +1410,14 @@
           <AssociationSet Name="UserCreateArticle" Association="Self.UserCreateArticle">
             <End Role="UserManage" EntitySet="UserManages" />
             <End Role="Article" EntitySet="Articles" />
+          </AssociationSet>
+          <AssociationSet Name="Chat_OtherUserID" Association="Self.Chat_OtherUserID">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Chatroom" EntitySet="Chatrooms" />
+          </AssociationSet>
+          <AssociationSet Name="Chat_UserID" Association="Self.Chat_UserID">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Chatroom" EntitySet="Chatrooms" />
           </AssociationSet>
           <AssociationSet Name="chatLog" Association="Self.chatLog">
             <End Role="Chatroom" EntitySet="Chatrooms" />
@@ -1429,7 +1463,7 @@
             <End Role="UserManage" EntitySet="UserManages" />
             <End Role="Mood" EntitySet="Moods" />
           </AssociationSet>
-          <AssociationSet Name="ReportID" Association="Self.ReportID">
+          <AssociationSet Name="FK_R_Report_Report" Association="Self.FK_R_Report_Report">
             <End Role="Report" EntitySet="Reports" />
             <End Role="R_Report" EntitySet="R_Report" />
           </AssociationSet>
@@ -1465,82 +1499,7 @@
             <End Role="UserManage" EntitySet="UserManages" />
             <End Role="UserQuestion" EntitySet="UserQuestions" />
           </AssociationSet>
-          <FunctionImport Name="sp_alterdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_creatediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_dropdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(healingForestModel.sp_helpdiagramdefinition_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(healingForestModel.sp_helpdiagrams_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_renamediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="new_diagramname" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="sp_upgraddiagrams" />
-          <AssociationSet Name="Chat_OtherUserID" Association="healingForestModel.Chat_OtherUserID">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Chatroom" EntitySet="Chatrooms" />
-          </AssociationSet>
-          <AssociationSet Name="Chat_UserID" Association="healingForestModel.Chat_UserID">
-            <End Role="UserManage" EntitySet="UserManages" />
-            <End Role="Chatroom" EntitySet="Chatrooms" />
-          </AssociationSet>
         </EntityContainer>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
-        </ComplexType>
-        <Association Name="Chat_OtherUserID">
-          <End Type="healingForestModel.UserManage" Role="UserManage" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="healingForestModel.Chatroom" Role="Chatroom" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Chatroom">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Chat_UserID">
-          <End Type="healingForestModel.UserManage" Role="UserManage" Multiplicity="0..1" />
-          <End Type="healingForestModel.Chatroom" Role="Chatroom" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Chatroom">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1550,7 +1509,6 @@
           <EntitySetMapping Name="Articles">
             <EntityTypeMapping TypeName="healingForestModel.Article">
               <MappingFragment StoreEntitySet="Article">
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
@@ -1560,17 +1518,18 @@
                 <ScalarProperty Name="ArticleType" ColumnName="ArticleType" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Chatrooms">
             <EntityTypeMapping TypeName="healingForestModel.Chatroom">
               <MappingFragment StoreEntitySet="Chatroom">
-                <ScalarProperty Name="OtherUserID" ColumnName="OtherUserID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ChatroomID" ColumnName="ChatroomID" />
                 <ScalarProperty Name="ChatRoomName" ColumnName="ChatRoomName" />
                 <ScalarProperty Name="member" ColumnName="member" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="OtherUserID" ColumnName="OtherUserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1641,12 +1600,12 @@
           <EntitySetMapping Name="Messages">
             <EntityTypeMapping TypeName="healingForestModel.Message">
               <MappingFragment StoreEntitySet="Message">
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="MessageID" ColumnName="MessageID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1727,17 +1686,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="healingForestModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ThanksfulThings">
             <EntityTypeMapping TypeName="healingForestModel.ThanksfulThing">
               <MappingFragment StoreEntitySet="ThanksfulThings">
@@ -1799,30 +1747,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="healingForestModel.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="healingForestModel.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="healingForestModel.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="healingForestModel.Store.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="healingForestModel.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="healingForestModel.Store.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="healingForestModel.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="healingForestModel.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="healingForestModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="database_firewall_rules">
+            <EntityTypeMapping TypeName="healingForestModel.database_firewall_rules">
+              <MappingFragment StoreEntitySet="database_firewall_rules">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="start_ip_address" ColumnName="start_ip_address" />
+                <ScalarProperty Name="end_ip_address" ColumnName="end_ip_address" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
