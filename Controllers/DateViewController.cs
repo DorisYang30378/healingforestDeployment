@@ -25,11 +25,19 @@ namespace postArticle.Controllers
         //透過Enitity連接資料庫
         public void connectSQL()
         {
+
             var db = new healingForestEntities();
             if (ViewBag.CheckIn=="簽到")
             {
+
+                //簽到
                 Checkin p = new Checkin { UserID = id, CheckInDate = DateTime.Now.Date, BoolCheckIn = 1 };
                 db.Checkins.Add(p);
+                //加經驗
+                var experience = db.UserManages.Find(id);
+                experience.Experience += 10;
+
+                //更新資料庫
                 db.SaveChanges();
             }
         }

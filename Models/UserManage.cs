@@ -33,29 +33,30 @@ namespace postArticle.Models
             this.ReportMembers1 = new HashSet<ReportMember>();
             this.UserQuestions = new HashSet<UserQuestion>();
         }
-    
+
         public int UserID { get; set; }
 
 
-        [Required(ErrorMessage ="請輸入暱稱")]
+        [Required(ErrorMessage = "請輸入暱稱")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage ="請輸入帳號")]
+        [Required(ErrorMessage = "請輸入帳號")]
         public string Account { get; set; }
 
-        [Required(ErrorMessage ="請輸入密碼")]
+        [Required(ErrorMessage = "請輸入密碼")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage ="請輸入信箱")]
+        [Required(ErrorMessage = "請輸入信箱")]
         public string Email { get; set; }
         public string UserType { get; set; }
         public int LevelValue { get; set; }
         public double Experience { get; set; }
 
         [Required(ErrorMessage = "請輸入生日")]
+        [DataType(DataType.Date)]
         public System.DateTime Birthday { get; set; }
         public Nullable<int> Status { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Article> Articles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

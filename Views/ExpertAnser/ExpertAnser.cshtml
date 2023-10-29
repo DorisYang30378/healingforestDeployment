@@ -1,0 +1,98 @@
+﻿@using PagedList.Mvc
+@using PagedList
+@model postArticle.viewmodel.ExpertAnser
+
+<!--page css-->
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+
+@{
+    ViewBag.Title = "ExpertAnser";
+}
+
+@{
+    var UQ = Model.UserQuestions;
+    var EA = Model.ExpertAnswers;
+}
+
+<style>
+</style>
+
+<h2>ExpertAnser</h2>
+
+
+@foreach (var item in UQ)
+{
+
+    <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
+        問題 :
+        <span>@item.QuestionContent</span>
+        <span>@item.QuestionTime</span>
+
+        <div class="card-body">
+
+            @foreach (var a in EA)
+            {
+
+                <div class="card Question-info">
+                    @if (a.QuestionID == item.UserQuestionID)
+                    {
+                        <span>@a.UserManage.UserName</span>
+                        <span>@a.AnswerContent</span>
+                        <span>@a.AnswerTime</span>
+                    }
+                </div>
+            }
+
+            <div style="white-space:nowrap;">
+                <input class="form-control context" style="width:90%; height:40px; margin-top:20px;" placeholder="專家輸入欄" value="">
+                <input type="hidden" class="userQuestionID" value="@item.UserQuestionID">
+                <button class="form-control submit-btn" type="submit" style="width:5%; height:40px; margin-top:20px; background-color:transparent; border:none;"><img src="~/ICON/send-fill.svg"></button>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+}
+
+
+    <div style="text-align:center;">
+        @Html.PagedListPager(Model.UserQuestions, page => Url.Action("ExpertAnser",
+        new { page }))
+    </div>
+
+<script>
+
+
+    $(document).ready(function () {
+
+        $(".submit-btn").click(function () {
+
+
+            var input = $(this).siblings(".context");
+            var inputValue = input.val();
+            input.val("");
+            var data = inputValue;
+
+            var userQuestionID = $(this).siblings(".userQuestionID").val();
+
+
+            if (inputValue !== "") {
+
+                alert(inputValue + userQuestionID);
+
+            }
+
+
+
+        });
+
+
+    });
+
+
+
+</script>

@@ -170,6 +170,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\startup.cs" />
     <Compile Include="Controllers\DateViewController.cs" />
+    <Compile Include="Controllers\ExpertAnserController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\SignInController.cs" />
     <Compile Include="Controllers\UserManagesController.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="viewmodel\ChatRoomViewModel.cs" />
     <Compile Include="viewmodel\DemoCharViewModel.cs" />
     <Compile Include="viewmodel\EditPasswordViewModel.cs" />
+    <Compile Include="viewmodel\ExpertAnser.cs" />
     <Compile Include="viewmodel\LoginViewModel.cs" />
     <Compile Include="viewmodel\ArticlePostViewModel.cs" />
     <Compile Include="viewmodel\MemberDetailsViewModel.cs" />
@@ -373,6 +375,7 @@
     <Content Include="Views\UserManages\EditPassword.cshtml" />
     <Content Include="Views\UserManages\MemberDetails.cshtml" />
     <Content Include="Views\UserManages\MemberEdit.cshtml" />
+    <Content Include="Views\ExpertAnser\ExpertAnser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

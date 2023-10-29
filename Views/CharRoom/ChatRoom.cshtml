@@ -61,6 +61,10 @@
         background-color: #c9ffb0;
     }
 
+    .window_content2 {
+        display:none;
+    }
+
     .container01 {
         position: relative;
         left: 5%;
@@ -124,8 +128,8 @@
     }
 
     .submit_message {
-        width: 15%;
-        border-radius: 5px;
+        width: 10px;
+
     }
 
     .member_list {
@@ -186,6 +190,42 @@
     .container02_context::-webkit-scrollbar {
         display: none;
     }
+
+
+    .box {
+        width:100%; 
+        height:80px; 
+        margin-top:20px;
+        background-color:transparent; 
+        white-space:nowrap; 
+        overflow-x:scroll;
+        overflow-y:hidden;
+        border-radius:10px;
+    }
+
+    /* 軌道大小和顏色設定*/
+    .box::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* 滑動條顏色 */
+    .box::-webkit-scrollbar-thumb {
+        background: #93bc44;
+        border-radius: 5px;
+    }
+
+
+    @@media screen and (max-width: 798px) {
+    
+        .window_content{
+            display: none;
+        }
+        .window_content2{
+            display:block;
+        }
+
+     }
+
 </style>
 
 
@@ -243,7 +283,7 @@
 
                         <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
                         <div>
-                            <p>
+                            <p style="word-wrap: break-word;">
                                 @i.Content
                             </p>
                         </div>
@@ -259,7 +299,7 @@
 
                         <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
                         <div>
-                            <p>
+                            <p style="word-wrap:break-word;">
                                 @i.Content
                             </p>
                         </div>
@@ -276,7 +316,7 @@
         <div class="container02_footer">
 
             <input class="input_message" placeholder="請輸入要傳入訊息">
-            <button class="submit_message">送出</button>
+            <button class="submit_message" style="border:none; background-color:transparent;"><img src="~/ICON/send-fill.svg"></button>
 
         </div>
 
@@ -286,7 +326,95 @@
 </div>
 
 
+<div class="window_content2">
 
+        <button class="friend-btn" style="width:100%; height:50px; text-align:center; background-color:aliceblue; border-radius:10px; margin-top:30px; border: none;">查看好友</button>
+        <div class="box">
+
+
+            @foreach (var i in Friend)
+            {
+                var friendname = i.ChatRoomName;
+                var removename = friendname.Replace("/", "");
+                removename = removename.Replace(UserName, "");
+                removename = removename.Replace("的私聊", "");
+
+
+                <div style="width:50px; height:50px; display:inline-block;">
+                    <a style="background-color:antiquewhite; border-radius:100%;" onclick="location.href = '@Url.Action("ChatRoom", "CharRoom", new { id= i.ChatroomID})'"><img style="width:50px; height:50px;" src="~/Uploads/Expert.png"></a>
+                    <p style="text-align:center; font-size:10px;">@removename</p>
+                    </div>
+
+
+                    }
+
+
+
+                </div>
+
+                <div style="font-size:30px; font-weight:bolder; text-align:center; margin-top:50px;">你/ @othername 的聊天室</div>
+
+                <div style="width:100%; height:100vh; margin-top:30px; border-radius:10px;">
+
+                    <div id="min-view" style="width:100%; height:90%; background-color:brown; overflow-y:scroll; overflow-x:hidden;">
+
+                        <p style="text-align:center; padding-top:20px; font-size:30px; font-weight:bolder;">開始聊天</p>
+
+
+
+                        @foreach (var i in context)
+                        {
+
+                            if (@i.UserID == MainUserID)
+                            {
+                                <div class="content-right-context">
+
+                                    <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
+                                    <div>
+                                        <p style="word-wrap: break-word;">
+                                            @i.Content
+                                        </p>
+                                    </div>
+
+                                    <div class="content-time"><p>@i.Time</p></div>
+                                </div>
+
+                            }
+
+
+                            else
+                            {
+
+                                <div class="content-left-context">
+
+                                    <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
+                                    <div>
+                                        <p style="word-wrap:break-word;">
+                                            @i.Content
+                                        </p>
+                                    </div>
+
+                                    <div class="content-time"><p>@i.Time</p></div>
+                                </div>
+
+                            }
+                        }
+
+
+                    </div>
+
+                    <div style="width:100%; height:10%; padding-top:20px; text-align:center;">
+
+                        <div>
+                            <input class="input_message" style="width:90%;" placeholder="請輸入要傳入訊息">
+                            <button class="submit_message" style="border:none; background-color:transparent;"><img src="~/ICON/send-fill.svg"></button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
 
 
 
@@ -307,7 +435,23 @@
 
                 var contextheight = document.getElementById("container_context");
                 contextheight.scrollTop = contextheight.scrollHeight;
-                console.log("進入");
+                var contextheight = document.getElementById("min-view");
+                contextheight.scrollTop = contextheight.scrollHeight;
+
+
+                $(".friend-btn").click(function () {
+
+                    $(".box").toggle();
+
+                });
+
+
+
+
+
+
+
+
 
 
 
@@ -335,35 +479,43 @@
                 };
 
 
+
                 $.connection.hub.start().done(function ()
                 {
                     $(".submit_message").click(function () {
 
                         var url = '@Url.Action("Writemessage", "CharRoom", new { id = ChatRoomID})';
 
-                        var data = $(".input_message").val();
-                        $(".input_message").val("");
-
-                        $.ajax({
-
-                            url: url,
-                            type: 'POST',
-                            data: { userID:@MainUserID, ChatroomID:@ChatRoomID , inputcontext: data },
-                            success: function (result) {
-                                // 更新部分內容
-                                $('#PanelReload').html(result);
-                                console.log("成功");
-                            },
-                            error: function () {
-
-                                alert("沒有成功");
-                            }
-
-                        });
-
-                        chat.server.send(@ChatRoomID);
 
 
+                        //找尋input的容器
+                        var input = $(this).siblings(".input_message");
+                        var inputValue = input.val();
+                        var data = inputValue;
+                        
+
+                        if (data !== "") {
+
+                            $.ajax({
+
+                                url: url,
+                                type: 'POST',
+                                data: { userID:@MainUserID, ChatroomID:@ChatRoomID , inputcontext: data },
+                                success: function (result) {
+                                    // 更新部分內容
+                                    $('#PanelReload').html(result);
+                                    console.log("成功");
+                                },
+                                error: function () {
+
+                                    alert("沒有成功");
+                                }
+
+                            });
+
+                            chat.server.send(@ChatRoomID);
+
+                        }
 
                     });
                 });

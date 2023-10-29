@@ -85,7 +85,7 @@
                     </div>
                     <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
 
-                        @Html.EditorFor(model => model.Birthday, new { htmlAttributes = new { @class = "form-control", placeholder = "修改生日", onfocus = "(this.type = 'date')", @style = "background-color:#F2ECE2;", type = "text" } })
+                        @Html.EditorFor(model => model.Birthday, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @class = "form-control", placeholder = "修改生日", onfocus = "(this.type = 'date')", @style = "background-color:#F2ECE2;", type = "text" } })
                         @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
                     </div>
 

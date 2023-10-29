@@ -109,6 +109,7 @@ namespace postArticle.Controllers
         public ActionResult SendVerificationCode(string email)
         {
             MaillService ms = new MaillService();
+            Session["UserEmail"] = email;
             try
             {
                 string subject = "註冊驗證碼";
@@ -188,6 +189,7 @@ namespace postArticle.Controllers
                     registerViewModel.userManage.LevelValue = 0;
                     registerViewModel.userManage.UserType = "Member";
                     registerViewModel.userManage.Status = 0;
+                    registerViewModel.userManage.Email = (string)Session["UserEmail"];
 
 
                     db.UserManages.Add(registerViewModel.userManage);

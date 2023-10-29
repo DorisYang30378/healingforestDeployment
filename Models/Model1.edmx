@@ -76,7 +76,7 @@
           <Property Name="QuestionID" Type="int" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="AnswerContent" Type="varchar" MaxLength="2048" Nullable="false" />
-          <Property Name="AnswerTime" Type="date" Nullable="false" />
+          <Property Name="AnswerTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ExpertApply">
           <Key>
@@ -491,7 +491,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="User Message">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Message" Type="Self.Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -832,7 +834,7 @@
           <Property Name="QuestionID" Type="Int32" Nullable="false" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="AnswerContent" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="AnswerTime" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="AnswerTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="UserManage" Relationship="Self.Expert_answer_questions" FromRole="ExpertAnswer" ToRole="UserManage" />
           <NavigationProperty Name="UserQuestion" Relationship="Self.Expert_received_Question" FromRole="ExpertAnswer" ToRole="UserQuestion" />
         </EntityType>
