@@ -132,14 +132,19 @@
 
             @foreach (var item in RM)
             {
-            <tr>
-                <td>@item.Message_ID</td>
-                <td>@item.User_ID</td>
-                <td>@item.Content</td>
-                <td>@item.Status</td>
-                <td>@Html.ActionLink("審查", "MSReview", new { id = item.MS_ID }, new { title = "前往審查文章" })</td>
-                <td><button class="deleteRM-button" value=@Html.Raw(HttpUtility.HtmlEncode(item.MS_ID))>刪除</button></td>
-            </tr>
+
+                if (item.Status == 0)
+                {
+                    <tr>
+                        <td>@item.Message_ID</td>
+                        <td>@item.User_ID</td>
+                        <td>@item.Content</td>
+                        <td>@item.Status</td>
+                        <td>@Html.ActionLink("審查", "MSReview", new { id = item.MS_ID }, new { title = "前往審查文章" })</td>
+                        <td><button class="deleteRM-button" value=@Html.Raw(HttpUtility.HtmlEncode(item.MS_ID))>刪除</button></td>
+                    </tr>
+
+                }
             }
         </tbody>
     </table>

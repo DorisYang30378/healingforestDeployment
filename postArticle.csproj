@@ -279,6 +279,7 @@
     <Compile Include="viewmodel\MemberDetailsViewModel.cs" />
     <Compile Include="viewmodel\RAViewModel.cs" />
     <Compile Include="viewmodel\RegisterViewModel.cs" />
+    <Compile Include="viewmodel\ReportResult.cs" />
     <Compile Include="viewmodel\ReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using postArticle.Models;
+using postArticle.viewmodel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace postArticle.viewmodel
         {
             get; set;
         }
+
+        public ReportResult result { get; set; }
+
+
 
 
         public string Title { get; set; }

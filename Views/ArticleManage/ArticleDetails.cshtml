@@ -138,11 +138,11 @@
             font-size: 16px;
             }
 
-            
-    .add-comment-button button:hover,        
-    .add-comment-button button:focus 
-    {            
-        background-color: #2f863a;    
+
+    .add-comment-button button:hover,
+    .add-comment-button button:focus
+    {
+        background-color: #2f863a;
         }
 
 
@@ -167,7 +167,7 @@
         left: 50%;
         top: 50%;
         background-color: azure;
-        width: 40%;
+        width: 100%;
         height: 30%;
         z-index: 4;
         transform: translate(-50%,-50%); /*畫面至中*/
@@ -197,14 +197,22 @@
 
     .reportms_alert {
         position: absolute;
+        justify-content:center;
         left: 50%;
         top: 50%;
         background-color: azure;
-        width: 40%;
+        width: 500px;
         height: 30%;
         z-index: 4;
         transform: translate(-50%,-50%); /*畫面至中*/
         border-radius: 4px;
+    }
+
+    @@media only screen and (max-width: 500px) {
+        .reportms_alert {
+            width:100%;
+            
+        } 
     }
 
     .reportms_alert button .reportms_cancel {
@@ -382,23 +390,30 @@
 
 
         <form method="post">
+
+            <div style="width:100%; height:100%;">
+                <div style="margin: auto;">
             <input type="checkbox" name="reportms" value="不雅字眼">
             @Html.Label("不雅字眼")
-            <br>
+                    </div>
+                <div style="margin: auto;">
+            
             <input type="checkbox" name="reportms" value="恐嚇字詞">
             @Html.Label("恐嚇字詞")
-            <br>
+                    </div>
+            <div style="margin: auto;">
             <input type="checkbox" name="reportms" value="不當發言">
             @Html.Label("不當發言")
-            <br>
+            </div>
+                <div style="margin: auto;">
             @Html.Label("其他")
-            <br>
+            </div><div style="margin: auto;">
             @Html.TextArea("reportms_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
-
+                    </div>
             <button class="reportms_cancel btn btn-danger">取消</button>
             <button class="reportms_submit btn btn-success">送出</button>
             <span id="result"></span>
-
+                </div>
         </form>
     </div>
 </div>

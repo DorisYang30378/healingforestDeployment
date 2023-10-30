@@ -324,20 +324,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Expert answer questions">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
-          <End Role="ExpertAnswer" Type="Self.ExpertAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="ExpertAnswer">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="Expert received Question">
-          <End Role="UserQuestion" Type="Self.UserQuestion" Multiplicity="1" />
+          <End Role="UserQuestion" Type="Self.UserQuestion" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ExpertAnswer" Type="Self.ExpertAnswer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserQuestion">
@@ -659,10 +649,6 @@
           <AssociationSet Name="CollectArticle" Association="Self.CollectArticle">
             <End Role="Article" EntitySet="Article" />
             <End Role="Collect" EntitySet="Collect" />
-          </AssociationSet>
-          <AssociationSet Name="Expert answer questions" Association="Self.Expert answer questions">
-            <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
           </AssociationSet>
           <AssociationSet Name="Expert received Question" Association="Self.Expert received Question">
             <End Role="UserQuestion" EntitySet="UserQuestion" />

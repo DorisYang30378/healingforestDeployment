@@ -18,7 +18,6 @@ namespace postArticle.Controllers
         private ReportViewModel RMV = new ReportViewModel();
 
 
-
         // GET: Manager
         public ActionResult UserMange(String search)
         {
@@ -105,8 +104,21 @@ namespace postArticle.Controllers
             return View(emp);
         }
 
+    
 
 
+
+
+
+        /////////////////////////////////////// Report//////////////////////////////////////////////
+
+
+
+        public void collectReport()
+        {
+            RMV.RA = db.Reports.ToList();
+            RMV.RM = db.Report_Message.ToList();
+        }
 
         public ActionResult Report() {
 
@@ -128,13 +140,11 @@ namespace postArticle.Controllers
 
         }
 
-        public void collectReport()
-        {
-            RMV.RA = db.Reports.ToList();
-            RMV.RM = db.Report_Message.ToList();
-        }
 
 
+
+
+        ///檢舉和留言檢視
 
         public ActionResult ArticleReview(int ?id, int ?RID )
         {
@@ -143,6 +153,9 @@ namespace postArticle.Controllers
             //檢舉ID
             Report empp = db.Reports.Find(RID);
             Article emps = db.Articles.Find(ArticleID);
+
+            TempData["RRID"] = empp.Report_ID;
+            TempData["RAID"] = empp.ArticleID;
 
             ////////////////////////////////////
             RAViewModel emp = new RAViewModel
@@ -166,72 +179,131 @@ namespace postArticle.Controllers
            
         }
 
-        ///傳送文章檢舉回復 RRA:return review article///
-        ///
 
 
-        
-        public ActionResult RRA(int ?Report_ID)
+        [HttpGet]
+        public ActionResult MSReview(int? id)
         {
-            int ReportID = (int)Report_ID;
-            int RU_ID = Int16.Parse(Request.Form["RU_ID"]);
-            int RA = Int16.Parse(Request.Form["RA"]);
-            String Report_Content = Request.Form["Report_Content"];
-            var content = DateTime.Now.ToString();
 
-            //判斷檢舉通過或未通過(Pass/Failed)
+            if (id != null)
+            {
+                TempData["rmid"] = db.Report_Message.Find(id).Message_ID;
+                TempData["rrmid"] = db.Report_Message.Find(id).MS_ID;
+                ViewBag.MS_ID = db.Report_Message.Find(id).MS_ID;
+                ViewBag.MessageID = db.Report_Message.Find(id).Message_ID;
+                ViewBag.UserID = db.Report_Message.Find(id).User_ID;
+                ViewBag.Content = db.Report_Message.Find(id).Content;
+                ViewBag.Context = db.Messages.Find(ViewBag.MessageID).Content.ToString();
+            }
+            return View();
+        }
 
-            if (Report_ID != null)
+
+
+
+
+
+        ///檢舉回復 RRA:return review article///
+        public ActionResult RRA(RAViewModel model)
+        {
+
+            var time = DateTime.Now.ToString();
+
+            string result = model.result.radioResult;
+
+            if (result == "檢舉通過")
             {
 
-                PF(Report_Content, RA);
-                R_Report r_Report = new R_Report { ReportID = ReportID, UserID = RU_ID, Article_ID = RA, Content = "已於" + content + Report_Content, Status = 0 };
-                db.R_Report.Add(r_Report);
-                //將檢舉設置為已閱
-                Read(ReportID);
+                int RAID = (int)TempData["RAID"];
+
+                var a = db.Articles.Find(RAID);
+                a.Status = 1;
+
+                var b = db.Reports.Where(m=>m.ArticleID == RAID).ToList();
+                foreach (var i in b)
+                {
+                    i.Status = 1;
+                }
+
+
+
                 db.SaveChanges();
 
-                //return Json(new { redirectUrl = Url.Action("Report", "Manager") });
-                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+
+
 
             }
-
-            else {
-
-                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-
-            }
-        }
-
-
-
-        public void Read(int ReportID)
-        {
-            var p = db.Reports.Find(ReportID);
-            p.Status = 1;
-            db.SaveChanges();
-        }
-
-
-        public void PF(string content, int articleID )
-        {
-
-            //尋找被檢舉的文章
-            var p = db.Articles.Find(articleID);
-
-            if (content == "檢舉通過")
+            else if (result == "檢舉未通過")
             {
-                p.Status = 1;
+                var b = db.Reports.Find(TempData["RRID"]);
+                b.Status = 1;
+                db.SaveChanges();
             }
             else
             {
-                p.Status = 0;
+
             }
-            db.SaveChanges();
+
+
+
+
+
+
+
+
+
+            return RedirectToAction("Report", "Manager");
+
+
+        }
+
+
+        ///檢舉回復 RRA:return review Message///
+
+        public ActionResult RRM(ReportResult model)
+        {
+
+            string result = model.radioResult;
+
+            if (result == "檢舉通過")
+            {
+
+                int rmid = (int)TempData["rmid"];
+
+                var a= db.Messages.Find(rmid);
+                    a.Status = 1;
+
+
+                var c = db.Report_Message.Where(m=>m.Message_ID == rmid).ToList();
+                foreach(var d in c)
+                {
+                    d.Status = 1;
+                }
+                db.SaveChanges();
+
+
+
+            }
+            else if (result == "檢舉未通過")
+            {
+                var b = db.Report_Message.Find(TempData["rrmid"]);
+                b.Status = 1;
+                db.SaveChanges();
+            }
+            else
+            {
+
+            }
+
+
+
+            return RedirectToAction("Report", "Manager");
         }
 
 
 
+
+        ///管理者刪除檢舉
         public ActionResult Delete_RA(int ?id)
         {
 
@@ -274,27 +346,6 @@ namespace postArticle.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
 
         }
-
-
-
-
-
-        [HttpGet]
-        public ActionResult MSReview(int? id) 
-        {
-
-            if (id != null)
-            {
-                ViewBag.MS_ID = db.Report_Message.Find(id).MS_ID;
-                ViewBag.MessageID = db.Report_Message.Find(id).Message_ID;
-                ViewBag.UserID = db.Report_Message.Find(id).User_ID;
-                ViewBag.Content = db.Report_Message.Find(id).Content;
-                ViewBag.Context = db.Messages.Find(ViewBag.MessageID).Content.ToString();
-
-            }
-            return View();
-        }
-
 
 
     }

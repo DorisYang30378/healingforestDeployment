@@ -1,17 +1,13 @@
-﻿
+﻿@using postArticle.viewmodel
+@model postArticle.viewmodel.ReportResult
 
 
 <style>
-
-    .container-panel{
-
-        position:relative;
+    .container-panel {
+        position: relative;
         height: 75vh;
         margin-top: 80px;
-        
     }
-
-
 </style>
 
 
@@ -19,47 +15,48 @@
 
 
     <div style="width:200px; margin:0 auto;">
-        <h2 style="left:%;">留言審查</h2>
+        <h2>留言審查</h2>
         <p>留言ID : @ViewBag.MessageID</p>
         <p>檢舉人ID : @ViewBag.UserID</p>
         <p style="word-wrap:break-word;">留言內容 : <br>@ViewBag.Context</p>
         <p style="word-wrap:break-word;">檢舉內容 : <br>@ViewBag.Content</p>
     </div>
 
-    <div >
-        <div style="text-align:center;">
-            <input class="contentbtn " id="pass" type="radio" name="report" value="檢舉通過" style="display:none;">
-            <label class="btn btn-outline-primary" for="pass">檢舉通過</label>
-            <input class="contentbtn " id="nopass" type="radio" name="report" value="檢舉未通過" style="display:none;">
-            <label class="btn btn-outline-primary" for="nopass">檢舉未通過</label>
-        </div>
+    <div>
 
-        <div style="text-align:center; margin-top:30px;">
-            <button class="btn btn-danger" style="width:97px;">返回</button>
+        @using (Html.BeginForm("RRM", "Manager", FormMethod.Post))
+        {
+            <div style="text-align:center;">
+                  @Html.RadioButtonFor(m => m.radioResult, "檢舉通過") <span class="button-label">檢舉通過</span>
+                  @Html.RadioButtonFor(m => m.radioResult, "檢舉未通過") <span class="button-label">檢舉未通過</span>
+            </div>
 
-            <!-- 不能使用value 進行傳輸-->
-            <button class="btn btn-success" style="width:97px;" id="submit" value="@ViewBag.MS_ID">送出</button>
-        </div>
+            <div style="text-align:center; margin-top:30px;">
+                <button class="btn btn-danger" style="width:97px;">返回</button>
+                <button type="submit" class="btn btn-success" style="width:97px;">送出</button>
+            </div>
+        }
+
     </div>
-
 </div>
-
-
 
 <script>
 
-    $(document).ready(function () {
-
-        $("#submit").click(function () {
-
-            console.log($(this).val());
-
-            console.log(@ViewBag.MS_ID);
-
+    document.addEventListener("DOMContentLoaded", function () {
+        var submitButton = document.querySelector('button[type="submit"]');
+        submitButton.addEventListener("click", function (event) {
+            var selectedValue = getSelectedRadioValue("radioResult");
+            alert(selectedValue);
         });
-
     });
 
-
-    </script>
-
+    function getSelectedRadioValue(name) {
+        var radios = document.getElementsByName(name);
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                return radios[i].value;
+            }
+        }
+        return null;
+    }
+</script>

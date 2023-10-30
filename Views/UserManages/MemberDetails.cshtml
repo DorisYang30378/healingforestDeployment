@@ -140,55 +140,58 @@
 
             <p style="padding:20px 0 0 0; font-size:30px; text-align:center;">我的提問</p>
 
-
-            @if (UQ.Count()<1)
-            {
-                <p style="text-align:center; font-size:30px;">開始我的第一則提問</p>
-            }
+            <div style="width:100%; height:500px; overflow-y:scroll; overflow-x:hidden;">
 
 
-            @foreach (var item in UQ)
-            {
 
-                <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
-                    問題 :
-                    <p>@item.QuestionTitle @item.QuestionContent @item.QuestionTime</p>
-                    <div class="card-body">
+                @if (UQ.Count() < 1)
+                {
+                    <p style="display:flex; height:100%; width:100%; justify-content:center; align-items:center; font-size:30px; font-weight:bold; color:rgb(209 209 209 / 0.85)">開始我的第一則提問</p>
+                }
 
 
-                        <div class="card Question-info">
+                @foreach (var item in UQ)
+                {
+
+                    <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
+                        問題 :
+                        <p>@item.QuestionTitle @item.QuestionContent @item.QuestionTime</p>
+                        <div class="card-body">
 
 
-                            @if (EQA != null)
-                            {
+                            <div class="card Question-info">
 
-                                foreach (var i in EQA)
+
+                                @if (EQA != null)
                                 {
-                                    if (i.QuestionID == item.UserQuestionID)
+
+                                    foreach (var i in EQA)
                                     {
-                                        <div class="list-group" style="padding:3px;">
-                                            回答 :
-                                            <br>
-                                            @i.AnswerContent
-                                        </div>
+                                        if (i.QuestionID == item.UserQuestionID)
+                                        {
+                                            <div class="list-group" style="padding:3px;">
+                                                回答 :
+                                                <br>
+                                                @i.AnswerContent
+                                            </div>
+                                        }
                                     }
+
                                 }
 
-                            }
+
+                            </div>
 
 
                         </div>
 
 
+
                     </div>
 
 
-
-                </div>
-
-
-            }
-
+                }
+            </div>
 
 
             @using (Html.BeginForm("Submit_UserQuestion", "UserManages", FormMethod.Post, new { @style = "text-align: center; margin: 30px 0 30px 0;" }))

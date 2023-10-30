@@ -1,11 +1,9 @@
-﻿@using postArticle.Models;
-
-@model postArticle.viewmodel.RAViewModel
+﻿@model postArticle.viewmodel.RAViewModel
 
 
 @{
     ViewBag.Title = "ArticleReview";
-    ViewBag.Sussess ="";
+    ViewBag.Sussess = "";
 
 }
 
@@ -55,83 +53,45 @@
     <img src="~/Uploads/@Model.ImageURL">
 </div>
 
+<div>@Model.ReportContent</div>
 
 
+@using (Html.BeginForm("RRA", "Manager", FormMethod.Post))
+{
 
-<form method="post"> 
-    <div>@Model.ReportContent</div>
-    <input class="contentbtn " id="pass" type="radio" name="report" value="檢舉通過" style="display:none;">
-    <label class="btn btn-outline-primary" for="pass">檢舉通過</label>
-    <input class="contentbtn " id="nopass" type="radio" name="report" value="檢舉未通過" style="display:none;">
-    <label class="btn btn-outline-primary" for="nopass">檢舉未通過</label>
+    <div style="text-align:center;">
+        @Html.RadioButtonFor(m => m.result.radioResult, "檢舉通過") <span class="button-label">檢舉通過</span>
+        @Html.RadioButtonFor(m => m.result.radioResult, "檢舉未通過") <span class="button-label">檢舉未通過</span>
+    </div>
 
     <div style="text-align:center; margin-top:30px;">
-        @Html.ActionLink("返回", "Report", "Manager", null, new { @class = "btn btn-light" })
-        @if (Model.RAStatus == 0) { 
-                <button class="btn btn-danger" id="submit">送出</button>
-            }
-            else
-            {
-               <button class="btn btn-danger" id="submit" disabled>送出</button>
-            }
-        
+        <button class="btn btn-danger" style="width:97px;">返回</button>
+        <button type="submit" class="btn btn-success" style="width:97px;">送出</button>
     </div>
-</form>
+
+
+}
 
 
 
 <script>
 
-    $(document).ready(function () {
+    document.addEventListener("DOMContentLoaded", function () {
+        var submitButton = document.querySelector('button[type="submit"]');
+        submitButton.addEventListener("click", function (event) {
+            var selectedValue = getSelectedRadioValue("result.radioResult");
+            alert(selectedValue);
+        });
+    });
 
+    function getSelectedRadioValue(name) {
+        var radios = document.getElementsByName(name);
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                return radios[i].value;
+            }
+        }
+        return null;
+    }
+</script>
 
-        $("#submit").click(function() {
-
-
-            var contentbtn = $('input[name="report"]:checked').val();
-
-
-            $.ajax({
-
-                url: '@Url.Action("RRA", "Manager")',
-
-                type: 'POST',
-
-                data: { Report_ID: @Model.ReportID, RU_ID: @Model.RU_ID, RA: @Model.RA, Report_Content: contentbtn },
-
-
-                success: function (data) {
-
-                    if (data.success) {
-
-                        alert("成功");
-
-                         window.location.href = '@Url.Action("Report")';
-                    }
-
-                    else {
-
-                        alert("失敗");
-
-                    }
-
-
-                },
-
-                error: function () {
-
-                    alert("傳輸失敗");
-
-                }
-
-
-
-            });
-
-         });
-
-     });
-
-</script> 
-    
-    

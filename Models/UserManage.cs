@@ -36,7 +36,6 @@ namespace postArticle.Models
 
         public int UserID { get; set; }
 
-
         [Required(ErrorMessage = "請輸入暱稱")]
         public string UserName { get; set; }
 
@@ -51,11 +50,12 @@ namespace postArticle.Models
         public string UserType { get; set; }
         public int LevelValue { get; set; }
         public double Experience { get; set; }
-
-        [Required(ErrorMessage = "請輸入生日")]
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "請輸入生日")]
         public System.DateTime Birthday { get; set; }
         public Nullable<int> Status { get; set; }
+
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Article> Articles { get; set; }
