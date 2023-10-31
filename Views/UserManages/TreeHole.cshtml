@@ -1,0 +1,184 @@
+﻿@{
+    ViewBag.Title = "你的樹洞";
+}
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<style>
+    body {
+        background-image: url('../Image/tree.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+
+    h2 {
+        margin-top: 12%;
+        text-align: center;
+        color: aliceblue;
+        margin-right: 5%;
+    }
+
+    h3 {
+        text-align: center;
+        color: aliceblue;
+        margin-right: 3%;
+    }
+
+
+    .container bg {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .black-hole {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        position: fixed;
+        top: 78%;
+        left: 47%;
+        transform: translate(-50%, 50%) scale(5) rotate(45deg);
+        animation: rotate-black-hole 5s linear infinite;
+    }
+
+    .object {
+        background-color: white;
+        position: fixed;
+        transition: all 2s; /* CSS 過渡效果 */
+        width: 100px;
+        word-wrap: break-word; /* 自動換行 */
+        white-space: normal; /* 重置 white-space 屬性 */
+        opacity: 1;
+    }
+
+    footer {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+    }
+
+    input {
+        padding: 5px 15px;
+        background: white;
+        border: 0 thin;
+        cursor: pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+    .background-div {
+        height: 62vh; /* 设置为视口高度的百分比，确保内容适应视口大小 */
+    }
+
+    .text-input {
+        position: fixed;
+        left: 47%;
+        top: 60%;
+        transform: translateX(-50%);
+        padding: 10px;
+    }
+
+
+    @@keyframes rotate-black-hole {
+        0% {
+            transform: translate(-50%, 50%) scale(3) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, 50%) scale(3) rotate(360deg);
+        }
+    }
+</style>
+<audio id="sound" src="~/audio/suckIn.m4a" style="display:none"></audio>
+<div class="background-div">
+    <audio autoplay loop>
+        ">
+        <source src="~/audio/Canon.mp3" type="audio/mpeg">
+
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container bg">
+        <h2>歡迎來到療癒之森</h2>
+        <h3><br>這棵大樹會聆聽你所有心聲，<br>並將你的煩惱吸入黑洞裡</h3>
+
+        <img src="~/Image/hole.png" class="black-hole">
+    </div>
+    <input class="text-input" type="text" id="textInput" placeholder="寫入心事並按下enter鍵" onkeydown="handleInput(event)">
+
+
+</div>
+<script>
+
+
+	var audio = document.getElementById("sound");
+	function handleInput(event) {
+		if (event.key === "Enter") {
+			const inputElement = document.getElementById("textInput");
+			const inputValue = inputElement.value;
+			inputElement.value = ""; // 清空輸入框
+			const object = document.createElement("div");
+			object.classList.add("object");
+			object.style.width = 150;
+			object.style.height = "auto"; // 自動調整高度
+			object.innerHTML = inputValue;
+			document.body.appendChild(object);
+
+			// 計算物體的初始位置，讓他從黑洞左上角開始移動
+			const blackHole = document.querySelector(".black-hole");
+			const blackHoleX = blackHole.getBoundingClientRect().left + blackHole.offsetWidth / 2 - 100;
+			const blackHoleY = blackHole.getBoundingClientRect().top + blackHole.offsetHeight / 2 - 100;
+			object.style.left = blackHoleX + "px";
+			object.style.top = blackHoleY + "px";
+
+			// 計算物體的目標位置，即黑洞的中心，稍微向右下角移動
+			const targetX = blackHoleX + 180; // 向右移動180px
+			const targetY = blackHoleY + 180; // 向下移動180px
+
+			// 啟動物體動畫
+			requestAnimationFrame(function (timestamp) {
+				moveObject(object, targetX, targetY, timestamp);
+			});
+		}
+	}
+
+
+	function moveObject(object, targetX, targetY, startTime) {
+		const currentTime = performance.now();
+		const duration = 5000; // 移動動畫的持續時間為5秒
+
+		if (currentTime - startTime < duration) {
+			const progress = (currentTime - startTime) / duration;
+			const deltaX = (targetX - parseFloat(object.style.left)) * progress;
+			const deltaY = (targetY - parseFloat(object.style.top)) * progress;
+
+			object.style.left = parseFloat(object.style.left) + deltaX + "px";
+			object.style.top = parseFloat(object.style.top) + deltaY + "px";
+
+			// 設置物件的縮放
+			const scale = 1 - progress;
+			object.style.transform = `scale(${scale})`;
+
+
+
+			const opacity = 1 - progress;
+			object.style.opacity = opacity;
+
+			requestAnimationFrame(function (timestamp) {
+				moveObject(object, targetX, targetY, startTime);
+			});
+			audio.play();
+		} else {
+			audio.pause();
+			confirm("大樹已聆聽了你的煩惱，希望你放下它，讓自己往前邁步");
+			// 動畫完成後，讓物件消失
+			object.style.opacity = 0.3;
+			object.style.display = "none";
+
+		}
+	}
+</script>

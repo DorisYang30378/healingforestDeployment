@@ -52,6 +52,9 @@ namespace postArticle.Controllers
 
             //今天日期
             var my_date = DateTime.Now;
+
+            ViewBag.nowday567 = my_date;
+
             var my_year = my_date.ToString("yyyy");
             var my_month = my_date.Month;
             var my_day = my_date.ToString("dd");

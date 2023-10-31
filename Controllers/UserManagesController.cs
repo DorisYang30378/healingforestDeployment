@@ -35,7 +35,7 @@ namespace postArticle.Controllers
         public ActionResult Login(RegisterViewModel registerViewModel)
         {
 
-            if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password) )
+            if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password))
             {
 
 
@@ -43,7 +43,8 @@ namespace postArticle.Controllers
                                where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account
                                select new
                                {
-                                   UserManagedb.UserID, UserManagedb.Status
+                                   UserManagedb.UserID,
+                                   UserManagedb.Status
                                };
 
                 #region ===如果有進入首頁===
@@ -62,10 +63,11 @@ namespace postArticle.Controllers
                     return View();
                 }
             }
-            else {
+            else
+            {
 
-                
-                    var queryAccountSQL = from UserManagedb in db.UserManages
+
+                var queryAccountSQL = from UserManagedb in db.UserManages
                                       where UserManagedb.Account == registerViewModel.userManage.Account
                                       select new
                                       {
@@ -207,7 +209,7 @@ namespace postArticle.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
 
@@ -293,7 +295,7 @@ namespace postArticle.Controllers
             return Json(isUnique, JsonRequestBehavior.AllowGet);
         }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
         // GET: UserManages/Details/5
@@ -302,7 +304,8 @@ namespace postArticle.Controllers
 
             var UserID = GetUserID();
 
-            
+            moodcount();
+
 
             if (id == null)
             {
@@ -313,9 +316,25 @@ namespace postArticle.Controllers
             var userQuestionUserIDs = db.UserQuestions.Where(m => m.UserID == UserID).Select(m => m.UserQuestionID).ToList();
             var expertAnswers = db.ExpertAnswers.Where(m => userQuestionUserIDs.Contains(m.QuestionID)).ToList();
 
+
+            /////////////////////////////////
             UserManage.ExpertAS = expertAnswers;
             UserManage.UserManagesDetail = db.UserManages.Find(id);
-            UserManage.UserQuestions = db.UserQuestions.Where(m=>m.UserID == UserID);
+            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID);
+
+
+            ////////////////////////////////
+            var record = db.Moods.Where(m => m.UserID == UserID).ToList().Where(m => m.Time.ToString("M") == DateTime.Now.ToString("M")).ToList();
+
+
+            if (record.Count > 0) {
+
+                UserManage.nowmood = record.First().Mood1;
+
+            }
+           
+
+
 
 
             if (UserManage.UserManagesDetail == null)
@@ -326,7 +345,7 @@ namespace postArticle.Controllers
         }
 
 
-
+        //////////////////////////////////////////////////////////////////////////////////////
 
         public ActionResult MemberEdit(int? id)
         {
@@ -345,11 +364,11 @@ namespace postArticle.Controllers
                 return HttpNotFound();
             }
 
-            if( id == UserID)
+            if (id == UserID)
             {
                 return View(userManage);
             }
-            
+
 
             return View();
         }
@@ -387,6 +406,9 @@ namespace postArticle.Controllers
             return View(userManage);
         }
 
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
         public ActionResult EditPassword(int? id)
         {
 
@@ -403,7 +425,8 @@ namespace postArticle.Controllers
                 return HttpNotFound();
             }
 
-            if (id == UserID) {
+            if (id == UserID)
+            {
                 EditPasswordViewModel viewModel = new EditPasswordViewModel();
                 viewModel.userManage = user;
                 return View(viewModel);
@@ -451,13 +474,12 @@ namespace postArticle.Controllers
         }
 
 
-
-
-
+        ///////////////////////////////////////////////////////////////////////////////////
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(true)]
-        public ActionResult Submit_UserQuestion(MemberDetailsViewModel MQ) {
+        public ActionResult Submit_UserQuestion(MemberDetailsViewModel MQ)
+        {
 
             MemberDetailsViewModel QuestionModel = new MemberDetailsViewModel();
             var Question = QuestionModel.SubmitUQ;
@@ -466,20 +488,107 @@ namespace postArticle.Controllers
 
             MQ.SubmitUQ.UserID = UserID;
             MQ.SubmitUQ.QuestionTime = DateTime.Now;
-            
-            
+
+
             db.UserQuestions.Add(MQ.SubmitUQ);
 
             try
             {
                 db.SaveChanges();
             }
-            catch { 
-            
+            catch
+            {
+
             }
- 
+
             return RedirectToAction("MemberDetails", "UserManages", new { id = UserID });
         }
+
+
+
+        ///////////////樹洞
+        ///
+        public ActionResult TreeHole()
+        {
+
+            if (!CheckLoggedIn())
+            {
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
+            }
+            return View();
+        }
+
+
+        ///////////////心情更新創建
+        ///
+        public ActionResult MoodEdit()
+        {
+
+            int UserID = GetUserID();
+            var time = DateTime.Now.ToString("M");
+            var moodcontext = Request.Form["moodcontext"];
+
+
+
+            //將當天的心情紀錄寫出
+
+            var recorddb = db.Moods;
+
+            var record = recorddb.Where(m => m.UserID == UserID).ToList().Where(m => m.Time.ToString("M") == time).ToList();
+
+            //如果心情紀錄不等於空則更新Mood
+            if (record.Count > 0)
+            {
+                foreach (var i in record)
+                {
+                    i.Mood1 = moodcontext;
+                }
+                db.SaveChanges();
+            }
+            //如果心情紀錄等於空則創建新的mood 
+
+            else
+            {
+                var newMood = new Mood
+                {
+                    UserID = UserID,
+                    Time = DateTime.Now,
+                    Mood1 = moodcontext
+                };
+
+                recorddb.Add(newMood);
+                db.SaveChanges();
+            }
+
+           
+
+            return RedirectToAction("MemberDetails", "UserManages", new { id = UserID });
+
+        }
+
+
+
+
+
+        ///////////////////////////Method/////////////////////////////////
+
+        public void moodcount()
+        {
+
+            int UserID = GetUserID();
+
+            var mood = db.Moods.Where(m => m.UserID == UserID).ToList();
+
+            ViewBag.happyCount = mood.Where(m => m.Mood1 == "happy").ToList().Count;
+            ViewBag.unhappyCount = mood.Where(m => m.Mood1 == "unhappy").ToList().Count;
+            ViewBag.sadCount = mood.Where(m => m.Mood1 == "sad").ToList().Count;
+            ViewBag.angryCount = mood.Where(m => m.Mood1 == "angry").ToList().Count;
+
+        }
+
+
+
+
 
 
 

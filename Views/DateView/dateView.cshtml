@@ -43,7 +43,6 @@
         border: none;
         background-color: #4cea88;
         border-radius: 10px;
-        margin: 50px auto auto 47%;
         
     }
 
@@ -80,6 +79,8 @@
 <div class="containers">
 <div class="body-list">
 
+    <p>@ViewBag.nowday567</p>
+
     <p style="font-size:50px;text-align:center; ">每日簽到</p>
 
     <ul>
@@ -104,7 +105,7 @@
 
             }
 
-            for (int i = 1; i <= ViewBag.date; i++)
+            for (int i = 1; i <= ViewBag.date+1; i++)
             {
                 int value = i;
 
@@ -138,7 +139,7 @@
 </div>
 
 <!--button 簽到按鈕-->
-<div>
+<div style="text-align:center; margin-top: 30px;">
     @if(ViewBag.CheckIn == "簽到")
             {
                 <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>

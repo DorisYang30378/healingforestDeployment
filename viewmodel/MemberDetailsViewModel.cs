@@ -22,5 +22,7 @@ namespace postArticle.viewmodel
 
         public IEnumerable<ExpertAnswer> ExpertAS { get; set; }
         public string Questions { get; set; }
+
+        public string nowmood { get; set; }
     }
 }
