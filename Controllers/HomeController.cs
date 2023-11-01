@@ -35,6 +35,7 @@ namespace postArticle.Controllers
         {
             //---------------變數-----------------------------------------
             #region ===變數===
+            //
             //-------分頁-------
             int pageSize = 6;
             int pageNumber = (page ?? 1);

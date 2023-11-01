@@ -19,7 +19,7 @@ namespace postArticle.Controllers
 
         int id;
         public void UserId() {
-            id = (int)this.Session["UserId"];
+                id = (int)this.Session["UserId"];
         }
 
         //透過Enitity連接資料庫
@@ -45,8 +45,8 @@ namespace postArticle.Controllers
 
         public void Day()
         {
-            string[] month_olympic = new string[] { "31", "29", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31" };
-            int[] month_normal = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+            string[] month_olympic = new string[] {"" , "31", "29", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31" };
+            int[] month_normal = new int[] {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
             string[] month_name = new string[] { "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
 
 
@@ -120,7 +120,17 @@ namespace postArticle.Controllers
         public ActionResult dateView()
         {
             ViewBag.CheckIn = "簽到";
-            UserId();
+
+            try
+            {
+                UserId();
+            }
+            catch
+            {
+                return RedirectToAction("Login", "UserManages");
+            }
+           
+
             //Response.Write(id);
             Read();
             Day();

@@ -28,7 +28,7 @@ namespace postArticle.Controllers
             {
                 int PageSize = 5;
                 int PageNumber = (page ?? 1);
-                var UserQuestions = from s in db.UserQuestions select s;
+                var UserQuestions = db.UserQuestions.OrderByDescending(m=>m.QuestionTime);
                 var UserQuestioms_toPageList = UserQuestions.ToList().ToPagedList(PageNumber, PageSize);
                 EA.UserQuestions = UserQuestioms_toPageList;
                 EA.ExpertAnswers = db.ExpertAnswers;

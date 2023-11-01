@@ -14,8 +14,11 @@
 
 <style>
 
-    .containers{
-        padding-top: 10%;
+    body {
+        background-color: #DBF0D0;
+    }
+
+    .containers {
         height: 100%;
     }
 
@@ -27,7 +30,6 @@
         .body-list li {
             width: 13%;
             height: 40px;
-            background-color: aliceblue;
             display: inline-block;
             list-style-type: none;
             text-align: center;
@@ -36,20 +38,19 @@
         }
 
     .CheckIn {
-        position:relative;
+        position: relative;
         width: 100px;
         height: 50px;
         font-size: 20px;
         border: none;
         background-color: #4cea88;
         border-radius: 10px;
-        
     }
 
-    .CheckIn:hover{
-        background-color:#309505;
-        color:aliceblue;
-    }
+        .CheckIn:hover {
+            background-color: #309505;
+            color: aliceblue;
+        }
 
     /*
     b{
@@ -62,11 +63,11 @@
         background-color:aquamarine;
     }
     c {
-    
+
         position:relative;
         left:-18%;
         z-index:100;
-    
+
     }
         */
 
@@ -75,82 +76,84 @@
 </style>
 
 
+<p style="font-size:50px;text-align:center; margin-top:110px; ">每日簽到</p>
+
+
+<!--<div style="position:absolute; width:70%; height:400px; left:14%; background-color:rgb(255 255 255 / 0.3); z-index:-999;" > </div>-->
 
 <div class="containers">
-<div class="body-list">
+    <div class="body-list">
 
-    <p>@ViewBag.nowday567</p>
+        <ul>
+            <li>日</li>
+            <li>一</li>
+            <li>二</li>
+            <li>三</li>
+            <li>四</li>
+            <li>五</li>
+            <li>六</li>
+        </ul>
+    </div>
 
-    <p style="font-size:50px;text-align:center; ">每日簽到</p>
+    <div class="body-list">
+        <ul class="day" id="day">
 
-    <ul>
-        <li>日</li>
-        <li>一</li>
-        <li>二</li>
-        <li>三</li>
-        <li>四</li>
-        <li>五</li>
-        <li>六</li>
-    </ul>
-</div>
+            @{
 
-<div class="body-list">
-    <ul class="day" id="day">
-
-        @{
-
-            for (int i = 1; i < int.Parse(ViewBag.firstweekdate); i++)
-            {
-                <li></li>
-
-            }
-
-            for (int i = 1; i <= ViewBag.date+1; i++)
-            {
-                int value = i;
-
-                if (list != null)
+                for (int i = 1; i <= int.Parse(ViewBag.firstweekdate); i++)
                 {
+                    <li></li>
 
+                }
 
-                    if (Array.Exists(list, x => x == value))
+                for (int i = 1; i <= ViewBag.date; i++)
+                {
+                    int value = i;
+
+                    if (list != null)
                     {
-                        <li style="background-color:green; "><b></b><c>@i</c></li>
+
+
+                        if (Array.Exists(list, x => x == value))
+                        {
+                            <li style="background-color:green; "><b></b><c>@i</c></li>
+                        }
+                        else
+                        {
+                            <li style="">@i</li>
+                        }
+
+
                     }
                     else
                     {
-                        <li style="">@i</li>
+                        <li>@i</li>
                     }
 
 
                 }
-                else
-                {
-                    <li>@i</li>
-                }
-
 
             }
 
+
+        </ul>
+    </div>
+
+    <!--button 簽到按鈕-->
+    <div style="text-align:center; margin-top: 30px;">
+        @if (ViewBag.CheckIn == "簽到")
+        {
+            <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
+        }
+        else
+        {
+            <input type="button" class="CheckIn" id="button" onclick="myfun()" disabled value=@ViewBag.CheckIn>
         }
 
+    </div>
 
-    </ul>
 </div>
 
-<!--button 簽到按鈕-->
-<div style="text-align:center; margin-top: 30px;">
-    @if(ViewBag.CheckIn == "簽到")
-            {
-                <input type="button" class="CheckIn" id="button" onclick="myfun()" value=@ViewBag.CheckIn>
-            }
-            else
-            {
-                <input type="button" class="CheckIn" id="button" onclick="myfun()" disabled value=@ViewBag.CheckIn>
-            }
-    
-            </div>
-</div>
 
 
 <script>

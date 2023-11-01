@@ -8,7 +8,7 @@
 
 <style>
     body {
-        background-color: #A4DA8A;
+        background-color: #DBF0D0;
     }
 
     .window_content {
@@ -39,26 +39,33 @@
         background-color: inherit;
         color: red;
     }
+
+    a{
+        text-decoration: none;
+        font-size:17px;
+        font-weight:500;
+    }
+
+    a:hover{
+        color:darkslategrey;
+    }
+
+
 </style>
 
-        <h1 style="text-align: center; padding: 50px 0px 0px 0px; color: white;">療癒之森</h1>
-
-
-        <div class="container-panel" style="height:73vh;">
-            <div class="container">
+        <div class="container-panel" style="height:73vh; margin-top:110px;">
                 <div class="window_content">
-                    <div class="window_content_bodt">
                         @using (Html.BeginForm())
                         {
 
                             <div class="form-group">
 
                                 <div class="" style="background-color:#ffffff;">
-                                    <div style=" padding-bottom:10px; padding-top:20px; text-align:center; font-size:30px; ">登入</div>
+                                    <div style="  padding:20px 0 20px 0; text-align:center; font-size:30px; ">登入</div>
 
 
-                                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                                        @Html.TextBoxFor(model => model.userManage.Account, new { @placeholder = "請輸入帳號", @class = "form-control", @style = "background-color:#F2ECE2;", @autofocus = "autofocus" })
+                                    <div style="position: relative; margin: 15px auto 15px auto; width: 250px;">
+                                        @Html.TextBoxFor(model => model.userManage.Account, new { @placeholder = "請輸入帳號", @class = "form-control", @style = "background-color:#F2ECE2;", @autofocus = "autofocus", @autocomplete = "on" })
 
                                         @{ if (ViewBag.UserStatus != null)
                                             {
@@ -70,9 +77,8 @@
 
                                     </div>
 
-                                    <div style="position: relative; display: table; margin: 15px auto; width: 250px;">
-                                        @Html.PasswordFor(model => model.userManage.Password, new { @placeholder = "請輸入密碼", @class = "form-control", @id = "passwordInput", @style = "background-color:#F2ECE2;", @required = "required" })
-                                        @*  @Html.ValidationMessageFor(model => model.userManage.Password, "", new { @class = "text-danger" })  *@
+                                    <div style="position: relative; margin: 15px auto 15px auto; width: 250px;">
+                                        @Html.PasswordFor(model => model.userManage.Password, new { @placeholder = "請輸入密碼", @class = "form-control", @id = "passwordInput", @style = "background-color:#F2ECE2;", @required = "required", @autocomplete = "on" })
                                         <span id="togglePassword" class="fa fa-eye-slash" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></span>
 
                                         @if (ViewBag.InvalidPassword != null && ViewBag.InvalidPassword)
@@ -94,9 +100,9 @@
                                         <input type="submit" value="登入" class="btn btn-default  form-control" , style="background-color:#97CD7D;" />
                                     </div>
 
-                                    @Html.ActionLink("註冊帳號", "Create", null, null, new { style = "float:left; padding-left:80px" })
+                                    @Html.ActionLink("註冊帳號", "Create", null, null, new { style = "position: absolute; left: 24%;" })
 
-                                    @Html.ActionLink("忘記密碼", "forget_password", null, null, new { style = "float:right; padding-right:80px" })
+                                    @Html.ActionLink("忘記密碼", "forget_password", null, null, new { style = "position: absolute; right: 24%;" })
 
 
                                 </div>
@@ -107,8 +113,7 @@
                         }
                     </div>
                 </div>
-            </div>
-        </div>
+       
 
 
 

@@ -44,7 +44,8 @@ namespace postArticle.Controllers
                                select new
                                {
                                    UserManagedb.UserID,
-                                   UserManagedb.Status
+                                   UserManagedb.Status,
+                                   UserManagedb.UserType
                                };
 
                 #region ===如果有進入首頁===
@@ -53,6 +54,7 @@ namespace postArticle.Controllers
                 {
                     var user = querySQL.FirstOrDefault();
                     Session["UserID"] = user.UserID;
+                    Session["UserType"] = user.UserType;
 
                     return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
                 }
@@ -320,7 +322,7 @@ namespace postArticle.Controllers
             /////////////////////////////////
             UserManage.ExpertAS = expertAnswers;
             UserManage.UserManagesDetail = db.UserManages.Find(id);
-            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID);
+            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID).OrderByDescending(m=>m.QuestionTime);
 
 
             ////////////////////////////////
@@ -557,7 +559,13 @@ namespace postArticle.Controllers
                 };
 
                 recorddb.Add(newMood);
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch { 
+                }
+                
             }
 
            

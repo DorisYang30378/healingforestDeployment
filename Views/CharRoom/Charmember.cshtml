@@ -81,16 +81,16 @@
 
 
 
-
-
-<p style="font-size: 30px; font-family: Georgia, serif;" >搜尋</p>
-<hr>
-
 <div class="box">
 
 
     @if (SearchMember != null)
     {
+
+        <p style="font-size: 30px; font-family: Georgia, serif;">搜尋</p>
+        <hr>
+
+
         foreach (var item in SearchMember)
         {
 
@@ -104,9 +104,10 @@
                 }
             }
 
+
             <div style="width:150px; margin-left:20px; display:inline-block; ">
-                    <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@otherid, @chatroomid)"><img src="~/Uploads/Expert.png"></a>
-                    <p style="text-align:center; font-size:20px; font-weight:bolder;">@item.UserName</p>
+                <a class="Expert" title="會員: @item.UserName @chatroomid" value="@chatroomid" onclick="IsChatroom(@otherid, @chatroomid)"><img src="~/Uploads/Expert.png"></a>
+                <p style="text-align:center; font-size:20px; font-weight:bolder;">@item.UserName</p>
             </div>
 
         }

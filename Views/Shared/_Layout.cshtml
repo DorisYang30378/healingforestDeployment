@@ -69,32 +69,66 @@
                     {
 
 
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("發布文章", "ArticlePost", "ArticleManage", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("聊天室", "CharMember", "CharRoom", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("每日簽到", "dateView", "DateView", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("檢舉", "Report", "Manager", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("專家回答問題", "ExpertAnser", "ExpertAnser", new { area = "" }, new { @class = "nav-link" })</li>
-                    </ul>
-                        @*
-                                        using (Html.BeginForm("ArticleIndex", "Home", FormMethod.Post, new { id = "searchform", @class = "d-flex ms-xxl-auto" }))
-                                        {
-                                            <input class="form-control me-2" type="text" name="message" placeholder="Search">
-                                            <button class="btn btn-outline-success" type="submit">搜尋</button>
-                                        }
+                        if (Session["UserType"].ToString() == "Member")
+                        {
+                            <ul class="navbar-nav ml-auto">
+
+                                <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("發布文章", "ArticlePost", "ArticleManage", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("聊天室", "CharMember", "CharRoom", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("每日簽到", "dateView", "DateView", new { area = "" }, new { @class = "nav-link" })</li>
+                             
+                            </ul>
+
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">@Html.ActionLink("會員專區", "MemberDetails", "UserManages", new { id = Session["UserID"] }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("登出", "Logout", "SignIn", new { area = "" }, new { @class = "nav-link", onclick = "return confirm('你是否要登出?');" })</li>
+                            </ul>
+                        }
+
+                        else if (Session["UserType"].ToString() == "Expert")
+                        {
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("發布文章", "ArticlePost", "ArticleManage", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("聊天室", "CharMember", "CharRoom", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("每日簽到", "dateView", "DateView", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("專家回答問題", "ExpertAnser", "ExpertAnser", new { area = "" }, new { @class = "nav-link" })</li>
+                            </ul>
+
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">@Html.ActionLink("會員專區", "MemberDetails", "UserManages", new { id = Session["UserID"] }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("登出", "Logout", "SignIn", new { area = "" }, new { @class = "nav-link", onclick = "return confirm('你是否要登出?');" })</li>
+                            </ul>
+
+                        }
+
+                        else if (Session["UserType"].ToString() == "Admin")
+                        {
+                            <ul class="navbar-nav ml-auto">                      
+                                <li class="nav-item">@Html.ActionLink("檢舉", "Report", "Manager", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li class="nav-item">@Html.ActionLink("會員", "UserMange", "Manager", new { area = "" }, new { @class = "nav-link" })</li>
+                            </ul>
+
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">@Html.ActionLink("登出", "Logout", "SignIn", new { area = "" }, new { @class = "nav-link", onclick = "return confirm('你是否要登出?');" })</li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">@Html.ActionLink("首頁", "ArticleIndex", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            </ul>
+                            <ul>
+                                <li class="nav-item">@Html.ActionLink("登出", "Logout", "SignIn", new { area = "" }, new { @class = "nav-link", onclick = "return confirm('你是否要登出?');" })</li>
+                            </ul>
+
+                        }
 
 
 
-                            < form class="d-flex ms-xxl-auto " id="searchform" method="POST" action="/Home/ArticleIndex">
-                                <input class="form-control me-2" type="text" placeholder="Search" name="message" />
-                                <button class="btn btn-outline-success" type="submit">搜尋</button>
-                            </form>
-                        *@
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">@Html.ActionLink("會員專區", "MemberDetails", "UserManages", new { id = Session["UserID"] }, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("登出", "Logout", "SignIn", new { area = "" }, new { @class = "nav-link", onclick = "return confirm('你是否要登出?');" })</li>
-                </ul>
+
+
 
                     }
                     else
