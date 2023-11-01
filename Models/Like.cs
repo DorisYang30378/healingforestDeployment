@@ -12,16 +12,13 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ExpertApply
+    public partial class Like
     {
-        public int ExpertApplyID { get; set; }
-        public string ExpertField { get; set; }
-        public string ExpertInfo { get; set; }
-        public string Status { get; set; }
         public int UserID { get; set; }
-        public string ExpertImgURL { get; set; }
-        public string Remark { get; set; }
+        public int ArticleID { get; set; }
+        public Nullable<int> Status { get; set; }
     
+        public virtual Article Article { get; set; }
         public virtual UserManage UserManage { get; set; }
     }
 }

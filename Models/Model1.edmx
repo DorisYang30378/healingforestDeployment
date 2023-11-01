@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Article">
           <Key>
             <PropertyRef Name="ArticleID" />
@@ -76,7 +76,7 @@
           <Property Name="QuestionID" Type="int" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="AnswerContent" Type="varchar" MaxLength="2048" Nullable="false" />
-          <Property Name="AnswerTime" Type="datetime" Nullable="false" />
+          <Property Name="AnswerTime" Type="date" Nullable="false" />
         </EntityType>
         <EntityType Name="ExpertApply">
           <Key>
@@ -88,6 +88,16 @@
           <Property Name="Status" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="ExpertImgURL" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Remark" Type="varchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="Likes">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ArticleID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ArticleID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" />
         </EntityType>
         <EntityType Name="Message">
           <Key>
@@ -108,6 +118,16 @@
           <Property Name="Time" Type="datetime" Nullable="false" />
           <Property Name="Mood" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="Timestamp" Type="datetime" />
+          <Property Name="IsRead" Type="bit" />
         </EntityType>
         <EntityType Name="R_Report">
           <Key>
@@ -186,13 +206,15 @@
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserName" Type="varchar" MaxLength="16" Nullable="false" />
           <Property Name="Account" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="Password" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="UserType" Type="varchar" MaxLength="16" Nullable="false" />
           <Property Name="LevelValue" Type="int" Nullable="false" />
-          <Property Name="Experience" Type="float" Nullable="false" />
+          <Property Name="Experience" Type="int" Nullable="false" />
           <Property Name="Birthday" Type="date" Nullable="false" />
           <Property Name="Status" Type="int" />
+          <Property Name="ExpertExperience" Type="int" />
+          <Property Name="UserInfo" Type="varchar" MaxLength="1024" />
         </EntityType>
         <EntityType Name="UserQuestion">
           <Key>
@@ -200,9 +222,9 @@
           </Key>
           <Property Name="UserQuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="QuestionTitle" Type="varchar" MaxLength="256" />
+          <Property Name="QuestionTitle" Type="varchar" MaxLength="256" Nullable="false" />
           <Property Name="QuestionContent" Type="varchar" MaxLength="1024" Nullable="false" />
-          <Property Name="QuestionTime" Type="datetime" />
+          <Property Name="QuestionTime" Type="date" Nullable="false" />
         </EntityType>
         <!--產生期間發現錯誤:
 警告 6002: 資料表/檢視 'healingForest.dbo.articleandmessage' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
@@ -324,10 +346,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Expert answer questions">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="ExpertAnswer" Type="Self.ExpertAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="ExpertAnswer">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Expert received Question">
-          <End Role="UserQuestion" Type="Self.UserQuestion" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="UserQuestion" Type="Self.UserQuestion" Multiplicity="1" />
           <End Role="ExpertAnswer" Type="Self.ExpertAnswer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserQuestion">
@@ -335,6 +367,48 @@
             </Principal>
             <Dependent Role="ExpertAnswer">
               <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Likes__ArticleID__7A3223E8">
+          <End Role="Article" Type="Self.Article" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Likes" Type="Self.Likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Likes">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Likes__UserID__793DFFAF">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Likes" Type="Self.Likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Likes">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_UserManage">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -353,9 +427,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="Message_ID">
-          <End Role="Message" Type="Self.Message" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Message" Type="Self.Message" Multiplicity="1" />
           <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Message">
@@ -381,9 +453,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="MS_ID">
-          <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="1" />
           <End Role="RReportMessage" Type="Self.RReportMessage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Report_Message">
@@ -481,9 +551,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="User Message">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
           <End Role="Message" Type="Self.Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -589,8 +657,10 @@
           <EntitySet Name="Collect" EntityType="Self.Collect" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExpertAnswer" EntityType="Self.ExpertAnswer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExpertApply" EntityType="Self.ExpertApply" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Likes" EntityType="Self.Likes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Message" EntityType="Self.Message" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mood" EntityType="Self.Mood" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="R_Report" EntityType="Self.R_Report" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Report_Message" EntityType="Self.Report_Message" Schema="dbo" store:Type="Tables" />
@@ -650,9 +720,25 @@
             <End Role="Article" EntitySet="Article" />
             <End Role="Collect" EntitySet="Collect" />
           </AssociationSet>
+          <AssociationSet Name="Expert answer questions" Association="Self.Expert answer questions">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
+          </AssociationSet>
           <AssociationSet Name="Expert received Question" Association="Self.Expert received Question">
             <End Role="UserQuestion" EntitySet="UserQuestion" />
             <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Likes__ArticleID__7A3223E8" Association="Self.FK__Likes__ArticleID__7A3223E8">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Likes" EntitySet="Likes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Likes__UserID__793DFFAF" Association="Self.FK__Likes__UserID__793DFFAF">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Likes" EntitySet="Likes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_UserManage" Association="Self.FK_Notifications_UserManage">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK_R_Report_Report" Association="Self.FK_R_Report_Report">
             <End Role="Report" EntitySet="Report" />
@@ -731,7 +817,8 @@
             <End Role="Mood" EntitySet="Mood" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="healingForestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -750,6 +837,7 @@
           <Property Name="Time" Type="DateTime" Precision="3" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Collects" Relationship="Self.CollectArticle" FromRole="Article" ToRole="Collect" />
+          <NavigationProperty Name="Likes1" Relationship="Self.FK__Likes__ArticleID__7A3223E8" FromRole="Article" ToRole="Likes" />
           <NavigationProperty Name="Messages" Relationship="Self.MessageArticle" FromRole="Article" ToRole="Message" />
           <NavigationProperty Name="Reports" Relationship="Self.reportsarticle" FromRole="Article" ToRole="Report" />
           <NavigationProperty Name="UserManage" Relationship="Self.UserCreateArticle" FromRole="Article" ToRole="UserManage" />
@@ -820,7 +908,7 @@
           <Property Name="QuestionID" Type="Int32" Nullable="false" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="AnswerContent" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="AnswerTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AnswerTime" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="UserManage" Relationship="Self.Expert_answer_questions" FromRole="ExpertAnswer" ToRole="UserManage" />
           <NavigationProperty Name="UserQuestion" Relationship="Self.Expert_received_Question" FromRole="ExpertAnswer" ToRole="UserQuestion" />
         </EntityType>
@@ -834,7 +922,19 @@
           <Property Name="Status" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="ExpertImgURL" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_applies_to_be_an_expert" FromRole="ExpertApply" ToRole="UserManage" />
+        </EntityType>
+        <EntityType Name="Like">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ArticleID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="ArticleID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" />
+          <NavigationProperty Name="Article" Relationship="Self.FK__Likes__ArticleID__7A3223E8" FromRole="Likes" ToRole="Article" />
+          <NavigationProperty Name="UserManage" Relationship="Self.FK__Likes__UserID__793DFFAF" FromRole="Likes" ToRole="UserManage" />
         </EntityType>
         <EntityType Name="Message">
           <Key>
@@ -859,6 +959,17 @@
           <Property Name="Mood1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="UserManage" Relationship="Self.UserMood" FromRole="Mood" ToRole="UserManage" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" />
+          <NavigationProperty Name="UserManage" Relationship="Self.FK_Notifications_UserManage" FromRole="Notifications" ToRole="UserManage" />
         </EntityType>
         <EntityType Name="R_Report">
           <Key>
@@ -951,13 +1062,15 @@
           <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Account" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserType" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="LevelValue" Type="Int32" Nullable="false" />
-          <Property Name="Experience" Type="Double" Nullable="false" />
+          <Property Name="Experience" Type="Int32" Nullable="false" />
           <Property Name="Birthday" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Status" Type="Int32" />
+          <Property Name="ExpertExperience" Type="Int32" />
+          <Property Name="UserInfo" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Articles" Relationship="Self.UserCreateArticle" FromRole="UserManage" ToRole="Article" />
           <NavigationProperty Name="Chatrooms" Relationship="Self.Chat_OtherUserID" FromRole="UserManage" ToRole="Chatroom" />
           <NavigationProperty Name="Chatrooms1" Relationship="Self.Chat_UserID" FromRole="UserManage" ToRole="Chatroom" />
@@ -966,8 +1079,10 @@
           <NavigationProperty Name="Collects" Relationship="Self.UserCollect" FromRole="UserManage" ToRole="Collect" />
           <NavigationProperty Name="ExpertAnswers" Relationship="Self.Expert_answer_questions" FromRole="UserManage" ToRole="ExpertAnswer" />
           <NavigationProperty Name="ExpertApplies" Relationship="Self.User_applies_to_be_an_expert" FromRole="UserManage" ToRole="ExpertApply" />
+          <NavigationProperty Name="Likes" Relationship="Self.FK__Likes__UserID__793DFFAF" FromRole="UserManage" ToRole="Likes" />
           <NavigationProperty Name="Messages" Relationship="Self.User_Message" FromRole="UserManage" ToRole="Message" />
           <NavigationProperty Name="Moods" Relationship="Self.UserMood" FromRole="UserManage" ToRole="Mood" />
+          <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_UserManage" FromRole="UserManage" ToRole="Notifications" />
           <NavigationProperty Name="Reports" Relationship="Self.User_reports" FromRole="UserManage" ToRole="Report" />
           <NavigationProperty Name="ReportMembers" Relationship="Self.RUserID" FromRole="UserManage" ToRole="ReportMember" />
           <NavigationProperty Name="ReportMembers1" Relationship="Self.UserID" FromRole="UserManage" ToRole="ReportMember" />
@@ -980,9 +1095,9 @@
           </Key>
           <Property Name="UserQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="QuestionTitle" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionTitle" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="QuestionContent" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="QuestionTime" Type="DateTime" Precision="3" />
+          <Property Name="QuestionTime" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="ExpertAnswers" Relationship="Self.Expert_received_Question" FromRole="UserQuestion" ToRole="ExpertAnswer" />
           <NavigationProperty Name="UserManage" Relationship="Self.User_asks_a_question" FromRole="UserQuestion" ToRole="UserManage" />
         </EntityType>
@@ -1044,6 +1159,20 @@
               <PropertyRef Name="ArticleID" />
             </Principal>
             <Dependent Role="Collect">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Likes__ArticleID__7A3223E8">
+          <End Role="Article" Type="Self.Article" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Likes" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Likes">
               <PropertyRef Name="ArticleID" />
             </Dependent>
           </ReferentialConstraint>
@@ -1212,6 +1341,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Likes__UserID__793DFFAF">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Likes" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Likes">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Message_ID">
           <End Role="Message" Type="Self.Message" Multiplicity="1" />
           <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="*" />
@@ -1244,6 +1387,20 @@
               <PropertyRef Name="UserID" />
             </Principal>
             <Dependent Role="Mood">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_UserManage">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Notifications">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -1369,8 +1526,10 @@
           <EntitySet Name="Collects" EntityType="Self.Collect" />
           <EntitySet Name="ExpertAnswers" EntityType="Self.ExpertAnswer" />
           <EntitySet Name="ExpertApplies" EntityType="Self.ExpertApply" />
+          <EntitySet Name="Likes" EntityType="Self.Like" />
           <EntitySet Name="Messages" EntityType="Self.Message" />
           <EntitySet Name="Moods" EntityType="Self.Mood" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
           <EntitySet Name="R_Report" EntityType="Self.R_Report" />
           <EntitySet Name="Reports" EntityType="Self.Report" />
           <EntitySet Name="Report_Message" EntityType="Self.Report_Message" />
@@ -1386,6 +1545,10 @@
           <AssociationSet Name="CollectArticle" Association="Self.CollectArticle">
             <End Role="Article" EntitySet="Articles" />
             <End Role="Collect" EntitySet="Collects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Likes__ArticleID__7A3223E8" Association="Self.FK__Likes__ArticleID__7A3223E8">
+            <End Role="Article" EntitySet="Articles" />
+            <End Role="Likes" EntitySet="Likes" />
           </AssociationSet>
           <AssociationSet Name="MessageArticle" Association="Self.MessageArticle">
             <End Role="Article" EntitySet="Articles" />
@@ -1439,6 +1602,10 @@
             <End Role="UserManage" EntitySet="UserManages" />
             <End Role="ExpertApply" EntitySet="ExpertApplies" />
           </AssociationSet>
+          <AssociationSet Name="FK__Likes__UserID__793DFFAF" Association="Self.FK__Likes__UserID__793DFFAF">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Likes" EntitySet="Likes" />
+          </AssociationSet>
           <AssociationSet Name="Message_ID" Association="Self.Message_ID">
             <End Role="Message" EntitySet="Messages" />
             <End Role="Report_Message" EntitySet="Report_Message" />
@@ -1450,6 +1617,10 @@
           <AssociationSet Name="UserMood" Association="Self.UserMood">
             <End Role="UserManage" EntitySet="UserManages" />
             <End Role="Mood" EntitySet="Moods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_UserManage" Association="Self.FK_Notifications_UserManage">
+            <End Role="UserManage" EntitySet="UserManages" />
+            <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK_R_Report_Report" Association="Self.FK_R_Report_Report">
             <End Role="Report" EntitySet="Reports" />
@@ -1582,6 +1753,16 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ExpertImgURL" ColumnName="ExpertImgURL" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Likes">
+            <EntityTypeMapping TypeName="healingForestModel.Like">
+              <MappingFragment StoreEntitySet="Likes">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1604,6 +1785,17 @@
                 <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="Mood1" ColumnName="Mood" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="healingForestModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1697,6 +1889,8 @@
                 <ScalarProperty Name="Experience" ColumnName="Experience" />
                 <ScalarProperty Name="Birthday" ColumnName="Birthday" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpertExperience" ColumnName="ExpertExperience" />
+                <ScalarProperty Name="UserInfo" ColumnName="UserInfo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

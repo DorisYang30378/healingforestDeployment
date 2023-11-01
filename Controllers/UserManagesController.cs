@@ -34,6 +34,25 @@ namespace postArticle.Controllers
         [HttpPost]
         public ActionResult Login(RegisterViewModel registerViewModel)
         {
+            
+            string password = registerViewModel.userManage.Password;
+            string account = registerViewModel.userManage.Account;
+            System.Diagnostics.Debug.WriteLine(password);
+            System.Diagnostics.Debug.WriteLine(account);
+            // 從資料庫中檢索用戶的密碼雜湊值
+            var mdb = db.UserManages.Where(m => m.Account == account).First();
+            string hashedPasswordFromDatabase = mdb.Password;
+
+            if (BCrypt.Net.BCrypt.Verify(password, hashedPasswordFromDatabase))
+            {
+                System.Diagnostics.Debug.WriteLine("有道這");
+                Session["UserID"] = mdb.UserID;
+                Session["UserType"] = mdb.UserType;
+                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
+
+            }
+
+
 
             if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password))
             {
@@ -182,14 +201,21 @@ namespace postArticle.Controllers
         {
             if (registerViewModel != null && registerViewModel.userManage.Password.Equals(registerViewModel.ConfirmPassword))
             {
-                // 验证验证码是否正确
+ 
                 var sessionVerificationCode = Session["VerificationCode"] as string;
                 if (registerViewModel.code == sessionVerificationCode)
                 {
-                    // 密码匹配，继续保存用户
-                    // 添加您的保存用户逻辑
 
-                    registerViewModel.userManage.Experience = 0.0;
+
+                    // 雜湊密碼
+                    var password = registerViewModel.userManage.Password;
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt(5);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
+                    registerViewModel.userManage.Password = hashedPassword;
+
+
+                    //
+                    registerViewModel.userManage.Experience = 0;
                     registerViewModel.userManage.LevelValue = 0;
                     registerViewModel.userManage.UserType = "Member";
                     registerViewModel.userManage.Status = 0;
@@ -447,11 +473,20 @@ namespace postArticle.Controllers
 
                 if (existingUser != null)
                 {
-                    if (existingUser.Password == viewModel.OldPassword)
+
+                    String oldpassword= viewModel.OldPassword;
+                    String hashedPasswordFromDatabase = existingUser.Password;
+
+                    if (BCrypt.Net.BCrypt.Verify(oldpassword, hashedPasswordFromDatabase))
                     {
                         if (viewModel.NewPassword == viewModel.ConfirmPassword)
                         {
-                            existingUser.Password = viewModel.NewPassword;
+                            // 雜湊密碼
+                            string password = viewModel.NewPassword;
+                            string salt = BCrypt.Net.BCrypt.GenerateSalt(5);
+                            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt); 
+                            existingUser.Password = hashedPassword;
+
                             db.SaveChanges();
                             return RedirectToAction("MemberDetails", new { id = viewModel.userManage.UserID });
                         }

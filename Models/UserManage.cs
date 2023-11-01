@@ -26,15 +26,19 @@ namespace postArticle.Models
             this.Collects = new HashSet<Collect>();
             this.ExpertAnswers = new HashSet<ExpertAnswer>();
             this.ExpertApplies = new HashSet<ExpertApply>();
+            this.Likes = new HashSet<Like>();
             this.Messages = new HashSet<Message>();
             this.Moods = new HashSet<Mood>();
+            this.Notifications = new HashSet<Notification>();
             this.Reports = new HashSet<Report>();
             this.ReportMembers = new HashSet<ReportMember>();
             this.ReportMembers1 = new HashSet<ReportMember>();
             this.UserQuestions = new HashSet<UserQuestion>();
         }
 
+
         public int UserID { get; set; }
+
 
         [Required(ErrorMessage = "請輸入暱稱")]
         public string UserName { get; set; }
@@ -49,14 +53,14 @@ namespace postArticle.Models
         public string Email { get; set; }
         public string UserType { get; set; }
         public int LevelValue { get; set; }
-        public double Experience { get; set; }
+        public int Experience { get; set; }
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "請輸入生日")]
         public System.DateTime Birthday { get; set; }
         public Nullable<int> Status { get; set; }
-
-
-
+        public Nullable<int> ExpertExperience { get; set; }
+        public string UserInfo { get; set; }
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Article> Articles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -74,9 +78,13 @@ namespace postArticle.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExpertApply> ExpertApplies { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Like> Likes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Message> Messages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Mood> Moods { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notification> Notifications { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Report> Reports { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -4,30 +4,33 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="84d0f9f438ec435ba66c7818d2a69bec" Name="Diagram1">
-        <EntityTypeShape EntityType="healingForestModel.Article" Width="1.5" PointX="3" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Chatroom" Width="1.5" PointX="3" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.ChatroomLog" Width="1.5" PointX="5.25" PointY="16.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Checkin" Width="1.5" PointX="3" PointY="17.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.CheckinReward" Width="1.5" PointX="0.75" PointY="12.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Collect" Width="1.5" PointX="5.25" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.ExpertAnswer" Width="1.5" PointX="5.25" PointY="23.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.ExpertApply" Width="1.5" PointX="3" PointY="21.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Message" Width="1.5" PointX="8.25" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Mood" Width="1.5" PointX="3" PointY="24.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.R_Report" Width="1.5" PointX="7.5" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Report" Width="1.5" PointX="5.25" PointY="10.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.Report_Message" Width="1.5" PointX="10.5" PointY="13.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.ReportMember" Width="1.5" PointX="3" PointY="27.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.RReportMember" Width="1.5" PointX="5.25" PointY="27.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.RReportMessage" Width="1.5" PointX="12.75" PointY="13.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.ThanksfulThing" Width="1.5" PointX="3" PointY="30.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.UserManage" Width="1.5" PointX="0.75" PointY="15.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="healingForestModel.UserQuestion" Width="1.5" PointX="3" PointY="33.25" IsExpanded="true" />
+      <Diagram DiagramId="912fa40be7c142d88ab8b5243380a79e" Name="Diagram1">
+        <EntityTypeShape EntityType="healingForestModel.Article" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Chatroom" Width="1.5" PointX="3" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ChatroomLog" Width="1.5" PointX="8.25" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Checkin" Width="1.5" PointX="3" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.CheckinReward" Width="1.5" PointX="0.75" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Collect" Width="1.5" PointX="5.25" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ExpertAnswer" Width="1.5" PointX="5.25" PointY="28.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ExpertApply" Width="1.5" PointX="3" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Like" Width="1.5" PointX="5.25" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Message" Width="1.5" PointX="8.25" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Mood" Width="1.5" PointX="3" PointY="26.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Notification" Width="1.5" PointX="3" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.R_Report" Width="1.5" PointX="7.5" PointY="24.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Report" Width="1.5" PointX="5.25" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.Report_Message" Width="1.5" PointX="10.5" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ReportMember" Width="1.5" PointX="3" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.RReportMember" Width="1.5" PointX="5.25" PointY="32.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.RReportMessage" Width="1.5" PointX="12.75" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.ThanksfulThing" Width="1.5" PointX="3" PointY="35.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.UserManage" Width="1.5" PointX="0.75" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="healingForestModel.UserQuestion" Width="1.5" PointX="3" PointY="38" IsExpanded="true" />
         <EntityTypeShape EntityType="healingForestModel.articleandmessage" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="healingForestModel.QA" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="healingForestModel.database_firewall_rules" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="healingForestModel.CollectArticle" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.FK__Likes__ArticleID__7A3223E8" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.MessageArticle" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.reportsarticle" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.UserCreateArticle" ManuallyRouted="false" />
@@ -41,9 +44,11 @@
         <AssociationConnector Association="healingForestModel.Expert_answer_questions" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.Expert_received_Question" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.User_applies_to_be_an_expert" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.FK__Likes__UserID__793DFFAF" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.Message_ID" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.User_Message" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.UserMood" ManuallyRouted="false" />
+        <AssociationConnector Association="healingForestModel.FK_Notifications_UserManage" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.FK_R_Report_Report" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.User_reports" ManuallyRouted="false" />
         <AssociationConnector Association="healingForestModel.MS_ID" ManuallyRouted="false" />

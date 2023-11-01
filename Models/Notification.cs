@@ -12,15 +12,13 @@ namespace postArticle.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ExpertApply
+    public partial class Notification
     {
-        public int ExpertApplyID { get; set; }
-        public string ExpertField { get; set; }
-        public string ExpertInfo { get; set; }
-        public string Status { get; set; }
-        public int UserID { get; set; }
-        public string ExpertImgURL { get; set; }
-        public string Remark { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public string Message { get; set; }
+        public Nullable<System.DateTime> Timestamp { get; set; }
+        public Nullable<bool> IsRead { get; set; }
     
         public virtual UserManage UserManage { get; set; }
     }

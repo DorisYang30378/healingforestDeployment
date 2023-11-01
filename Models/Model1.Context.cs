@@ -33,8 +33,10 @@ namespace postArticle.Models
         public virtual DbSet<Collect> Collects { get; set; }
         public virtual DbSet<ExpertAnswer> ExpertAnswers { get; set; }
         public virtual DbSet<ExpertApply> ExpertApplies { get; set; }
+        public virtual DbSet<Like> Likes { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Mood> Moods { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<R_Report> R_Report { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<Report_Message> Report_Message { get; set; }
