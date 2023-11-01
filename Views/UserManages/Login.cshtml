@@ -70,8 +70,10 @@
                                         @{ if (ViewBag.UserStatus != null)
                                             {
                                                 <p style="position: relative;" class="alert alert-danger alert-no-border" role="alert">
-                                                    此帳號遭 @ViewBag.UserStatus<br>如有問題請聯繫客服
+                                                    此帳號遭 @ViewBag.UserStatus<br>如有問題請<a style="text-decoration: none;" href="mailto:healingforestweb@gmail.com">聯繫客服</a>
+
                                                 </p>
+                                               
                                             }
                                         }
 

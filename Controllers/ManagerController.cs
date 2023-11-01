@@ -6,11 +6,15 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Net;
 
 namespace postArticle.Controllers
 {
     public class ManagerController : Controller
     {
+
+        //初始化
+        public bool CheckLoggedIn() => Session["UserID"] != null;
 
         //初始化資料庫
         private healingForestEntities db = new healingForestEntities();
@@ -346,6 +350,171 @@ namespace postArticle.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
 
         }
+
+
+
+
+
+
+
+        //////////////////////////////////////////////////////////////
+        //                 念之寫的                                 //
+        //                                                         //
+        /////////////////////////////////////////////////////////////
+
+        public ActionResult Index()
+        {
+            var expertApply = db.ExpertApplies.Include(u => u.UserManage);
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CheckExpert([Bind(Include = "ExpertApplyID,ExpertField,ExpertInfo,Status,UserID,ExpertImgURL,Remark")] ExpertApply expertApply, string submitButton)
+        {
+
+            UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == expertApply.UserID);
+            if (ModelState.IsValid && user != null)
+            {
+                if (submitButton == "審核通過")
+                {
+                    expertApply.Status = "審核通過";
+                    user.UserType = "Expert";
+                }
+                else
+                {
+                    expertApply.Status = "審核失敗";
+
+                }
+
+
+                db.Entry(expertApply).State = EntityState.Modified;
+
+                db.SaveChanges();
+                return RedirectToAction("ExpertDetail");
+
+            }
+
+            return View(expertApply);
+        }
+
+
+        public ActionResult CheckExpert(int? id)
+        {
+            ExpertApply model = new ExpertApply();
+            UserManage usermodel = new UserManage();
+
+            if (!CheckLoggedIn())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ExpertApply expertApply = db.ExpertApplies.Find(id);
+            List<string> imageNames = GetImageNamesFromDatabase(model, usermodel, id);
+
+
+            ViewBag.UserID = new SelectList(db.UserManages, "UserID", "UserName", expertApply.UserID);
+            ViewBag.UserName = new SelectList(db.UserManages, "UserID", "UserName", expertApply.UserManage.UserName);
+            ViewBag.ImageNames = imageNames;
+            if (expertApply == null)
+            {
+                return HttpNotFound();
+            }
+            return View(expertApply);
+        }
+
+        public ActionResult DeleteConfirmed(int id)
+        {
+            ExpertApply expertApply = db.ExpertApplies.Find(id);
+
+            return RedirectToAction("Index");
+        }
+
+        // GET: ExpertApplies/Delete/5
+        public ActionResult DeleteExpert(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ExpertApply expertApply = db.ExpertApplies.Find(id);
+            db.ExpertApplies.Remove(expertApply);
+            db.SaveChanges();
+
+            return RedirectToAction("ExpertDetail");
+        }
+
+        // POST: ExpertApplies/Edit/5
+        // 若要免於大量指派 (overposting) 攻擊，請啟用您要繫結的特定屬性，
+        // 如需詳細資料，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "ExpertApplyID,ExpertField,ExpertInfo,Status,UserID,ExpertImgURL,Remark")] ExpertApply expertApply)
+        {
+            if (ModelState.IsValid)
+            {
+
+                db.Entry(expertApply).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.UserID = new SelectList(db.UserManages, "UserID", "UserName", expertApply.UserID);
+            ViewBag.UserName = new SelectList(db.UserManages, "UserID", "UserName", expertApply.UserID);
+
+            return View(expertApply);
+        }
+
+
+        // GET: ExpertApplies/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ExpertApply expertApply = db.ExpertApplies.Find(id);
+            if (expertApply == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.UserID = new SelectList(db.UserManages, "UserID", "UserName", expertApply.UserID);
+
+            return View(expertApply);
+        }
+
+        // GET: Admin
+        public ActionResult ExpertDetail()
+        {
+            var expertApply = db.ExpertApplies.Include(u => u.UserManage);
+
+            return View(expertApply.ToList());
+        }
+
+        public List<string> GetImageNamesFromDatabase(ExpertApply model, UserManage usermodel, int? id)
+        {
+            List<string> imageNames = new List<string>();
+
+
+            using (healingForestEntities dbContext = new healingForestEntities())
+            {
+                // 假設您的資料庫中有一個名為 "Images" 的資料表，其中包含一個名為 "FileName" 的欄位存儲檔案名稱
+                model.UserID = (int)Session["UserID"];
+                // 查詢資料庫獲取檔案名稱
+
+                var query = from expertApply in db.ExpertApplies
+                            where expertApply.ExpertApplyID == id
+                            select expertApply.ExpertImgURL;
+
+                // 將檔案名稱加入到結果列表中
+                imageNames = query.ToList();
+            }
+
+
+            return imageNames;
+        }
+
+
+
 
 
     }

@@ -1,0 +1,65 @@
+﻿@model List<postArticle.Models.ExpertApply>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    dd {
+        font-size: 20px
+    }
+
+    dt {
+        font-size: 20px
+    }
+</style>
+@foreach (var item in Model)
+{
+    <div>
+        <h4>ExpertApply</h4>
+        <br />
+        <h2>審核結果</h2>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => item.ExpertField)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => item.ExpertField)
+            </dd>
+
+            <dt style="font-size: 20px;">
+                @Html.DisplayNameFor(model => item.ExpertInfo)
+            </dt>
+            <dd style="font-size: 20px;">
+                @Html.DisplayFor(model => item.ExpertInfo)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => item.Status)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => item.Status)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => item.ExpertImgURL)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => item.ExpertImgURL)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => item.Remark)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => item.Remark)
+            </dd>
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("資料修改", "Edit", new { id = item.ExpertApplyID }, new { @class = "btn btn-success" })
+
+    </p>
+}
+

@@ -1,0 +1,79 @@
+﻿
+@model IEnumerable<postArticle.Models.ExpertApply>
+
+@{
+    ViewBag.Title = "ExpertDetail";
+}
+<style>
+
+    th {
+        width: 100px;
+    }
+
+    tr {
+        height: 50px;
+    }
+
+    td {
+        vertical-align: middle;
+    }
+</style>
+<h2>ExpertDetail</h2>
+
+<p>
+    <h3>專家申請名單</h3>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpertField)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpertInfo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpertImgURL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Remark)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserManage.UserName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpertField)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpertInfo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpertImgURL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserManage.UserName)
+            </td>
+            <td>
+                @Html.ActionLink("審核", "CheckExpert", new { id = item.ExpertApplyID }, new { @class = "btn btn-primary", @style = "margin-right:10px; " })
+                <a href="@Url.Action("DeleteExpert")?Id=@item.ExpertApplyID" onclick="return confirm('確定刪除?');" class="btn btn-danger">刪除</a>
+
+            </td>
+        </tr>
+    }
+
+</table>
+

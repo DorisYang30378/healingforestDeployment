@@ -1,0 +1,93 @@
+﻿@model postArticle.Models.ExpertApply
+
+@{
+    ViewBag.Title = "CheckExpert";
+}
+
+<h2>CheckExpert</h2>
+
+<div>
+    <h4>專家審核</h4>
+    <hr />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ExpertApplyID)
+        @Html.HiddenFor(model => model.UserID)
+        @Html.HiddenFor(model => model.ExpertField)
+        @Html.HiddenFor(model => model.ExpertInfo)
+        @Html.HiddenFor(model => model.Status)
+
+        @Html.HiddenFor(model => model.ExpertImgURL)
+        @Html.HiddenFor(model => model.Remark)
+
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UserManage.UserName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UserManage.UserName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ExpertField)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ExpertField)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ExpertInfo)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ExpertInfo)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ExpertImgURL)
+
+            </dt>
+
+            <dd>
+                @foreach (var imageName in ViewBag.ImageNames)
+                {
+                    <img src="@Url.Content("~/Uploads/" + imageName)" alt="圖片" width="400px" />
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Remark)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Remark)
+            </dd>
+
+
+
+
+        </dl>
+
+        <!-- 其他表單欄位 -->
+        <input type="submit" name="submitButton" value="審核通過" class="btn btn-success ">
+        <input type="submit" name="submitButton" value="審核失敗" class="btn btn-danger">
+    }
+</div>
+<br />
+<p>
+
+    @Html.ActionLink("返回", "ExpertDetail", null, new { @class = "btn btn-primary" })
+</p>

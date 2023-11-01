@@ -40,75 +40,45 @@ namespace postArticle.Controllers
             System.Diagnostics.Debug.WriteLine(password);
             System.Diagnostics.Debug.WriteLine(account);
             // 從資料庫中檢索用戶的密碼雜湊值
-            var mdb = db.UserManages.Where(m => m.Account == account).First();
+
+            var Vdb = db.UserManages.Where(m => m.Account == account);
+
+
+            var result = Vdb.FirstOrDefault();
+
+            if(result == null)
+            {
+                ModelState.AddModelError("userManage.Account", "無此帳號");
+                ViewBag.InvalidPassword = true;
+                return View();
+            }
+
+            var mdb = result;
             string hashedPasswordFromDatabase = mdb.Password;
 
             if (BCrypt.Net.BCrypt.Verify(password, hashedPasswordFromDatabase))
             {
-                System.Diagnostics.Debug.WriteLine("有道這");
-                Session["UserID"] = mdb.UserID;
-                Session["UserType"] = mdb.UserType;
-                return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
-
-            }
-
-
-
-            if (IsValidUser(registerViewModel.userManage.Account, registerViewModel.userManage.Password))
-            {
-
-
-                var querySQL = from UserManagedb in db.UserManages
-                               where UserManagedb.Password == registerViewModel.userManage.Password && UserManagedb.Account == registerViewModel.userManage.Account
-                               select new
-                               {
-                                   UserManagedb.UserID,
-                                   UserManagedb.Status,
-                                   UserManagedb.UserType
-                               };
-
-                #region ===如果有進入首頁===
-
-                if (querySQL.Any() && querySQL.First().Status == 0)
+                if (mdb.Status == 0)
                 {
-                    var user = querySQL.FirstOrDefault();
-                    Session["UserID"] = user.UserID;
-                    Session["UserType"] = user.UserType;
-
+                    Session["UserID"] = mdb.UserID;
+                    Session["UserType"] = mdb.UserType;
                     return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
                 }
-                #endregion
                 else
                 {
                     ViewBag.UserStatus = "封鎖";
                     return View();
                 }
+                
             }
             else
             {
-
-
-                var queryAccountSQL = from UserManagedb in db.UserManages
-                                      where UserManagedb.Account == registerViewModel.userManage.Account
-                                      select new
-                                      {
-                                          UserManagedb.UserID
-                                      };
-
-                if (queryAccountSQL.Any())
-                {
-                    ModelState.AddModelError("userManage.Password", "密碼錯誤");
-                    ViewBag.InvalidPassword = true;
-                    return View();
-                }
-                else
-                {
-                    ModelState.AddModelError("userManage.Account", "無此帳號");
-                    ViewBag.InvalidPassword = true;
-                    return View();
-                }
+                ModelState.AddModelError("userManage.Password", "密碼錯誤");
+                ViewBag.InvalidPassword = true;
+                return View();
             }
 
+ 
         }
 
         private bool IsValidUser(string account, string password)
