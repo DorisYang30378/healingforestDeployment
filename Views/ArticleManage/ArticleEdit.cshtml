@@ -5,7 +5,7 @@
 }
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
-<script src="~/Scripts/CKEditor/build/ckeditor.js"></script>
+
 
 
 
@@ -144,49 +144,7 @@
 </div>
 
 <script>
-	ClassicEditor
-		.create(document.querySelector('#article_Content'), {
-			toolbar: {
-				items: [
-					'heading',
-					'|',
-					'fontFamily',
-					'fontColor',
-					'fontSize',
-					'|',
-					'bold',
-					'italic',
-					'removeFormat',
-					'|',
-					'specialCharacters',
-					'link',
-					'bulletedList',
-					'numberedList',
-					'|',
-					'outdent',
-					'indent',
-					'alignment',
-					'|',
-					'blockQuote',
-					'insertTable',
-					'|',
-					'undo',
-					'redo'
-				]
-			},
-			licenseKey: '',
-		})
-		.then(editor => {
-			editor.ui.view.toolbar.element.addEventListener('ready', () => {
-				// 在工具欄準備就緒後執行自訂程式碼
-				console.log('Editor toolbar is ready');
-				// 在此處添加您的自訂程式碼
-			});
-		})
-		.catch(error => {
-			console.error('Oops, something went wrong!');
-			console.error(error);
-		});
+	
 
 
     function previewImage(event) {

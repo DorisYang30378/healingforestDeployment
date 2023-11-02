@@ -291,6 +291,7 @@
     <Compile Include="viewmodel\RegisterViewModel.cs" />
     <Compile Include="viewmodel\ReportResult.cs" />
     <Compile Include="viewmodel\ReportViewModel.cs" />
+    <Compile Include="viewmodel\requestmsviewmodel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="audio\Canon.mp3" />
@@ -397,7 +398,6 @@
     <Content Include="Views\Expert\Edit.cshtml" />
     <Content Include="Views\Expert\Index.cshtml" />
     <Content Include="Views\Manager\CheckExpert.cshtml" />
-    <Content Include="Views\Manager\DeleteExpert.cshtml" />
     <Content Include="Views\Manager\ExpertDetail.cshtml" />
     <Content Include="Views\Manager\Index.cshtml" />
   </ItemGroup>

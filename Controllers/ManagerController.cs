@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Net;
+using PagedList;
 
 namespace postArticle.Controllers
 {
@@ -20,52 +21,85 @@ namespace postArticle.Controllers
         private healingForestEntities db = new healingForestEntities();
         private RAViewModel emp = new RAViewModel();
         private ReportViewModel RMV = new ReportViewModel();
+        private MemberDetailsViewModel user = new MemberDetailsViewModel();
 
 
         // GET: Manager
-        public ActionResult UserMange(String search)
+        public ActionResult UserMange(String search, int?page)
         {
 
-            if (search == "")
-            {
-                var Name1 = db.UserManages.ToList().OrderBy(m => m.UserName);
-                return View(Name1);
-            }
+            int PageSize = 10;
+            int PageNumber = (page ?? 1);
+            var pushdb = db.UserManages.ToList();
+            var Name1 = pushdb.ToList().OrderBy(m => m.Status);
 
 
-            if (search != null)
-            {
-                var searchinput = from p in db.UserManages where p.UserName == search select p;
-                return View("UserMange", searchinput);
+            if (Session["UserType"] != null  && Session["UserType"].ToString() == "Admin") {
+
+                if (search == "")
+                {
+
+
+                    user.UserManages = Name1.ToList().ToPagedList(PageNumber, PageSize);
+
+
+                    return View(user);
+                }
+
+
+                else if (search != null)
+                {
+
+                    var searchuserdb = pushdb.Where(m => m.UserName == search).ToList();
+                    user.UserManages = searchuserdb.ToList().ToPagedList(PageNumber, PageSize);
+
+
+                    return View(user);
+                }
+
+                else
+                {
+
+                    Name1 = pushdb.ToList().OrderBy(m => m.Status);
+                    user.UserManages = Name1.ToList().ToPagedList(PageNumber, PageSize);
+
+
+                    return View(user);
+                }
             }
 
             else
             {
-                var Name = db.UserManages.ToList().OrderBy(m => m.UserName);
-                return View(Name);
+                return RedirectToAction("Login", "UserManages");
             }
 
         }
 
-        public ActionResult Lock(int? id)
+        public ActionResult Lock(int? id, int? page)
         {
+            int PageSize = 10;
+            int PageNumber = (page ?? 1);
             var ID = id;
             var p = db.UserManages.Find(ID);
             p.Status = 1;
             db.SaveChanges();
-            var Name = db.UserManages.ToList();
-            return View("UserMange", Name);
+            var Name = db.UserManages.OrderBy(m => m.Status).ToList();
+            user.UserManages = Name.ToList().ToPagedList(PageNumber, PageSize);
+            return View("UserMange", user);
 
         }
 
-        public ActionResult Unlock(int? id)
+        public ActionResult Unlock(int? id, int? page)
         {
+            int PageSize = 10;
+            int PageNumber = (page ?? 1);
             var ID = id;
             var p = db.UserManages.Find(ID);
             p.Status = 0;
             db.SaveChanges();
-            var Name = db.UserManages.ToList();
-            return View("UserMange", Name);
+            var Name = db.UserManages.OrderBy(m => m.Status).ToList();
+            user.UserManages = Name.ToList().ToPagedList(PageNumber, PageSize);
+            return View("UserMange", user);
         }
 
 
@@ -435,7 +469,8 @@ namespace postArticle.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
             ExpertApply expertApply = db.ExpertApplies.Find(id);
             db.ExpertApplies.Remove(expertApply);

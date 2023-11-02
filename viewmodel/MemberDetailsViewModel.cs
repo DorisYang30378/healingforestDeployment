@@ -13,14 +13,16 @@ namespace postArticle.viewmodel
         {
             SubmitUQ = new UserQuestion();
         }
-        public UserManage UserManagesDetail { get; set; }
 
         public IEnumerable<UserQuestion> UserQuestions {get; set;}
+        public IEnumerable<ExpertAnswer> ExpertAS { get; set; }
+
+        public PagedList.IPagedList<UserManage> UserManages { get; set; }
 
         public UserQuestion SubmitUQ { get; set; }
 
+        public UserManage UserManagesDetail { get; set; }
 
-        public IEnumerable<ExpertAnswer> ExpertAS { get; set; }
         public string Questions { get; set; }
 
         public string nowmood { get; set; }

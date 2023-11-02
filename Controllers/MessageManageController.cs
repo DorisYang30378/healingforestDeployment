@@ -39,7 +39,7 @@ namespace postArticle.Controllers
             return article;
         }
 
-        public ActionResult CreateMessage(ArticleDetailsViewModel articleDetailsViewModel, int? id, int? page)
+        public ActionResult CreateMessage(ArticleDetailsViewModel articleDetailsViewModel, int? id)
         {
             #region ===判斷該頁面是否存在===
             Article article = CheckArticleExists(id);
@@ -55,29 +55,50 @@ namespace postArticle.Controllers
             if (CheckLoggedIn())
             {
                 var UserID = GetUserID();
+                Message message = new Message();
+                requestmsviewmodel ms = new requestmsviewmodel();
 
                 if (!string.IsNullOrEmpty(articleDetailsViewModel.Content))
                 {
                     if (ModelState.IsValid)
                     {
-                        Message message = new Message
-                        {
-                            ArticleID = (int)id,
-                            Content = articleDetailsViewModel.Content,
-                            Time = DateTime.Now,
-                            UserID = UserID
-                        };
+
+                        string username = db.UserManages.Find(UserID).UserName;
+                        string context = articleDetailsViewModel.Content;
+                        string date = DateTime.Now.ToString("G");
+
+                        ms.UserName = username;
+                        ms.Context = context;
+                        ms.Date = date;
+
+
+
+                        message.ArticleID = (int)id;
+                        message.Content = articleDetailsViewModel.Content;
+                        message.Time = DateTime.Now;
+                        message.UserID = UserID;
+                        
 
                         articleDetailsViewModel.Display = "none";
 
                         db.Messages.Add(message);
-                        db.SaveChanges();
+
+                        if (db.SaveChanges() > 0)
+                        {
+                            return Json(new { success = true, ms });
+                        }
+                        else
+                        {
+                            return Json(new { success = false });
+                        }
                     }
                 }
+                TempData["Display"] = articleDetailsViewModel.Display;
             }
 
-            TempData["Display"] = articleDetailsViewModel.Display;
-            return RedirectToAction("ArticleDetails", "ArticleManage", new { id, page });
+            return RedirectToAction("Login","UserManages");
+
+            
         }
     }
 }

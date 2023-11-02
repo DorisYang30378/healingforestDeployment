@@ -1,16 +1,21 @@
-﻿@using postArticle.Models;
-@model IEnumerable<UserManage>
+﻿@using postArticle.viewmodel;
+@model postArticle.viewmodel.MemberDetailsViewModel
+@using PagedList.Mvc
+@using PagedList
+
+<!--page css-->
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
 
 @{
     ViewBag.Title = "UserMange";
+    var manage = Model.UserManages;
 }
 
 <style>
 
     table {
-    
-        margin:auto;
-    
+        margin: auto;
     }
 
     thead {
@@ -26,80 +31,85 @@
 
     .search_member {
         width: 300px;
-        
     }
 
-    .panel_container{
-        position:relative;
+    .panel_container {
+        position: relative;
         top: 70px;
         height: 100vh;
     }
-
 </style>
 
 
 <div class="panel_container">
-@using (Html.BeginForm("UserMange", "Manager", FormMethod.Get))
+    @using (Html.BeginForm("UserMange", "Manager", FormMethod.Get))
 
-{
-        @Html.TextBox("search", null,new { @class="form-control search_member" ,  @placeholder="查詢" })
+    {
+        @Html.TextBox("search", null, new { @class = "form-control search_member", @placeholder = "查詢" })
 
-              
-}
-<br>
-<table border="1">
 
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(m => m.UserID)</th>
-            <th>@Html.DisplayNameFor(m => m.UserName)</th>
-            <th>@Html.DisplayNameFor(m => m.Account)</th>
-            <th>@Html.DisplayNameFor(m => m.Birthday)</th>
-            <th>@Html.DisplayNameFor(m => m.Email)</th>
-            <th>@Html.DisplayNameFor(m => m.UserType)</th>
-            <th>@Html.DisplayNameFor(m => m.LevelValue)</th>
-            <th>@Html.DisplayNameFor(m => m.Status)</th>
-            <th style="width:80px;">封鎖</th>
-            <th style="width:80px;">修改</th>
-        </tr>
-    </thead>
+    }
+    <br>
+    <table border="1">
 
-    <tbody>
-
-        @foreach (var item in Model)
-        {
+        <thead>
             <tr>
-                <th>@item.UserID</th>
-                <th>@item.UserName</th>
-                <th>@item.Account</th>
-                <th>@item.Birthday.ToString("M")</th>
-                <th>@item.Email</th>
-                <th>@item.UserType</th>
-                <th>@item.LevelValue</th>
-                
-                @if (item.Status == 0)
-                {
-                    <th>否</th>
-                }
-                else
-                {
-                    <th>是</th>
-                }
-
-
-                @if (item.Status == 0)
-                {
-                    <th>@Html.ActionLink("封鎖", "Lock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
-                }
-                else { 
-                    <th>@Html.ActionLink("已封鎖", "Unlock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
-                }
-                
-                <th>@Html.ActionLink("修改", "Resize", new { id = item.UserID }, new { @class = "btn btn-outline-success" })</th>
+                <th>@Html.DisplayName("ID")</th>
+                <th>@Html.DisplayName("UserName")</th>
+                <th>@Html.DisplayName("Account")</th>
+                <th>@Html.DisplayName("Birthday")</th>
+                <th>@Html.DisplayName("Email")</th>
+                <th>@Html.DisplayName("UserType")</th>
+                <th>@Html.DisplayName("LevelValue")</th>
+                <th>@Html.DisplayName("Status")</th>
+                <th style="width:80px;">封鎖</th>
+                <th style="width:80px;">修改</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
 
+        <tbody>
+
+            @foreach (var item in manage)
+            {
+                <tr>
+                    <th>@item.UserID</th>
+                    <th>@item.UserName</th>
+                    <th>@item.Account</th>
+                    <th>@item.Birthday.ToString("M")</th>
+                    <th>@item.Email</th>
+                    <th>@item.UserType</th>
+                    <th>@item.LevelValue</th>
+
+                    @if (item.Status == 0)
+                    {
+                        <th>否</th>
+                    }
+                    else
+                    {
+                        <th>是</th>
+                    }
+
+
+                    @if (item.Status == 0)
+                    {
+                        <th>@Html.ActionLink("封鎖", "Lock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
+                    }
+                    else
+                    {
+                        <th>@Html.ActionLink("已封鎖", "Unlock", new { id = item.UserID }, new { @class = "btn btn-outline-danger" })</th>
+                    }
+
+                    <th>@Html.ActionLink("修改", "Resize", new { id = item.UserID }, new { @class = "btn btn-outline-success" })</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <div style="text-align:center;">
+
+        @Html.PagedListPager(manage, page => Url.Action("UserMange", new { page }))
+
+    </div>
 
 </div>

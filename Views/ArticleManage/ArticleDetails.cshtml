@@ -128,7 +128,7 @@
         margin-top: 20px;
     }
 
-    .add-comment-button button {
+        .add-comment-button button {
             padding: 10px 20px;
             background-color: #97CD7D;
             border: none;
@@ -136,14 +136,13 @@
             color: #fff;
             cursor: pointer;
             font-size: 16px;
-            }
-
-
-    .add-comment-button button:hover,
-    .add-comment-button button:focus
-    {
-        background-color: #2f863a;
         }
+
+
+            .add-comment-button button:hover,
+            .add-comment-button button:focus {
+                background-color: #2f863a;
+            }
 
 
 
@@ -197,7 +196,7 @@
 
     .reportms_alert {
         position: absolute;
-        justify-content:center;
+        justify-content: center;
         left: 50%;
         top: 50%;
         background-color: azure;
@@ -208,11 +207,20 @@
         border-radius: 4px;
     }
 
+    #wait {
+        display: none;
+        position: absolute;
+        justify-content: center;
+        left: 50%;
+        top: 50%;
+        z-index: 999;
+        transform: translate(-50%,-50%); /*畫面至中*/
+    }
+
     @@media only screen and (max-width: 500px) {
         .reportms_alert {
-            width:100%;
-            
-        } 
+            width: 100%;
+        }
     }
 
     .reportms_alert button .reportms_cancel {
@@ -221,12 +229,10 @@
     }
 
 
-    .remove_message{
+    .remove_message {
         opacity: 0.5;
         font-style: italic;
     }
-
-
 </style>
 
 
@@ -283,7 +289,7 @@
 
         </div>
 
-        <div class="col-xl comments-container">
+        <div id="ajaxcontext" class="col-xl comments-container" style="height:500px; overflow-y:scroll;">
             <h4 id="comment">留言</h4>
             @foreach (var item in messages)
             {
@@ -303,15 +309,16 @@
                     @if (item.Status == 0)
                     {
                         <div class="comment-content">
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </div>
+                            @Html.DisplayFor(modelItem => item.Content)
+                        </div>
                     }
 
-                    else { 
+                    else
+                    {
                         <div class="comment-content">
-                        <p class="remove_message">此訊息已被移除</p>
-                    </div>
-                    
+                            <p class="remove_message">此訊息已被移除</p>
+                        </div>
+
                     }
 
                     <div class="comment-info">
@@ -319,7 +326,7 @@
                     </div>
 
                     <div>
-                        @if (Model.isUser && UserID != item.UserID &&item.Status==0)
+                        @if (Model.isUser && UserID != item.UserID && item.Status == 0)
                         {
                             if (!getRM.Any(i => i.Message_ID == item.MessageID))
                             {
@@ -342,12 +349,31 @@
 
         </div>
 
+
         @if (Model.isUser)
         {
-            <div class="add-comment-button">
-                <button onclick="openPopup()">新增留言</button>
+            <div style="margin-top: 10px;"></div>
+            <div id="commentInput" class="commentInput">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { id = "SendMessage" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="input-group">
+                        <!-- 使用 Bootstrap 的 input-group -->
+                        @Html.EditorFor(model => model.Content, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入留言", style = "width: 80%; border-radius: 10px;" } })
+
+                        <div class="input-group-append">
+                            <button type="submit" style="border:none; background-color:transparent;padding-top:5px;"><img src="~/ICON/send-fill.svg"></button>
+                        </div>
+                    </div>
+
+                    @Html.HiddenFor(model => model.Display)}
+
             </div>
-        }
+
+         }
+
     </div>
 
 </div>
@@ -385,35 +411,43 @@
 
 <!--檢舉留言視窗-->
 <!--檢舉視窗-->
+
+
 <div class="reportms_view">
+
+    <div id="wait">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+
     <div class="reportms_alert">
-
-
         <form method="post">
 
             <div style="width:100%; height:100%;">
                 <div style="margin: auto;">
-            <input type="checkbox" name="reportms" value="不雅字眼">
-            @Html.Label("不雅字眼")
-                    </div>
-                <div style="margin: auto;">
-            
-            <input type="checkbox" name="reportms" value="恐嚇字詞">
-            @Html.Label("恐嚇字詞")
-                    </div>
-            <div style="margin: auto;">
-            <input type="checkbox" name="reportms" value="不當發言">
-            @Html.Label("不當發言")
-            </div>
-                <div style="margin: auto;">
-            @Html.Label("其他")
-            </div><div style="margin: auto;">
-            @Html.TextArea("reportms_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
-                    </div>
-            <button class="reportms_cancel btn btn-danger">取消</button>
-            <button class="reportms_submit btn btn-success">送出</button>
-            <span id="result"></span>
+                    <input type="checkbox" name="reportms" value="不雅字眼">
+                    @Html.Label("不雅字眼")
                 </div>
+                <div style="margin: auto;">
+
+                    <input type="checkbox" name="reportms" value="恐嚇字詞">
+                    @Html.Label("恐嚇字詞")
+                </div>
+                <div style="margin: auto;">
+                    <input type="checkbox" name="reportms" value="不當發言">
+                    @Html.Label("不當發言")
+                </div>
+                <div style="margin: auto;">
+                    @Html.Label("其他")
+                </div><div style="margin: auto;">
+                    @Html.TextArea("reportms_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
+                </div>
+                <button class="reportms_cancel btn btn-danger">取消</button>
+                <button class="reportms_submit btn btn-success">送出</button>
+                <span id="result"></span>
+            </div>
         </form>
     </div>
 </div>
@@ -424,36 +458,10 @@
 
 
 
-
-
-
-
-
-<!-- 顯示留言的部分檢視區塊 -->
-@*@Html.Partial("MessageSection", Model)*@
-@Html.PagedListPager(Model.messages, page => Url.Action("ArticleDetails", new { id = Model.article.ArticleID, page }))
-
-
-
-<div id="messagePopup" style="display:@Model.Display" class="popup-overlay">
-    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "SendMessage" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2", style = "color:#fff" })
-        @Html.EditorFor(model => model.Content, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Display)
-
-        <button class="btn btn-success" type="submit">確定</button>
-        <button class="btn btn-danger" type="button" onclick="closePopup()">取消</button>
-    }
-</div>
-
 <div>
     <button class="btn " style="background-color: #6eb465; color:white" type="button" onclick="location.href='@Url.Action("ArticleIndex", "Home")'">返回首頁</button>
 </div>
+
 
 
 <script>
@@ -465,23 +473,47 @@
 				}
 			}
 
-    function openPopup() {
-        document.getElementById("messagePopup").style.display = "block";
-    }
-
-    function closePopup() {
-        document.getElementById("messagePopup").style.display = "none";
-    }
-
     $(document).ready(function() {
             $('#SendMessage').submit(function(event) {
                 event.preventDefault(); // 阻止表單的默認提交行為
-                var redirectUrl = '@Url.Action("CreateMessage", "MessageManage")' +'?id='+ encodeURIComponent('@Model.article.ArticleID')+ '&page=' + encodeURIComponent('@Model.Page');
+                var redirectUrl = '@Url.Action("CreateMessage", "MessageManage")' +'?id='+ encodeURIComponent('@Model.article.ArticleID');
                 var formData = $(this).serialize();
+                $('#Content').val('');
                // 使用 AJAX 發送 POST 請求
-                makeAjaxRequest(redirectUrl, formData);
+                makeajaxrequest(redirectUrl, formData);
             });
-     });
+    });
+
+
+    function makeajaxrequest(redirectUrl, requestData) {
+        $.ajax({
+            url: redirectUrl,
+            type: 'POST',
+            data: requestData,
+            success: function (data) {
+                // 更新部分內容
+
+                if (data.success) {
+                    var username = data.ms.UserName;
+                    var context = data.ms.Context;
+                    var date = data.ms.Date;
+
+                    $('#ajaxcontext').append("<hr>");
+                    $('#ajaxcontext').append("<div class='comment-header'><p>" + username + "</p></div>");
+                    $('#ajaxcontext').append("<div class='comment-content'><p>" + context + "</p></div>");
+                    $('#ajaxcontext').append("<div class='comment-info'><p>" + date + "</p></div>");
+                }
+                else {
+                    alert("請輸入值");
+                }
+                
+
+              
+            }
+        });
+    }
+
+
 
     function ArticleManage(url, id, action) {
         var redirectUrl = url + '?id=' + encodeURIComponent(id);
@@ -529,19 +561,33 @@
 
         msid = $(this).val();
 
-        $("body").css("display", "block")
+        //$("body").css("display", "block")
         $(".reportms_view").css("display", "block");
 
     });
 
     $(".reportms_cancel").click(function () {
 
-        $("body").css("display", "none")
         $(".reportms_view").css("display", "none");
 
     });
 
+
+
+    //Ajax 動畫
+
+    $(document).ajaxStart(function () {
+        $(".reportms_alert").css("display", "none");
+        $("#wait").css("display", "block");
+    });
+    $(document).ajaxComplete(function () {
+        $("#wait").css("display", "none");
+    });
+
+
     $(".reportms_submit").click(function () {
+
+
 
         $.ajax({
 
@@ -554,13 +600,13 @@
             error: function () {
 
             }
-            
+
 
         });
 
     });
 
-    
+
 
 
     //將檢舉文章內容整理成字串

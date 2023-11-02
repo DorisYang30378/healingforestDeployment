@@ -115,6 +115,7 @@
         //Ajax 動畫
 
         $(document).ajaxStart(function () {
+            console.log("出現");
             $waitElement.css("display", "block");
         });
         $(document).ajaxComplete(function () {

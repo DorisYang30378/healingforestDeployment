@@ -183,9 +183,7 @@ namespace postArticle.Controllers
 
         public ActionResult ArticleDetails(int? id, int? page)
         {
-            //-----分頁-----
-            int pageSize = 5;
-            int pageNumber = (page ?? 1);
+
             //
             bool isUser;
             bool isCreatedByUser;
@@ -232,14 +230,13 @@ namespace postArticle.Controllers
                 Display = TempData["Display"] as string;
             }
 
-             
+
 
             //---------------建立viewModel-----------------------------------------
             ArticleDetailsViewModel articleDetailsViewModel = new ArticleDetailsViewModel
             {
                 article = article,
-                messages = queryMessList.ToPagedList(pageNumber, pageSize),
-                Page = pageNumber,
+                messages = queryMessList,
                 isUser = isUser,
                 isCreatedByUser = isCreatedByUser,
                 Display = Display,

@@ -14,7 +14,7 @@ namespace postArticle.viewmodel
 
         public Article article { get; set; }
 
-        public PagedList.IPagedList<Message> messages { get; set; }
+        public IEnumerable<Message> messages { get; set; }
 
         [Display(Name = "留言"), Required, DataType(DataType.Text)]
         public string Content { get; set; }
