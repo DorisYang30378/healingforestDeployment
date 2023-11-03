@@ -27,7 +27,7 @@
         height: max-content;
         margin-top: 70px;
         margin-left: 2%;
-        margin-bottom:300px;
+        margin-bottom: 300px;
     }
 
     .window_content {
@@ -37,8 +37,7 @@
         width: 900px;
         border-radius: 5px;
         background-color: #ffffff;
-        margin-bottom:70px;
-        
+        margin-bottom: 70px;
     }
 
     .custom-btn {
@@ -53,9 +52,9 @@
         }
 
     .circle-avatar {
-        width: 100px; 
-        height: 100px; 
-        border-radius: 50%; 
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
         background-size: cover; /* 保持图片比例并填充整个头像区域 */
         background-position: center; /* 将图片居中 */
         background-color: #d5f5c6;
@@ -77,8 +76,8 @@
     .mood {
         border: none;
         background-color: transparent;
-        width:30px;
-        height:30px;
+        width: 30px;
+        height: 30px;
     }
 
     .mood-preform {
@@ -87,13 +86,42 @@
         width: 30px;
         height: 30px;
     }
+
     #mood-font {
         font-size: 20px;
     }
 
     footer {
-        display:none;
+        display: none;
     }
+    /************************************************/
+    #experienceBar {
+        max-width: 300px;
+        width: 90%;
+        height: 20px;
+        border: 1px solid #000;
+        position: relative;
+    }
+
+
+    #experienceFill {
+        height: 100%;
+        width: 0;
+        background-color: #97CD7D; /* 綠色 */
+        position: absolute;
+    }
+
+    #experienceText {
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        line-height: 20px;
+        color: #000;
+    }
+    /****************************************************/
 
 </style>
 
@@ -105,10 +133,10 @@
 @Html.AntiForgeryToken()
 <div id="mood_box" class="container-panel">
 
-    <div class="list-group" style="height:100%;">
+    <div class="list-group" style="height:100%; position:sticky; top:20%;">
         <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">資料修改</a>
         <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
-        <a href="@Url.Action("TreeHole", "UserManages")", new{ class="list-group-item btn custom-btn"}>我的樹洞</a>
+        <a href="@Url.Action("TreeHole", "UserManages")" , new{ class="list-group-item btn custom-btn" }>我的樹洞</a>
         <a href="#my-question" class="list-group-item btn custom-btn">我的提問</a>
         <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
         <a href="#mood_container" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
@@ -130,8 +158,12 @@
         <div style="position: relative; float:left; margin: 40px 0 0 58px; ">
             <p>@usertype 等級:@Model.UserManagesDetail.LevelValue</p>
             <p>@usertype 經驗值:@Model.UserManagesDetail.Experience</p>
+            <div id="experienceBar">
+                <div id="experienceFill"></div>
+                <div id="experienceText"> </div>
+            </div>
 
-            <div  class="box" style="position:absolute; margin-left:-130px; margin-top:30px;">
+            <div class="box" style="position:absolute; margin-left:-130px; margin-top:30px;">
                 @switch (nowmood)
                 {
 
@@ -164,11 +196,17 @@
         </div>
 
 
-        <div class="window_content" id="my-question" style="margin-top:350px; margin-left:-4px; height:fit-content; padding-bottom:30px;">
+        <div class="window_content" style="margin-top:350px; margin-left:-4px; height:500px;">
+
+            <div style="width: 100%; text-align: center; padding: 20px 0 0 0; font-size: 30px;">我的收藏</div>
+
+        </div>
+
+        <div class="window_content" id="my-question" style="margin-top:50px; margin-left:-4px; height:fit-content; padding-bottom:30px;">
 
             <p style="padding:20px 0 0 0; font-size:30px; text-align:center;">我的提問</p>
 
-            <div style="width:100%; height:500px; overflow-y:scroll; overflow-x:hidden;">
+            <div id="question-container" style="width:100%; height:500px; overflow-y:scroll; overflow-x:hidden;">
 
 
 
@@ -182,8 +220,9 @@
                 {
 
                     <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
-                        問題 :
-                        <p>@item.QuestionTitle @item.QuestionContent @item.QuestionTime</p>
+                        <h3>問題. </h3>
+                        <p>@item.QuestionContent</p>
+                        <h6>@item.QuestionTime.ToString("d")</h6>
                         <div class="card-body">
 
 
@@ -222,26 +261,25 @@
             </div>
 
 
-            @using (Html.BeginForm("Submit_UserQuestion", "UserManages", FormMethod.Post, new { @style = "text-align: center; margin: 30px 0 30px 0;" }))
-            {
+
+            <div style="text-align: center; margin: 30px 0 30px 0;">
+
+                @Html.TextBoxFor(m => m.SubmitUQ.QuestionContent, new { @title = "輸入提問", @placeholder = "輸入提問", @style = "width: 400px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;", @id = "questionInput" })
 
 
-                @Html.AntiForgeryToken();
-
-                @Html.TextBoxFor(m => m.SubmitUQ.QuestionContent, new { @title = "輸入提問", @placeholder = "輸入提問", @style = "width: 400px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;" })
-
-
-                <button type="submit" style="background-color: transparent; border:none;">
+                <button type="submit" class="question_submit" style="background-color: transparent; border:none;">
                     <img src="~/ICON/send-fill.svg" width="28" height="28">
                 </button>
 
-            }
+            </div>
 
 
         </div>
 
 
-        <div class="window_content" id="mood_container" style="margin-top:30px; margin-bottom:100px; margin-left:-4px; height: 500px; position: relative;">
+        <div class="window_content" id="mood_container" style="margin-top:30px; margin-bottom:100px; margin-left:-4px; height: 600px; position: relative;">
+
+            <div style="width: 100%; text-align: center; padding: 20px 0 0 0; font-size: 30px;">我的心情紀錄</div>
 
             @if (moodcount != 0)
             {
@@ -256,7 +294,7 @@
             else
             {
                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                    <a href="#mood_box" style="width:100%; text-decoration: none; color:rgb(176 174 174 / 0.89); font-size:40px; font-weight:900;">開始您的心情紀錄</a>
+                    <a href="#mood_box" style="width: 100%; text-decoration: none; font-size: 30px; font-weight: bold; color: rgb(209 209 209 / 0.85)">開始您的心情紀錄</a>
                 </div>
             }
 
@@ -320,7 +358,7 @@
 
             }
 
-           
+
 
             ///////將mood寫入或更新資料庫
 
@@ -343,12 +381,55 @@
 
         });
 
-        //當點擊按鈕input清空
+        //
         $(".Question").click(function () {
 
             $(".Question-info").hide();
             $(this).find(".Question-info").toggle();
             var value = $(this).data("value");
+
+        });
+
+
+
+        //
+        $(".question_submit").click(function () {
+
+            var inputText = $('#questionInput').val();
+            $('#questionInput').val('');
+
+            $.ajax({
+
+                url: '@Url.Action("Submit_UserQuestion", "UserManages")',
+                type: "Post",
+                data: { inputvalue: inputText },
+                success: function (data) {
+
+                    var question = data.QM.NewQ;
+                    var date = data.QM.Date
+
+                    var questionDiv = $('<div>').addClass('btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question')
+                        .css({ 'width': '80%', 'margin': '0 auto 10px auto', 'padding': '10px' });
+
+                    var h3 = $('<h3>').text('問題 :');
+
+                    var p = $('<p>').text(question);
+
+                    var h6 = $('<h6>').text(date);
+
+                    questionDiv.append(h3, p, h6);
+
+                    $('#question-container').append(questionDiv);
+
+                },
+                error: function () {
+                    alert("失敗");
+                }
+
+
+
+            });
+
 
         });
 
@@ -383,6 +464,24 @@
         type: 'pie',
         data: data
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </script>

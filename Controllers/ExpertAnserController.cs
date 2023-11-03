@@ -14,8 +14,12 @@ namespace postArticle.Controllers
     {
 
         //初始化
+
+        //model
         healingForestEntities db = new healingForestEntities();
 
+
+        //view model
         ExpertAnser EA = new ExpertAnser();
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
@@ -47,6 +51,8 @@ namespace postArticle.Controllers
             int UserID = GetUserID();
             string AnserContext = Request.Form["AnserContext"];
             int QuestionID = int.Parse(Request.Form["QuestionID"]);
+            
+
 
             if(Session["UserID"] != null)
             {
@@ -54,22 +60,12 @@ namespace postArticle.Controllers
                 db.ExpertAnswers.Add(Reponse);
                 db.SaveChanges();
 
-                /*
-                EA.ExpertAnswers = db.ExpertAnswers.Where(m=>m.QuestionID== QuestionID);
-                return Json(EA.ExpertAnswers);*/
+                ExpertAnser send = new ExpertAnser();
+                send.Name = db.UserManages.Find(UserID).UserName;
+                send.Anser = AnserContext;
+                send.Time = DateTime.Now.ToString("G");
 
-                try
-                {
-                    EA.ExpertAnswers = db.ExpertAnswers.Where(m => m.QuestionID == QuestionID);
-                    return Json(db.ExpertAnswers);
-                }
-                catch (Exception)
-                {
-                    return Json(EA.ExpertAnswers);
-                }
-               
-
-
+                return Json(new { success= true, send});
 
             }
             else

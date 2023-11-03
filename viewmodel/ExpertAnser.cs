@@ -15,6 +15,14 @@ namespace postArticle.viewmodel
 
         public PagedList.IPagedList<UserQuestion> UserQuestions { get; set; }
 
+ 
+            public string Name { get; set; }
+            public string Anser { get; set; }
+
+            public string Time { get; set; }
+
+        
+
 
     }
 }

@@ -25,6 +25,9 @@ namespace postArticle.viewmodel
 
         public string Questions { get; set; }
 
+        public string NewQ { get; set; }
+        public string Date { get; set; }
+
         public string nowmood { get; set; }
     }
 }

@@ -318,7 +318,7 @@ namespace postArticle.Controllers
             /////////////////////////////////
             UserManage.ExpertAS = expertAnswers;
             UserManage.UserManagesDetail = db.UserManages.Find(id);
-            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID).OrderByDescending(m=>m.QuestionTime);
+            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID).OrderBy(m=>m.QuestionTime);
 
 
             ////////////////////////////////
@@ -483,32 +483,31 @@ namespace postArticle.Controllers
 
         ///////////////////////////////////////////////////////////////////////////////////
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ValidateInput(true)]
-        public ActionResult Submit_UserQuestion(MemberDetailsViewModel MQ)
+        public ActionResult Submit_UserQuestion()
         {
 
-            MemberDetailsViewModel QuestionModel = new MemberDetailsViewModel();
-            var Question = QuestionModel.SubmitUQ;
+           MemberDetailsViewModel QM = new MemberDetailsViewModel();
 
             var UserID = GetUserID();
+            string InputText = Request.Form["inputvalue"];
 
-            MQ.SubmitUQ.UserID = UserID;
-            MQ.SubmitUQ.QuestionTime = DateTime.Now;
-
-
-            db.UserQuestions.Add(MQ.SubmitUQ);
-
-            try
+            UserQuestion newQuestion = new UserQuestion
             {
-                db.SaveChanges();
-            }
-            catch
-            {
+                UserID = UserID,
+                QuestionTitle = "0",
+                QuestionContent = InputText,
+                QuestionTime = DateTime.Now
+            };
 
-            }
+            db.UserQuestions.Add(newQuestion);
+            db.SaveChanges();
 
-            return RedirectToAction("MemberDetails", "UserManages", new { id = UserID });
+            QM.NewQ = InputText;
+            QM.Date = DateTime.Now.ToString("G");
+            
+
+
+            return Json(new { success= true, QM});
         }
 
 

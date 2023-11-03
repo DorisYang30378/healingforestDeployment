@@ -383,7 +383,6 @@
     <Content Include="Views\DateView\dateView.cshtml" />
     <Content Include="Views\Manager\UserMange.cshtml" />
     <Content Include="Views\Manager\Resize.cshtml" />
-    <Content Include="Views\UserManages\ApplyExpert.cshtml" />
     <Content Include="Views\Manager\Report.cshtml" />
     <Content Include="Views\Manager\ArticleReview.cshtml" />
     <Content Include="Views\CharRoom\Charmember.cshtml" />
@@ -396,14 +395,12 @@
     <Content Include="Views\UserManages\TreeHole.cshtml" />
     <Content Include="Views\Expert\Apply.cshtml" />
     <Content Include="Views\Expert\Edit.cshtml" />
-    <Content Include="Views\Expert\Index.cshtml" />
     <Content Include="Views\Manager\CheckExpert.cshtml" />
     <Content Include="Views\Manager\ExpertDetail.cshtml" />
-    <Content Include="Views\Manager\Index.cshtml" />
+    <Content Include="Views\Expert\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\MessageManage\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

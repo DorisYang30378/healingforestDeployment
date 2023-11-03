@@ -18,15 +18,24 @@ namespace postArticle.Controllers
         public bool CheckLoggedIn() => Session["UserID"] != null;
         public int GetUserID() => Convert.ToInt32(Session["UserID"]);
 
+
+
         // GET: Expert
         public ActionResult Index()
         {
             int userID = GetUserID();
 
-            var expertApplies = db.ExpertApplies.Where(e => e.UserManage.UserID == userID).ToList();
-            return View(expertApplies); 
-        }
+            if (Session["UserID"]!=null)
+            {
+                var expertApplies = db.ExpertApplies.Where(e => e.UserManage.UserID == userID).ToList();
+                return View(expertApplies);
+            }
+            else
+            {
+                return RedirectToAction("Login", "UserManages");
+            }
 
+        }
 
         [HttpGet]
         public ActionResult Apply()

@@ -30,7 +30,7 @@ namespace postArticle.Controllers
 
             int PageSize = 10;
             int PageNumber = (page ?? 1);
-            var pushdb = db.UserManages.ToList();
+            var pushdb = db.UserManages.Where(m=>m.UserType!="Admin").ToList();
             var Name1 = pushdb.ToList().OrderBy(m => m.Status);
 
 
@@ -473,9 +473,12 @@ namespace postArticle.Controllers
                 return RedirectToAction("Index");
             }
             ExpertApply expertApply = db.ExpertApplies.Find(id);
-            db.ExpertApplies.Remove(expertApply);
-            db.SaveChanges();
 
+            if (expertApply != null)
+            {
+                db.ExpertApplies.Remove(expertApply);
+                db.SaveChanges();
+            }
             return RedirectToAction("ExpertDetail");
         }
 
@@ -522,7 +525,15 @@ namespace postArticle.Controllers
         {
             var expertApply = db.ExpertApplies.Include(u => u.UserManage);
 
-            return View(expertApply.ToList());
+            if (Session["UserType"].ToString() == "Admin")
+            {
+                return View(expertApply.ToList());
+            }
+            else
+            {
+                return RedirectToAction("Login", "UserManages");
+            }
+            
         }
 
         public List<string> GetImageNamesFromDatabase(ExpertApply model, UserManage usermodel, int? id)

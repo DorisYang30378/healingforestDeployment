@@ -32,43 +32,39 @@
 @foreach (var item in UQ)
 {
 
-    <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
-        <span style="font-size:20px; font-weight:900;">問題 :</span>
-        <span style="font-size:20px;">@item.QuestionContent</span>
-        <span style="font-size:15px; ">@item.QuestionTime</span>
+<div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
+    <span style="font-size:20px; font-weight:900;">問題 :</span>
+    <span style="font-size:20px;">@item.QuestionContent</span>
+    <span style="font-size:15px; ">@item.QuestionTime</span>
 
-        <div class="card-body" id="card-body">
+    <div class="card-body" id="card-body">
 
-            @foreach (var a in EA)
-            {
+        @foreach (var a in EA)
+        {
 
-                <div class="card Question-info">
-                    @if (a.QuestionID == item.UserQuestionID)
-                    {
-                        <span style="font-size:20px; font-weight:900; margin:5px 0 0 5px;">專家 @a.UserManage.UserName</span>
-                        <span style="font-size:18px; margin:5px 0 0 5px;">@a.AnswerContent</span>
-                        <span style="font-size: 15px; margin: 5px 0 0 5px;">@a.AnswerTime</span>
-                    }
-                </div>
-            }
-
-            <div id="wait">
-                <div class="spinner-border text-secondary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+            <div class="card Question-info">
+                @if (a.QuestionID == item.UserQuestionID)
+                {
+                    <span style="font-size:20px; font-weight:900; margin:5px 0 0 5px;">專家 @a.UserManage.UserName</span>
+                    <span style="font-size:18px; margin:5px 0 0 5px;">@a.AnswerContent</span>
+                    <span style="font-size: 15px; margin: 5px 0 0 5px;">@a.AnswerTime</span>
+                }
             </div>
+        }
+    </div>
 
-            <div style="white-space:nowrap;">
-                <input class="form-control context" style="width:90%; height:40px; margin-top:20px;" placeholder="專家輸入欄" value="">
-                <input type="hidden" class="userQuestionID" value="@item.UserQuestionID">
-                <button class="form-control submit-btn" type="submit" style="width:5%; height:40px; margin-top:20px; background-color:transparent; border:none;"><img src="~/ICON/send-fill.svg"></button>
-            </div>
-
-
-
-
+    <div id="wait">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+
+    <div style="white-space:nowrap;">
+        <input class="form-control context" style="width:90%; height:40px; margin-top:20px;" placeholder="專家輸入欄" value="">
+        <input type="hidden" class="userQuestionID" value="@item.UserQuestionID">
+        <button class="form-control submit-btn" type="submit" style="width:5%; height:40px; margin-top:20px; background-color:transparent; border:none;"><img src="~/ICON/send-fill.svg"></button>
+    </div>
+</div>
 
 }
 
@@ -78,7 +74,7 @@
         new { page }))
     </div>
 
-<script>
+    <script>
 
 
     $(document).ready(function () {
@@ -127,7 +123,7 @@
 
         $(".submit-btn").click(function () {
 
-            
+
             //找到這個欄位的wait id
             $waitElement = $(this).closest(".Question").find("#wait");
             var input = $(this).siblings(".context");
@@ -145,9 +141,25 @@
                     url: '@Url.Action("SendAnser", "ExpertAnser")',
                     type: "post",
                     data: { AnserContext: inputValue, QuestionID: userQuestionID },
-                    success: function (result) {
-                        alert("成功");
+                    success: function (data) {
+
+                        var Name = data.send.Name;
+                        var Anser = data.send.Anser;
+                        var Time = data.send.Time;
+
+
+                        var cardBody = $('#card-body');
+                        var card = $('<div>').addClass('card Question-info');
+                        var nameSpan = $('<span>').text("專家 "+Name).css({ 'font-size': '20px', 'font-weight': '900', 'margin': '5px 0 0 5px' });
+                        var answerSpan = $('<span>').text(Anser).css({ 'font-size': '18px', 'margin': '5px 0 0 5px'});
+                        var timeSpan = $('<span>').text(Time).css({ 'font-size': '15px', 'margin': '5px 0 0 5px' });
+
+                        card.append(nameSpan, answerSpan, timeSpan);
+                        cardBody.append(card);
+
+
                     },
+
                     error: function () {
                         alert("失敗");
                     }
@@ -166,4 +178,4 @@
 
 
 
-</script>
+    </script>
