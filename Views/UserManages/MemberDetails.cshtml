@@ -20,6 +20,12 @@
     body {
         background-color: #DBF0D0;
     }
+    
+    a{
+        text-decoration:none;
+        font-size: 20px;
+        color:#b2acac;
+    }
 
     .container-panel {
         position: relative;
@@ -32,7 +38,7 @@
 
     .window_content {
         position: relative;
-        margin-left: 6%;
+        margin:auto;
         height: 300px;
         width: 900px;
         border-radius: 5px;
@@ -66,6 +72,9 @@
         background-color: #c5e5b6;
         border-radius: 10px;
         overflow: hidden;
+        position: absolute;
+        margin-left: -130px;
+        margin-top: 50px;
     }
 
         .box:hover {
@@ -126,26 +135,59 @@
 </style>
 
 
-@if (Model.UserManagesDetail.UserType == "Member")
+@switch (Model.UserManagesDetail.UserType)
 {
-    usertype = "會員";
+    case "Member":
+        usertype = "會員";
+        break;
+
+    case "Expert":
+        usertype = "專家";
+        break;
+
+    case "Admin":
+        usertype = "管理員";
+        break;
+
+    default:
+        usertype = "Not Found";
+        break;
+
+
 }
 @Html.AntiForgeryToken()
+<div style="margin-top: 35px; position: fixed; z-index: 999; background-color: #DBF0D0; width: 100%; padding: 10px;">
+    <span style="text-align: center; font-size: 20px; font-weight: 500; background-color: rgb(86 180 42 / 0.75); border-radius: 5px; padding:5px;">@usertype</span>
+    <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })">資料修改</a>
+    <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })">密碼修改</a>
+    <a href="@Url.Action("TreeHole", "UserManages")" }>我的樹洞</a>
+    <a href="#my-question">我的提問</a>
+    <a href="#">我的收藏</a>
+    <a href="#mood_container">心情紀錄</a>
+    <!-- 在这里添加更多按钮 -->
+</div>
+
+
+
 <div id="mood_box" class="container-panel">
 
-    <div class="list-group" style="height:100%; position:sticky; top:20%;">
-        <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">資料修改</a>
-        <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
-        <a href="@Url.Action("TreeHole", "UserManages")" , new{ class="list-group-item btn custom-btn" }>我的樹洞</a>
-        <a href="#my-question" class="list-group-item btn custom-btn">我的提問</a>
-        <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
-        <a href="#mood_container" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
-        <!-- 在这里添加更多按钮 -->
-    </div>
 
-    <div class="window_content">
+    @*
+        <div class="list-group" style="height:100%; top:20%; display:none;">
+            <span style="text-align: center; font-size: 20px; font-weight: 500; background-color: rgb(86 180 42 / 0.75); border-radius: 5px; padding:5px;">@usertype</span>
+            <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">資料修改</a>
+            <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })" class="list-group-item btn custom-btn">密碼修改</a>
+            <a href="@Url.Action("TreeHole", "UserManages")" , new{ class="list-group-item btn custom-btn" }>我的樹洞</a>
+            <a href="#my-question" class="list-group-item btn custom-btn">我的提問</a>
+            <a href="#" class="list-group-item btn custom-btn">我的收藏</a>
+            <a href="#mood_container" class="list-group-item btn custom-btn mood-reward">心情紀錄</a>
+            <!-- 在这里添加更多按钮 -->
+        </div>
+    *@
 
 
+
+    <div class="window_content" style="margin-top:50px;">
         <div style="position: relative; float: left;  margin: 15px 0 0 3%;">
             <div class="circle-avatar"></div><!-- 大頭貼預定地 -->
             <div style="position: relative; text-align: center; margin: 0 auto;">
@@ -155,15 +197,15 @@
             </div>
         </div>
 
-        <div style="position: relative; float:left; margin: 40px 0 0 58px; ">
-            <p>@usertype 等級:@Model.UserManagesDetail.LevelValue</p>
-            <p>@usertype 經驗值:@Model.UserManagesDetail.Experience</p>
+        <div style="position: relative; width:300px; float:left; margin: 40px 0 0 58px; ">
+
+            <p>等級:@ViewBag.level</p>
             <div id="experienceBar">
                 <div id="experienceFill"></div>
                 <div id="experienceText"> </div>
             </div>
 
-            <div class="box" style="position:absolute; margin-left:-130px; margin-top:30px;">
+            <div class="box">
                 @switch (nowmood)
                 {
 
@@ -193,6 +235,30 @@
                 <span title="Sad"><button class="mood" value="sad"><p id="mood-font">&#128542;</p></button></span>
                 <span title="Angry"><button class="mood" value="angry"><p id="mood-font">&#128545;</p></button></span>
             </div>
+
+            <!------------自介------------->
+            <div style="width: 700px; height:180px; margin:10px auto 10px 0; border-radius:5px; background-color:rgb(241 239 239 / 0.90)">
+                <p style="margin:2px 0 0 5px;">個人簡介</p>
+
+
+
+                @using (Html.BeginForm("Update_info", "UserManages", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(Model => Model.UserManagesDetail.UserID);
+                    @Html.HiddenFor(Model => Model.UserManagesDetail.UserType);
+                    @Html.HiddenFor(Model => Model.UserManagesDetail.UserName);
+
+                    <div class="row" style="padding:0px; margin-left:10px;">
+                        @Html.TextAreaFor(Model => Model.UserManagesDetail.UserInfo, new { @class = "text-area", placeholder = "請輸入個人簡介", id = "userInfoTextArea", style = "width:680px; height:140px; resize:none; overflow-y:scroll; " })
+                    </div>
+                }
+
+
+
+            </div>
+
+
         </div>
 
 
@@ -206,7 +272,7 @@
 
             <p style="padding:20px 0 0 0; font-size:30px; text-align:center;">我的提問</p>
 
-            <div id="question-container" style="width:100%; height:500px; overflow-y:scroll; overflow-x:hidden;">
+            <div id="question-container" style="width:100%; max-height:500px; height:auto; overflow-y:scroll; overflow-x:hidden;">
 
 
 
@@ -220,7 +286,7 @@
                 {
 
                     <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
-                        <h3>問題. </h3>
+                        <h3>問題</h3>
                         <p>@item.QuestionContent</p>
                         <h6>@item.QuestionTime.ToString("d")</h6>
                         <div class="card-body">
@@ -237,7 +303,7 @@
                                         if (i.QuestionID == item.UserQuestionID)
                                         {
                                             <div class="list-group" style="padding:3px;">
-                                                回答 :
+                                                @i.UserManage.UserName 回答 :
                                                 <br>
                                                 @i.AnswerContent
                                             </div>
@@ -268,7 +334,7 @@
 
 
                 <button type="submit" class="question_submit" style="background-color: transparent; border:none;">
-                    <img src="~/ICON/send-fill.svg" width="28" height="28">
+                    <img src="../ICON/send-fill.svg" width="28" height="28">
                 </button>
 
             </div>
@@ -312,6 +378,18 @@
 
 
 <script>
+
+
+    document.getElementById("userInfoTextArea").addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault(); // 阻止默认的 Enter 换行行为
+            document.forms[0].submit(); // 模拟表单提交
+        }
+    });
+
+
+
+
     function previewImage(input) {
         var preview = document.getElementById('preview');
         if (input.files && input.files[0]) {
@@ -467,20 +545,41 @@
 
 
 
+    //////////////////////////////////////////
+
+    	// 当前经验值和下一个等级所需经验值（示例值，你需要根据实际情况替换）
+	var currentExperience = @ViewBag.currentLevelExperience;
+	var nextLevelExperience = @ViewBag.toNextLevelExperience;
+
+	// 更新经验条
+	function updateExperienceBar() {
+		var fillWidth = (currentExperience / nextLevelExperience) * 100;
+		document.getElementById("experienceFill").style.width = fillWidth + "%";
+		document.getElementById("experienceText").textContent = currentExperience + " / " + nextLevelExperience ;
+	}
+
+	// 调用函数以更新经验条
+	updateExperienceBar();
+</script>
+<script>
+	// 当前经验值和下一个等级所需经验值（示例值，你需要根据实际情况替换）
+	var currentExpertExperience = @ViewBag.currentExpertLevelExperience;
+	var nextExpertLevelExperience = @ViewBag.toNextExpertLevelExperience;
+
+	// 更新经验条
+	function updateExpertExperienceBar() {
+		var fillWidth = (currentExpertExperience / nextExpertLevelExperience) * 100;
+		document.getElementById("ExpertExperienceFill").style.width = fillWidth + "%";
+		document.getElementById("ExpertExperienceText").textContent = currentExpertExperience + " / " + nextExpertLevelExperience ;
+	}
+
+	// 调用函数以更新经验条
+    updateExpertExperienceBar();
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+    ////////////////////////////////////////////////////////////////
 
 
 

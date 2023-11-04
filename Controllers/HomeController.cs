@@ -33,6 +33,9 @@ namespace postArticle.Controllers
         #region ===首頁===
         public ActionResult ArticleIndex(ArticleIndexViewModel articleIndexViewModel, int? page)
         {
+            //設定footer
+            ViewBag.disableFooter = 0;
+
             //---------------變數-----------------------------------------
             #region ===變數===
             //

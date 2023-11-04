@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using PagedList.Mvc;
 using PagedList;
+using _Platform.Service;
 
 namespace postArticle.Controllers
 {
@@ -49,21 +50,25 @@ namespace postArticle.Controllers
         public ActionResult SendAnser() {
 
             int UserID = GetUserID();
+            string UserName = db.UserManages.Find(UserID).UserName;
             string AnserContext = Request.Form["AnserContext"];
             int QuestionID = int.Parse(Request.Form["QuestionID"]);
-            
+            string UQEmail = Request.Form["UQEmail"];
+            string UQcontext = Request.Form["UQcontext"];
 
 
-            if(Session["UserID"] != null)
+
+            if (Session["UserID"] != null)
             {
                 ExpertAnswer Reponse = new ExpertAnswer { QuestionID = QuestionID, UserID = UserID, AnswerContent = AnserContext, AnswerTime = DateTime.Now };
                 db.ExpertAnswers.Add(Reponse);
                 db.SaveChanges();
+                ResponesEmail(UserName, UQEmail, UQcontext);
 
                 ExpertAnser send = new ExpertAnser();
                 send.Name = db.UserManages.Find(UserID).UserName;
                 send.Anser = AnserContext;
-                send.Time = DateTime.Now.ToString("G");
+                send.Time = DateTime.Now.ToString("d");
 
                 return Json(new { success= true, send});
 
@@ -76,6 +81,20 @@ namespace postArticle.Controllers
 
         }
 
+        public void ResponesEmail(string UserName, string UQEmail, string UQcontext)
+        {
+            MaillService ms = new MaillService();
+            string subject = "問題回答";
+            string body = @"<p>專家:{UserName}<br>
+                            回答您的問題:{UQcontext}<br>
+                            ==================================<br />
+                            此為系統自動回覆之信件，請勿直接回信<br />
+                            ==================================<br />
+                             </p>";
+            body = body.Replace("{UserName}", " "+UserName);
+            body = body.Replace("{UQcontext}", " "+UQcontext);
+            ms.SendMail(UQEmail, subject, body);
+        }
 
     }
 }

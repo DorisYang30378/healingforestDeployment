@@ -116,7 +116,7 @@ namespace postArticle.Controllers
 
             if (searchString != MyUserName)
             {
-                var member = from m in db.UserManages select m;
+                var member = from m in db.UserManages where(m.UserName!="Admin") select m;
                 member = member.Where(s => s.UserName.Contains(searchString));
                 var searchchatroom = from m in db.Chatrooms.Where(m => m.UserID == MyUserID || m.OtherUserID == MyUserID) select m;
                 CMV.SMChatRoom = searchchatroom;
@@ -174,6 +174,9 @@ namespace postArticle.Controllers
 
         public ActionResult ChatRoom(int? id)
         {
+
+            //設定footer
+            ViewBag.disableFooter = 0;
 
             //判斷是否為使用者的chatroom
             List<int> f = new List<int>();
@@ -236,9 +239,11 @@ namespace postArticle.Controllers
         public ActionResult Writemessage(int? id)
         {
 
+            ChatRoomViewModel CR = new ChatRoomViewModel();
             int UserID = int.Parse(Request.Form["userID"]);
             int ChatRoomID = int.Parse(Request.Form["ChatRoomID"]);
             string Content = "";
+            string UserName = db.UserManages.Find(UserID).UserName;
 
             try
             {
@@ -256,13 +261,18 @@ namespace postArticle.Controllers
             try
             {
                 db.SaveChanges();
+                CR.UserName = UserName;
+                CR.inputContext = Content;
+                CR.inputTime = DateTime.Now.ToString("g");
+                return Json(new { success = true, CR });
             }
             catch {
                 TempData["ErrorMessage"] ="輸入未成功,留言太長了";
+                return RedirectToAction("ChatRoom", "CharRoom", new { id });
             }
             
 
-            return RedirectToAction("ChatRoom", "CharRoom", new { id });
+            
         }
 
 

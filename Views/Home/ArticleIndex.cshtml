@@ -4,6 +4,7 @@
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
+
     ViewBag.Title = "首頁";
     var articleList = Model.articles.ToList();
     var ClassificationInput = "Classification";
@@ -26,24 +27,32 @@
         color: #333;
     }
 
-    #button-container {
-        margin-bottom: 20px;
+    #classificationDropdown, #classificationDropdown2 {
+        width: 200px;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #97CD7D;
+        color: #333;
     }
 
-        #button-container button {
-            margin-right: 10px;
-            padding: 5px 10px;
-            background-color: #97CD7D;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            margin-bottom: 20px;
+        #classificationDropdown option, #classificationDropdown2 option {
+            background-color: #cbf9b5;
+            font-size: 16px;
         }
 
-    .button-container button:hover,
-    .button-container button:focus {
-        background-color: #2f863a;
+        #classificationDropdown,#classificationDropdown2:hover {
+            border-color: #007bff;
+        }
+
+    .btnn {
+        width: 100px;
+        height: 36.8px;
+        border: none;
+        border-radius:5px;
+        background-color: #97CD7D;
+        color: #333;
     }
 
     #selectArticle h {
@@ -54,7 +63,7 @@
     #selectArticle button {
         margin-right: 10px;
         padding: 5px 10px;
-        background-color: #97CD7D;
+        background-color: #97C;
         border: none;
         border-radius: 5px;
         color: #fff;
@@ -88,10 +97,6 @@
         font-weight: bold;
         color: cadetblue;
         margin-bottom: 10px;
-    }
-
-    #contain {
-        margin-top: -30px;
     }
 
     .article-content {
@@ -128,7 +133,7 @@
     #search-container {
         display: flex;
         align-items: center;
-        margin-bottom: 20px;
+
     }
 
     #search-input {
@@ -176,72 +181,81 @@
 @using (Html.BeginForm("ArticleIndex", "Home", FormMethod.Post, new { id = "SelectPanel" }))
 {
 
-    <div class="row" id="contain">
-        <div class="col-xxl-5" id="selectArticle">
-            <h>分類</h>
-            <button type="button" onclick="changeClass('ALL','@ClassificationInput')">全部</button>
-            <button type="button" onclick="changeClass('工作','@ClassificationInput')">工作</button>
-            <button type="button" onclick="changeClass('健康','@ClassificationInput')">健康</button>
-            <button type="button" onclick="changeClass('學業','@ClassificationInput')">學業</button>
-            <button type="button" onclick="changeClass('家庭','@ClassificationInput')">家庭</button>
-            <button type="button" onclick="changeClass('經濟','@ClassificationInput')">經濟</button>
-            @Html.HiddenFor(model => model.Classification, new { id = "ClassificationInput", value = "" })
-            <br>
-            <h>排序</h>
-            <button type="button" onclick="changeClass('Default','@OrderInput')">默認</button>
-            <button type="button" onclick="changeClass('時間','@OrderInput')">時間</button>
-            <button type="button" onclick="changeClass('人氣','@OrderInput')">人氣</button>
-            @Html.HiddenFor(model => model.Order, new { id = "OrderInput", value = "" })
+<div>
+
+    <div class="justify-content-end " id="search-container">
+        <div id="search-input">
+            @Html.TextBoxFor(model => model.ShowSearch, new { id="SearchInput", value = Model.ShowSearch, placeholder = "輸入關鍵字" })
         </div>
-        <div class="col-xxl-2" id="button-container">
-            @if (Model.isUser)
+        <div id="search-button">
+            @Html.HiddenFor(model => model.IsShowSearch, new { id = "SearchInput", value = false })
+            <button type="button" onclick="changeClass(true, '@SearchInput')">搜尋</button>
+        </div>
+    </div>
+
+    <div style="padding-left:50px;">
+        @if (Model.isUser)
+        {
+
+
+            <input type="text" name="username" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
+            <input type="password" name="password" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
+
+            if (Model.IsShowCollect)
             {
-
-
-                    <input type="text" name="username" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
-                    <input type="password" name="password" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
-
-                if (Model.IsShowCollect)
-                {
-                    @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
-                    <button onclick="changeClass('false','@CollectInput')" type="button" class="btnn">顯示全部</button>
-                }
-                else
-                {
-                    @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
-                    <button onclick="changeClass('true','@CollectInput')" type="button" class="btnn">我的收藏</button>
-                }
-
-                if (Model.IsShowMyArticle)
-                {
-                    @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
-                    <button onclick="changeClass('false','@MyArticleInput')" type="button" class="btnn">所有文章</button>
-                }
-                else
-                {
-                    @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
-                    <button onclick="changeClass('true','@MyArticleInput')" type="button" class="btnn">我的文章</button>
-                }
+                @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+                <button onclick="changeClass('false','@CollectInput')" type="button" class="btnn">顯示全部</button>
             }
             else
             {
-
+                @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+                <button onclick="changeClass('true','@CollectInput')" type="button" class="btnn">我的收藏</button>
             }
 
-
-        </div>
-
-        <div class="col-xxl-5 justify-content-end " id="search-container">
-            <div id="search-input">
-                @Html.TextBoxFor(model => model.ShowSearch, new { value = Model.ShowSearch, placeholder = "輸入關鍵字" })
-            </div>
-            <div id="search-button">
-                @Html.HiddenFor(model => model.IsShowSearch, new { id = "SearchInput", value = false })
-                <button type="button" onclick="changeClass(true,'@SearchInput')">搜尋</button>
-            </div>
-        </div>
-
+            if (Model.IsShowMyArticle)
+            {
+                @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+                <button onclick="changeClass('false','@MyArticleInput')" type="button" class="btnn">所有文章</button>
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+                <button onclick="changeClass('true','@MyArticleInput')" type="button" class="btnn">我的文章</button>
+            }
+        }
     </div>
+
+
+    <div  class="row" id="selectArticle">
+
+        <div class="col-md-3">
+        <h>分類</h>
+        <select  id="classificationDropdown" onchange="changeClass(this.value, '@ClassificationInput')">
+            <option value="ALL">全部</option>
+            <option value="工作">工作</option>
+            <option value="健康">健康</option>
+            <option value="學業">學業</option>
+            <option value="家庭">家庭</option>
+            <option value="經濟">經濟</option>
+        </select>
+
+        @Html.HiddenFor(model => model.Classification, new { id = "ClassificationInput", value = "" })
+        </div>
+
+        <div class="col-md-3">
+        <h>排序</h>
+        <select id="classificationDropdown2" onchange="changeClass(this.value, '@OrderInput')">
+
+            <option value="Default">默認</option>
+            <option value="時間">時間</option>
+            <option value="人氣">人氣</option>
+        </select>
+
+        @Html.HiddenFor(model => model.Order, new { id = "OrderInput", value = "" })
+        </div>    
+        </div>
+
+</div>
 
 }
 
@@ -307,18 +321,17 @@
 
 </div>
 
-
-@*
-Page @(Model.articles.PageCount < Model.articles.PageNumber ? 0 : Model.articles.PageNumber) of
-@Model.articles.PageCount
-    *@
-
-    
-
     <div style="text-align:center;">
     
         @Html.PagedListPager(Model.articles, page => Url.Action("ArticleIndex", new { page }))
     
+    </div>
+
+
+    <div class="footer" style=" display:flex; width:100%; margin-top: 30px; ">
+
+        <p style="width:100%; text-align:center;">&copy; @DateTime.Now.Year - 療癒之森</p>
+
     </div>
 
 
@@ -335,7 +348,34 @@ Page @(Model.articles.PageCount < Model.articles.PageNumber ? 0 : Model.articles
         document.getElementById(input + "Input").value = value;
         var url = '@Url.Action("ArticleIndex", "Home")';
         var data = $('#SelectPanel').serialize();
-        makeAjaxRequest(url, data);
+        var selectElement = document.getElementById("classificationDropdown");
+        var optionvalue = selectElement.options[selectElement.selectedIndex].value;
+        var selectElement2 = document.getElementById("classificationDropdown2");
+        var optionvalue2 = selectElement2.options[selectElement2.selectedIndex].value;
+        console.log(optionvalue2);
+
+        while (input === "Search") {
+       
+           
+        }
+
+
+        makeAjaxRequested(url, data, optionvalue, optionvalue2);
+    }
+
+    function makeAjaxRequested(redirectUrl, requestData, optionvalue, optionvalue2) {
+     
+        $.ajax({
+            url: redirectUrl,
+            type: 'POST',
+            data: requestData,
+            success: function (result) {
+                // 更新部分內容
+                $('#PanelReload').html(result);
+                $('#classificationDropdown').val(optionvalue);
+                $('#classificationDropdown2').val(optionvalue2);
+            }
+        });
     }
 </script>
 

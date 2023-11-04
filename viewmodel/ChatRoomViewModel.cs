@@ -22,6 +22,8 @@ namespace postArticle.viewmodel
 
         public string UserName { get; set; }
 
+        public string inputTime { get; set; }
+
         public int  MainUserID { get; set; }
 
         public int OtherUserID { get; set; }

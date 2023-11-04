@@ -43,11 +43,11 @@ namespace postArticle.Models
         public virtual DbSet<ReportMember> ReportMembers { get; set; }
         public virtual DbSet<RReportMember> RReportMembers { get; set; }
         public virtual DbSet<RReportMessage> RReportMessages { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<ThanksfulThing> ThanksfulThings { get; set; }
         public virtual DbSet<UserManage> UserManages { get; set; }
         public virtual DbSet<UserQuestion> UserQuestions { get; set; }
         public virtual DbSet<articleandmessage> articleandmessages { get; set; }
         public virtual DbSet<QA> QAs { get; set; }
-        public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
     }
 }

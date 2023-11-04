@@ -35,7 +35,7 @@
 <div class="btn btn-link card-header list-group-item list-group-item-action list-group-item-info Question" data-value=@item.UserQuestionID style="width:80%; margin:0 auto 10px auto;  padding:10px;">
     <span style="font-size:20px; font-weight:900;">問題 :</span>
     <span style="font-size:20px;">@item.QuestionContent</span>
-    <span style="font-size:15px; ">@item.QuestionTime</span>
+    <span style="font-size:15px; ">@item.QuestionTime.ToString("d")</span>
 
     <div class="card-body" id="card-body">
 
@@ -47,7 +47,7 @@
                 {
                     <span style="font-size:20px; font-weight:900; margin:5px 0 0 5px;">專家 @a.UserManage.UserName</span>
                     <span style="font-size:18px; margin:5px 0 0 5px;">@a.AnswerContent</span>
-                    <span style="font-size: 15px; margin: 5px 0 0 5px;">@a.AnswerTime</span>
+                    <span style="font-size: 15px; margin: 5px 0 0 5px;">@a.AnswerTime.ToString("d")</span>
                 }
             </div>
         }
@@ -59,9 +59,11 @@
         </div>
     </div>
 
-    <div style="white-space:nowrap;">
-        <input class="form-control context" style="width:90%; height:40px; margin-top:20px;" placeholder="專家輸入欄" value="">
+    <div style="white-space:nowrap; display:flex;">
         <input type="hidden" class="userQuestionID" value="@item.UserQuestionID">
+        <input type="hidden" class="userEmail" value="@item.UserManage.Email">
+        <input type="hidden" class="userContext" value="@item.QuestionContent">
+        <input class="form-control context" style="width:90%; height:40px; margin-top:20px;" placeholder="專家輸入欄" value="">
         <button class="form-control submit-btn" type="submit" style="width:5%; height:40px; margin-top:20px; background-color:transparent; border:none;"><img src="~/ICON/send-fill.svg"></button>
     </div>
 </div>
@@ -95,7 +97,8 @@
 
             $cardBody.css({
 
-                'height': '500px',
+                'max-height': '500px',
+                'height' : 'auto',
                 'overflow-y':'scroll'
 
             })
@@ -127,11 +130,21 @@
             //找到這個欄位的wait id
             $waitElement = $(this).closest(".Question").find("#wait");
             var input = $(this).siblings(".context");
+            var userQuestionID = $(this).siblings(".userQuestionID").val();
+            var userEmail = $(this).siblings(".userEmail").val();
+            var userContext = $(this).siblings(".userContext").val();
+
+
+            if (userContext.length > 10) {
+                userContext = userContext.substring(0, 10) + "...";
+            }
+
+
             var inputValue = input.val();
             input.val("");
             var data = inputValue;
 
-            var userQuestionID = $(this).siblings(".userQuestionID").val();
+            alert(userContext);
 
 
             if (inputValue !== "") {
@@ -140,7 +153,7 @@
 
                     url: '@Url.Action("SendAnser", "ExpertAnser")',
                     type: "post",
-                    data: { AnserContext: inputValue, QuestionID: userQuestionID },
+                    data: { AnserContext: inputValue, QuestionID: userQuestionID, UQEmail: userEmail, UQcontext: userContext },
                     success: function (data) {
 
                         var Name = data.send.Name;

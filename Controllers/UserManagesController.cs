@@ -293,14 +293,44 @@ namespace postArticle.Controllers
             return Json(isUnique, JsonRequestBehavior.AllowGet);
         }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        // GET: UserManages/Details/5
-        public ActionResult MemberDetails(int? id)
+       
+
+
+
+            // GET: UserManages/Details/5
+            public ActionResult MemberDetails(int? id)
         {
 
             var UserID = GetUserID();
+
+
+
+            ///////////////////////////////////念之的code/////////////////////////////////////////////////////
+
+
+            int level = getLevel();
+            int toNextLevelExperience = getToNextLevelExperience();
+            int currentLevelExperience = getCurrentLevelExperience();
+            int expertLevel = getExpertLevel();
+            int toNextExpertLevelExperience = getToNextExpertLevelExperience();
+            int currentExpertLevelExperience = getCurrentExpertLevelExperience();
+
+            UserManage userManage = db.UserManages.Find(id);
+            ViewBag.level = level;
+            ViewBag.toNextLevelExperience = toNextLevelExperience;
+            ViewBag.currentLevelExperience = currentLevelExperience;
+            ViewBag.expertLevel = expertLevel;
+            ViewBag.toNextExpertLevelExperience = toNextExpertLevelExperience;
+            ViewBag.currentExpertLevelExperience = currentExpertLevelExperience;
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
             moodcount();
 
@@ -342,6 +372,24 @@ namespace postArticle.Controllers
             return View(UserManage);
         }
 
+
+
+            // 更新會員info
+
+            public ActionResult Update_info(MemberDetailsViewModel memberDetailsViewModel)
+            {
+                var UserID = GetUserID();
+
+                var updatecontext = memberDetailsViewModel.UserManagesDetail.UserInfo;
+
+                var userdb = db.UserManages.Find(UserID);
+
+                userdb.UserInfo = updatecontext;
+
+                db.SaveChanges();
+
+                return RedirectToAction("MemberDetails", "UserManages", new { id = UserID });
+            }
 
         //////////////////////////////////////////////////////////////////////////////////////
 
@@ -599,10 +647,77 @@ namespace postArticle.Controllers
         }
 
 
+        //////////////////////////念之的method/////////////////////////////////
+
+        public int getLevel()
+        {
+
+            int userID = GetUserID();
+            UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
+            int experience = user.Experience; // 替换为你要计算的经验值
+
+            int level = (int)(Math.Floor(Math.Sqrt(experience / 100)));
+            return level;
+        }
+
+        public int getToNextLevelExperience()
+        {
+            int level = getLevel(); // 替换为你当前的等级
+            int nextLevel = level + 1;
+
+            int currentLevelLowestExperience = level * level * 100;
+            int nextLevelLowestExperience = nextLevel * nextLevel * 100;
+            int toNextLevelExperience = nextLevelLowestExperience - currentLevelLowestExperience;
+            return toNextLevelExperience;
+        }
+
+        public int getCurrentLevelExperience()
+        {
+            int userID = GetUserID();
+            UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
+            int experience = user.Experience;
+            int level = getLevel();
+            int currentLevelLowestExperience = level * level * 100;
+            int currentLevelExperience = experience - currentLevelLowestExperience;
+            return currentLevelExperience;
+
+        }
+        public int getExpertLevel()
+        {
+
+            int userID = GetUserID();
+            UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
+            int ExpertExperience = (int)user.ExpertExperience; // 替换为你要计算的经验值
+
+            int level = (int)(Math.Floor(Math.Sqrt(ExpertExperience / 100)));
+            return level;
+        }
+        public int getToNextExpertLevelExperience()
+        {
+            int level = getExpertLevel(); // 替换为你当前的等级
+            int nextLevel = level + 1;
+
+            int currentLevelLowestExperience = level * level * 100;
+            int nextLevelLowestExperience = nextLevel * nextLevel * 100;
+            int toNextLevelExperience = nextLevelLowestExperience - currentLevelLowestExperience;
+            return toNextLevelExperience;
+        }
+        public int getCurrentExpertLevelExperience()
+        {
+            int userID = GetUserID();
+            UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
+            int experience = (int)user.ExpertExperience;
+            int level = getExpertLevel();
+            int currentLevelLowestExperience = level * level * 100;
+            int currentLevelExperience = experience - currentLevelLowestExperience;
+            return currentLevelExperience;
+
+        }
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
 
+        }
     }
-}

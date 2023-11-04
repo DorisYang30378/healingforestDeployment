@@ -13,7 +13,20 @@
         font-size: 20px
     }
 </style>
-@foreach (var item in Model)
+
+<div style="width:100%; margin-top: 50px;">
+
+    @if (Model.Count() < 1)
+{
+
+    <div style="text-align:center;">
+       
+        @Html.ActionLink("點這申請成為專家", "Apply", "Expert")
+    </div>
+
+}
+
+    @foreach (var item in Model)
 {
     <div>
         <h4>ExpertApply</h4>
@@ -63,3 +76,4 @@
     </p>
 }
 
+    </div>
