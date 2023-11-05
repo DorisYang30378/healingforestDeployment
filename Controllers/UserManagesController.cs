@@ -1,4 +1,5 @@
 ﻿using _Platform.Service;
+using PagedList;
 using postArticle.Models;
 using postArticle.viewmodel;
 using System;
@@ -17,7 +18,7 @@ namespace postArticle.Controllers
         #region 基礎屬性
         private healingForestEntities db = new healingForestEntities();
 
-        MemberDetailsViewModel UserManage = new MemberDetailsViewModel();
+        MemberDetailsViewModel UserManageView = new MemberDetailsViewModel();
 
         public BasicData basicData = new BasicData();
         public bool CheckLoggedIn() => Session["UserID"] != null;
@@ -185,6 +186,7 @@ namespace postArticle.Controllers
 
 
                     //
+                    registerViewModel.userManage.ExpertExperience = 0;
                     registerViewModel.userManage.Experience = 0;
                     registerViewModel.userManage.LevelValue = 0;
                     registerViewModel.userManage.UserType = "Member";
@@ -220,9 +222,15 @@ namespace postArticle.Controllers
                 {
                     UserManage user = db.UserManages.FirstOrDefault(u => u.Account == account);
                     string subject = "忘記密碼";
+
+                    //
+                    // 雜湊密碼
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt(5);
                     var RandomPassword = GenerateRandomCode(8);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(RandomPassword, salt);
+
                     // 更新會員密碼為臨時密碼
-                    user.Password = RandomPassword;
+                    user.Password = hashedPassword;
                     db.SaveChanges(); // 保存變更
                     string body = @"
                 <p>您的臨時密碼為: {RandomPassword}<br />
@@ -301,11 +309,12 @@ namespace postArticle.Controllers
 
 
             // GET: UserManages/Details/5
-            public ActionResult MemberDetails(int? id)
+            public ActionResult MemberDetails(int? id, int? page)
         {
 
             var UserID = GetUserID();
-
+            int PageSize = 2;
+            int PageNumber = (page ?? 1);
 
 
             ///////////////////////////////////念之的code/////////////////////////////////////////////////////
@@ -346,9 +355,10 @@ namespace postArticle.Controllers
 
 
             /////////////////////////////////
-            UserManage.ExpertAS = expertAnswers;
-            UserManage.UserManagesDetail = db.UserManages.Find(id);
-            UserManage.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID).OrderBy(m=>m.QuestionTime);
+            UserManageView.UserID = UserID;
+            UserManageView.ExpertAS = expertAnswers;
+            UserManageView.UserManagesDetail = db.UserManages.Find(id);
+            UserManageView.UserQuestions = db.UserQuestions.Where(m => m.UserID == UserID).OrderBy(m=>m.QuestionTime);
 
 
             ////////////////////////////////
@@ -357,19 +367,21 @@ namespace postArticle.Controllers
 
             if (record.Count > 0) {
 
-                UserManage.nowmood = record.First().Mood1;
+                UserManageView.nowmood = record.First().Mood1;
 
             }
-           
 
-
-
-
-            if (UserManage.UserManagesDetail == null)
+            if (UserManageView.UserManagesDetail == null)
             {
                 return HttpNotFound();
             }
-            return View(UserManage);
+
+            ///////////////////////會員的文章////////////////////////
+            var query = db.Articles.Where(m => m.UserID == UserID).ToList();
+            UserManageView.MemberArticles = query.ToPagedList(PageNumber, PageSize);
+
+
+            return View(UserManageView);
         }
 
 
@@ -459,73 +471,81 @@ namespace postArticle.Controllers
         {
 
             int UserID = GetUserID();
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
             UserManage user = db.UserManages.Find(id);
-
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
 
             if (id == UserID)
             {
                 EditPasswordViewModel viewModel = new EditPasswordViewModel();
-                viewModel.userManage = user;
+                //viewModel.UserManage = user;
+                viewModel.UserID = user.UserID;
+                viewModel.OldPassword = user.Password;
                 return View(viewModel);
             }
 
-            return View();
+            else
+            {
+                return RedirectToAction("Login", "UserManages");
+            }
+          
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditPassword(EditPasswordViewModel viewModel)
         {
+
+            int UserID = GetUserID();
+            System.Diagnostics.Debug.WriteLine("1");
+
             if (ModelState.IsValid)
             {
-                UserManage existingUser = db.UserManages.Find(viewModel.userManage.UserID);
 
-                if (existingUser != null)
+                System.Diagnostics.Debug.WriteLine("2");
+                System.Diagnostics.Debug.WriteLine(viewModel.UserID);
+                
+
+                if (Session["UserID"]!=null)
                 {
-
-                    String oldpassword= viewModel.OldPassword;
+                    System.Diagnostics.Debug.WriteLine("3");
+                    UserManage existingUser = db.UserManages.Find(UserID);
+                    String oldpassword = viewModel.OldPassword;
                     String hashedPasswordFromDatabase = existingUser.Password;
+
 
                     if (BCrypt.Net.BCrypt.Verify(oldpassword, hashedPasswordFromDatabase))
                     {
+
+                        System.Diagnostics.Debug.WriteLine("密碼核對成功");
+
                         if (viewModel.NewPassword == viewModel.ConfirmPassword)
                         {
+                            System.Diagnostics.Debug.WriteLine("新舊密碼匹配");
                             // 雜湊密碼
                             string password = viewModel.NewPassword;
                             string salt = BCrypt.Net.BCrypt.GenerateSalt(5);
-                            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt); 
+                            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
                             existingUser.Password = hashedPassword;
-
                             db.SaveChanges();
-                            return RedirectToAction("MemberDetails", new { id = viewModel.userManage.UserID });
+
+                            return RedirectToAction("MemberDetails", new { id = UserID });
                         }
                         else
                         {
                             ModelState.AddModelError("ConfirmPassword", "新密碼和確認密碼不匹配");
                         }
                     }
-                    else
-                    {
-                        ModelState.AddModelError("OldPassword", "舊密碼不正確");
-                    }
                 }
                 else
                 {
-                    return HttpNotFound();
+                    return RedirectToAction("Login", "UserManages");
                 }
-
             }
 
-            return View(viewModel);
+            return RedirectToAction("Login", "UserManages");
+                
+            
+            
         }
 
 
@@ -654,7 +674,7 @@ namespace postArticle.Controllers
 
             int userID = GetUserID();
             UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
-            int experience = user.Experience; // 替换为你要计算的经验值
+            int experience = (int)user.Experience; // 替换为你要计算的经验值
 
             int level = (int)(Math.Floor(Math.Sqrt(experience / 100)));
             return level;
@@ -675,7 +695,7 @@ namespace postArticle.Controllers
         {
             int userID = GetUserID();
             UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
-            int experience = user.Experience;
+            int experience = (int)user.Experience;
             int level = getLevel();
             int currentLevelLowestExperience = level * level * 100;
             int currentLevelExperience = experience - currentLevelLowestExperience;

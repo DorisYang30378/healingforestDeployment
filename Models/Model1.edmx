@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="healingForestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Article">
           <Key>
             <PropertyRef Name="ArticleID" />
@@ -313,7 +313,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="CheckinReward Record">
-          <End Role="CheckinRewards" Type="Self.CheckinRewards" Multiplicity="0..1" />
+          <End Role="CheckinRewards" Type="Self.CheckinRewards" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Checkin" Type="Self.Checkin" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CheckinRewards">
@@ -419,7 +421,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="Message_ID">
-          <End Role="Message" Type="Self.Message" Multiplicity="1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Report_Message" Type="Self.Report_Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Message">
@@ -519,7 +523,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="User applies to be an expert">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ExpertApply" Type="Self.ExpertApply" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -543,7 +549,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="User Message">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Message" Type="Self.Message" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -581,7 +589,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserCheckin">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Checkin" Type="Self.Checkin" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -593,25 +603,15 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserCollect">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Collect" Type="Self.Collect" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
               <PropertyRef Name="UserID" />
             </Principal>
             <Dependent Role="Collect">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="UserCreateArticle">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
-          <End Role="Article" Type="Self.Article" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Article">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -787,10 +787,6 @@
             <End Role="UserManage" EntitySet="UserManage" />
             <End Role="Collect" EntitySet="Collect" />
           </AssociationSet>
-          <AssociationSet Name="UserCreateArticle" Association="Self.UserCreateArticle">
-            <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="Article" EntitySet="Article" />
-          </AssociationSet>
           <AssociationSet Name="UserID" Association="Self.UserID">
             <End Role="UserManage" EntitySet="UserManage" />
             <End Role="ReportMember" EntitySet="ReportMember" />
@@ -800,8 +796,7 @@
             <End Role="Mood" EntitySet="Mood" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="healingForestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">

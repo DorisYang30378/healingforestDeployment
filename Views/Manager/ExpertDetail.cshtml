@@ -17,31 +17,40 @@
     td {
         vertical-align: middle;
     }
-</style>
-<h2>ExpertDetail</h2>
 
+    .container-panel{
+        margin-top:85px;
+        width:100%;
+        height:100vh;
+    }   
+
+</style>
+
+
+
+<div class="container-panel">
 <p>
     <h3>專家申請名單</h3>
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ExpertField)
+            <p>類型</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ExpertInfo)
+            <p>個人簡介</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            <p>審查狀態</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ExpertImgURL)
+            <p>證明文件</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Remark)
+            <p>備註</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserManage.UserName)
+            <p>申請人</p>
         </th>
         <th></th>
     </tr>
@@ -76,4 +85,4 @@
     }
 
 </table>
-
+    </div>

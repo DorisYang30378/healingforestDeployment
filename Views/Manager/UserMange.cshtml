@@ -14,6 +14,17 @@
 
 <style>
 
+    .search_member {
+        width: 300px;
+    }
+
+    .panel_container {
+        position: relative;
+        top: 70px;
+        height: 100vh;
+    }
+
+
     table {
         margin: auto;
     }
@@ -23,20 +34,11 @@
     }
 
     th {
+        width: 100px;
         height: 30px;
         border: solid;
         font-size: 20px;
         text-align: center;
-    }
-
-    .search_member {
-        width: 300px;
-    }
-
-    .panel_container {
-        position: relative;
-        top: 70px;
-        height: 100vh;
     }
 </style>
 
@@ -54,14 +56,14 @@
 
         <thead>
             <tr>
-                <th>@Html.DisplayName("ID")</th>
-                <th>@Html.DisplayName("UserName")</th>
-                <th>@Html.DisplayName("Account")</th>
-                <th>@Html.DisplayName("Birthday")</th>
-                <th>@Html.DisplayName("Email")</th>
-                <th>@Html.DisplayName("UserType")</th>
-                <th>@Html.DisplayName("LevelValue")</th>
-                <th>@Html.DisplayName("Status")</th>
+                <th>@Html.DisplayName("編號")</th>
+                <th>@Html.DisplayName("名稱")</th>
+                <th>@Html.DisplayName("帳號")</th>
+                <th>@Html.DisplayName("生日")</th>
+                <th>@Html.DisplayName("信箱")</th>
+                <th>@Html.DisplayName("身分")</th>
+                <th>@Html.DisplayName("等級")</th>
+                <th>@Html.DisplayName("狀態")</th>
                 <th style="width:80px;">封鎖</th>
                 <th style="width:80px;">修改</th>
             </tr>

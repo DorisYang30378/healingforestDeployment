@@ -55,7 +55,8 @@
         column-count: 2;
         margin: auto;
         border-radius: 10px;
-        background-color: #c9ffb0;
+        background-color: aliceblue;
+        padding: 30px;
     }
 
     .window_content2 {
@@ -67,8 +68,8 @@
         left: 5%;
         margin-top: 20px;
         width: 60%;
-        height: 90%;
-        background-color: red;
+        height: 96%;
+        background-color: #d1e3b8;
         border-radius: 10px;
         overflow: hidden;
     }
@@ -84,13 +85,17 @@
         width: 130%;
         height: 100%;
         overflow: scroll;
+        border: solid 1px;
+        border-radius: 10px;
+        margin: 10px;
     }
 
     .container02_context {
         width: 100%;
         height: 76%;
         border-radius: 10px;
-        background-color: aquamarine;
+        border: solid 1px;
+        background-color: aliceblue;
         overflow: hidden;
     }
 
@@ -120,7 +125,7 @@
     }
 
     .input_message {
-        width: 80%;
+        width: 90%;
         border-radius: 5px;
     }
 
@@ -146,7 +151,7 @@
         width: 40%;
         /*height:100px;*/
         border-radius: 20px;
-        padding: 10px 10px 10px 10px;
+        padding: 10px 20px 0px 10px;
         background-color: antiquewhite;
     }
 
@@ -158,7 +163,7 @@
         width: 40%;
         /*height:100px;*/
         border-radius: 20px;
-        padding: 10px 10px 10px 10px;
+        padding: 10px 20px 0px 10px;
         background-color: antiquewhite;
     }
 
@@ -169,6 +174,7 @@
     }
 
     .content-time {
+        font-size: 10px;
         direction: rtl;
     }
 
@@ -221,6 +227,14 @@
         .window_content2 {
             display: block;
         }
+        .input_message {
+            width: 90%;
+            border-radius: 5px;
+        }
+
+        input.input_message {
+            line-height: 35px;
+        }
     }
 </style>
 
@@ -240,7 +254,7 @@
 
 
 
-<div style="width:70px; margin-top:40px;">@Html.ActionLink("返回", "javascript:void(0);", null, new { onclick = "history.back(); return false;", @class = "form-control", style = "text-decoration: none; color: black; font-size: 20px;" })</div>
+<div style="width: 100px; margin-top: 50px;">@Html.ActionLink("← 返回", "javascript:void(0);", null, new { onclick = "history.back(); return false;", @class = "form-control", style = "text-decoration: none; color: black; font-size: 20px;" })</div>
 
 <div class="window_content">
 
@@ -262,11 +276,11 @@
 
     <div class="container02">
 
-        <div class="container02_header">你/ @othername 的聊天室</div>
+        <div class="container02_header" style="margin-left:30px; margin-bottom:20px;">你/ @othername 的聊天室</div>
         <div class="container02_context" id="container_context">
 
 
-            <h2 style="text-align:center; margin-top: 30px; margin-bottom: 30px;">開始聊天</h2>
+            <h4 style="text-align:center; margin-top: 30px; margin-bottom: 30px;">開始聊天</h4>
 
 
             @foreach (var i in context)
@@ -284,7 +298,7 @@
                             </p>
                         </div>
 
-                        <div class="content-time"><p>@i.Time</p></div>
+                        <div class="content-time" style="font-size:10px; "><p>@i.Time</p></div>
                     </div>
                 }
 
@@ -295,12 +309,12 @@
 
                         <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
                         <div>
-                            <p style="word-wrap:break-word;">
+                            <p style="word-wrap:break-word;  font-size: 20px;">
                                 @i.Content
                             </p>
                         </div>
 
-                        <div class="content-time"><p>@i.Time</p></div>
+                        <div class="content-time" style="font-size:10px;"><p>@i.Time</p></div>
                     </div>
 
                 }
@@ -313,7 +327,7 @@
 
         <div class="container02_footer">
 
-            <input class="input_message" placeholder="請輸入要傳入訊息">
+            <input class="input_message" style="line-height:35px;" placeholder="請輸入要傳入訊息">
             <button class="submit_message" style="border:none; background-color:transparent;"><img src="~/ICON/send-fill.svg"></button>
 
         </div>
@@ -354,7 +368,7 @@
 
     <div style="width:100%; height:100vh; margin-top:30px; border-radius:10px;">
 
-        <div id="min-view" style="width:100%; height:90%; background-color:brown; overflow-y:scroll; overflow-x:hidden;">
+        <div id="min-view" style="width: 100%; height: 90%; background-color: aliceblue; overflow-y: scroll; overflow-x: hidden;">
 
             <p style="text-align:center; padding-top:20px; font-size:30px; font-weight:bolder;">開始聊天</p>
 
@@ -369,12 +383,12 @@
 
                         <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
                         <div>
-                            <p style="word-wrap: break-word;">
+                            <p style="word-wrap: break-word; font-size: 20px;">
                                 @i.Content
                             </p>
                         </div>
 
-                        <div class="content-time"><p>@i.Time</p></div>
+                        <div class="content-time"><p style="font-size:10px;">@i.Time</p></div>
                     </div>
 
                 }
@@ -387,18 +401,18 @@
 
                         <div class="content-name"><h2>@i.UserManage.UserName</h2></div>
                         <div>
-                            <p style="word-wrap:break-word;">
+                            <p style="word-wrap: break-word;">
                                 @i.Content
                             </p>
                         </div>
 
-                        <div class="content-time"><p>@i.Time</p></div>
+                        <div class="content-time" style="font-size:10px;"><p>@i.Time</p></div>
                     </div>
 
                 }
             }
 
-            <div id="Messageroom"></div>
+            <div id="Messageroom2"></div>
 
         </div>
 
@@ -496,6 +510,7 @@
 
                                 //將訊息加入頁面
                                 $('#Messageroom').append(contentHtml);
+                                $('#Messageroom2').append(contentHtml);
                             }
                         });
 
@@ -551,6 +566,7 @@
 
                                         //將訊息加入頁面
                                         $('#Messageroom').append(contentHtml);
+                                        $('#Messageroom2').append(contentHtml);
 
                                         console.log(UserName + inputContext + inputTime + "2");
 

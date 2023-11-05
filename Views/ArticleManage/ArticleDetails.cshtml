@@ -262,7 +262,7 @@
 
         <p class="article-author">Author: @Html.DisplayFor(model => article.UserManage.UserName)</p>
         <div class="article-content">
-            <div style="width: 100%; height: 500px; border-radius: 10px; border: none; white-space: pre-wrap; overflow:scroll; font-size: 18px;">
+            <div style="width: 100%; max-height: 500px; border-radius: 10px; border: none; white-space: pre-wrap; overflow:scroll; font-size: 18px;">
                 @Model.article.Content
             </div>
 
@@ -289,7 +289,7 @@
 
         </div>
 
-        <div id="ajaxcontext" class="col-xl comments-container" style="height:500px; overflow-y:scroll;">
+        <div id="ajaxcontext" class="col-xl comments-container" style=" max-height:500px; overflow-y:scroll;">
             <h4 id="comment">留言</h4>
             @foreach (var item in messages)
             {

@@ -83,7 +83,7 @@ namespace postArticle.Controllers
             var p = db.UserManages.Find(ID);
             p.Status = 1;
             db.SaveChanges();
-            var Name = db.UserManages.OrderBy(m => m.Status).ToList();
+            var Name = db.UserManages.Where(m => m.UserType != "Admin").OrderBy(m => m.Status).ToList();
             user.UserManages = Name.ToList().ToPagedList(PageNumber, PageSize);
             return View("UserMange", user);
 
@@ -97,7 +97,7 @@ namespace postArticle.Controllers
             var p = db.UserManages.Find(ID);
             p.Status = 0;
             db.SaveChanges();
-            var Name = db.UserManages.OrderBy(m => m.Status).ToList();
+            var Name = db.UserManages.Where(m => m.UserType != "Admin").OrderBy(m => m.Status).ToList();
             user.UserManages = Name.ToList().ToPagedList(PageNumber, PageSize);
             return View("UserMange", user);
         }
@@ -120,7 +120,7 @@ namespace postArticle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Resize([Bind(Include = "UserID, UserName, Account, Password, Email, UserType, Status, Birthday")] UserManage emp)
+        public ActionResult Resize([Bind(Include = "UserID, UserName, Account, Password, Email, UserType, Status, Birthday, ExpertExperience, UserInfo")] UserManage emp)
         {
 
             if (ModelState.IsValid)

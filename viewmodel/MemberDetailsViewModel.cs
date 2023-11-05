@@ -19,6 +19,10 @@ namespace postArticle.viewmodel
 
         public PagedList.IPagedList<UserManage> UserManages { get; set; }
 
+        public PagedList.IPagedList<Article> MemberArticles { get; set; }
+
+        public int UserID { get; set; }
+
         public UserQuestion SubmitUQ { get; set; }
 
         public UserManage UserManagesDetail { get; set; }

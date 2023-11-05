@@ -80,30 +80,32 @@
 
 
         @Html.AntiForgeryToken();
-        <div class="form-group">
+<div class="form-group">
 
 
-            <!--id, username, account, email, usertype, levelvalue, status-->
-            @Html.LabelFor(m => m.UserID)
-            @Html.TextBoxFor(m => m.UserID, "", new { @class = "form-control", @readonly = "readonly" })
-            @Html.Label("UserName")
-            @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
-            @Html.Label("UserAccount")
-            @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
-            @Html.Label("UserEmail")
-            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
-            @Html.Label("UserType")
+    <!--id, username, account, email, usertype, levelvalue, status-->
+    @Html.LabelFor(m => m.UserID)
+    @Html.TextBoxFor(m => m.UserID, "", new { @class = "form-control", @readonly = "readonly" })
+    @Html.Label("UserName")
+    @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control" })
+    @Html.Label("UserAccount")
+    @Html.TextBoxFor(m => m.Account, "", new { @class = "form-control" })
+    @Html.Label("UserEmail")
+    @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control" })
+    @Html.Label("UserType")
 
-            @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
+    @Html.DropDownListFor(m => m.UserType, new SelectList(new[] { "Member", "Expert" }), new { @class = "form-control" })
 
-            @Html.Label("UserLevelValue")
-            @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
-            @Html.Label("UserStatus")
-            @Html.DropDownListFor(m => m.Status, new SelectList(new[] { new SelectListItem { Value = "0", Text = "解除封鎖" }, new SelectListItem { Value = "1", Text = "封鎖" } }, "Value", "Text"), new { @class = "form-control" })
-            @Html.HiddenFor(m => m.Password)
-            @Html.HiddenFor(m => m.Birthday)
+    @Html.Label("UserLevelValue")
+    @Html.TextBoxFor(m => m.LevelValue, "", new { @class = "form-control" })
+    @Html.Label("UserStatus")
+    @Html.DropDownListFor(m => m.Status, new SelectList(new[] { new SelectListItem { Value = "0", Text = "解除封鎖" }, new SelectListItem { Value = "1", Text = "封鎖" } }, "Value", "Text"), new { @class = "form-control" })
+    @Html.HiddenFor(m => m.Password)
+    @Html.HiddenFor(m => m.Birthday)
+    @Html.HiddenFor(m => m.ExpertExperience)
+    @Html.HiddenFor(m => m.UserInfo)
 
-        </div>
+</div>
         <input type="submit" value="save" class="btn btn-save btn-outline-success">
     }
         <a href="javascript:history.back()" class="btn btn-cancel btn-outline-danger">cancel</a>

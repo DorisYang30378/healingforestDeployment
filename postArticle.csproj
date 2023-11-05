@@ -177,6 +177,7 @@
     <Compile Include="Controllers\ExpertController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\SignInController.cs" />
+    <Compile Include="Controllers\StartViewController.cs" />
     <Compile Include="Controllers\UserManagesController.cs" />
     <Compile Include="App_Start\chatHub.cs" />
     <Compile Include="Controllers\ArticleManageController.cs" />
@@ -398,6 +399,7 @@
     <Content Include="Views\Manager\CheckExpert.cshtml" />
     <Content Include="Views\Manager\ExpertDetail.cshtml" />
     <Content Include="Views\Expert\Index.cshtml" />
+    <Content Include="Views\StartView\StartView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
