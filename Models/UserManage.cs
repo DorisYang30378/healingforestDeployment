@@ -11,8 +11,7 @@ namespace postArticle.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class UserManage
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -35,29 +34,17 @@ namespace postArticle.Models
             this.ReportMembers1 = new HashSet<ReportMember>();
             this.UserQuestions = new HashSet<UserQuestion>();
         }
-
+    
         public int UserID { get; set; }
-
-
-        [Required(ErrorMessage = "請輸入暱稱")]
         public string UserName { get; set; }
-
-        [Required(ErrorMessage = "請輸入帳號")]
         public string Account { get; set; }
-
-        [Required(ErrorMessage = "請輸入密碼")]
         public string Password { get; set; }
-
-        [Required(ErrorMessage = "請輸入信箱")]
         public string Email { get; set; }
         public string UserType { get; set; }
         public int LevelValue { get; set; }
         public int Experience { get; set; }
-        [DataType(DataType.Date)]
-        [Required(ErrorMessage = "請輸入生日")]
         public System.DateTime Birthday { get; set; }
         public Nullable<int> Status { get; set; }
-
         public Nullable<int> ExpertExperience { get; set; }
         public string UserInfo { get; set; }
     

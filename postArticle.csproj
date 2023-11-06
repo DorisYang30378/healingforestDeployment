@@ -320,6 +320,14 @@
     <Content Include="Content\Site.css" />
     <Content Include="ICON\send-fill.svg" />
     <Content Include="Image\hole.png" />
+    <Content Include="Image\level0.png" />
+    <Content Include="Image\level1.png" />
+    <Content Include="Image\level2.jpg" />
+    <Content Include="Image\level3.jpg" />
+    <Content Include="Image\level4.jpg" />
+    <Content Include="Image\level5.jpg" />
+    <Content Include="Image\level6.jpg" />
+    <Content Include="Image\level7.jpg" />
     <Content Include="Image\tree.jpg" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

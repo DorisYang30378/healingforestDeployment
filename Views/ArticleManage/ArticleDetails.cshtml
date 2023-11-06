@@ -290,11 +290,83 @@
             }
             else if (Model.isUser)
             {
+                <button class="btn bi-star-fill" id="likeButton" data-article-id="@Model.article.ArticleID" style="border:none; background-color:#b2f094; border-radius:10px;">
+                    @if (Model.IsLiked)
+                    {
+        <span id="likeText">取消讚</span> }
+                        else
+                        {
+        <span id="likeText">讚</span>}
+                    <span id="likeCount">@Model.article.Likes</span>
+                </button>
                 <button class="btn bi-star-fill report" style="border:none; background-color:#b2f094; border-radius:10px;">檢舉文章</button>
+            }
+            @section scripts {
+                <script>
+                    $(document).ready(function () {
+                        var likeButton = $("#likeButton");
+                        var likeText = $("#likeText");
+                        var likeCount = $("#likeCount");
+
+                        var articleID = likeButton.data("article-id");
+
+                        // 檢查 Cookie 中是否有按讚狀態
+                        var isLiked = getCookie("isLiked_" + articleID);
+
+                        if (isLiked) {
+                            likeText.text("取消讚");
+                        }
+
+                        likeButton.on("click", function () {
+                            $.ajax({
+                                url: "/ArticleManage/LikeArticle",
+                                method: "POST",
+                                data: { articleID: articleID },
+                                success: function (data) {
+                                    if (data.isLiked) {
+                                        likeText.text("取消讚");
+                                        // 保存按讚狀態到 Cookie
+                                        setCookie("isLiked_" + articleID, true, 365); // 保存一年
+                                    } else {
+                                        likeText.text("讚");
+                                        // 移除按讚狀態的 Cookie
+                                        deleteCookie("isLiked_" + articleID);
+                                    }
+                                    likeCount.text(data.likeCount);
+                                }
+                            });
+                            return false;
+                        });
+                    });
+
+                    function setCookie(name, value, days) {
+                        var expires = "";
+                        if (days) {
+                            var date = new Date();
+                            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                            expires = "; expires=" + date.toUTCString();
+                        }
+                        document.cookie = name + "=" + value + expires + "; path=/";
+                    }
+
+                    function getCookie(name) {
+                        var nameEQ = name + "=";
+                        var ca = document.cookie.split(';');
+                        for (var i = 0; i < ca.length; i++) {
+                            var c = ca[i];
+                            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                        }
+                        return null;
+                    }
+
+                    function deleteCookie(name) {
+                        setCookie(name, "", -1);
+                    }
+                </script>
             }
             <button class="btn bi-star-fill copyButton" id="copyButton" style="border:none; background-color:#b2f094; border-radius:10px;">分享文章</button>
             <input type="text" id="urlText" style="position: absolute; left: -9999px;">
-
 
         </div>
 

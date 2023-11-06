@@ -272,22 +272,22 @@
           <Property Name="專家回答" Type="varchar" MaxLength="2048" Nullable="false" />
           <Property Name="回覆時間" Type="date" Nullable="false" />
         </EntityType>
-        <Association Name="Chat_OtherUserID">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+        <Association Name="Article_Article_UID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
               <PropertyRef Name="UserID" />
             </Principal>
-            <Dependent Role="Chatroom">
+            <Dependent Role="Article">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Chat_UserID">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
+        <Association Name="Chat_OtherUserID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserManage">
@@ -309,6 +309,18 @@
             </Principal>
             <Dependent Role="ChatroomLog">
               <PropertyRef Name="ChatroomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ChatUID">
+          <End Role="UserManage" Type="Self.UserManage" Multiplicity="0..1" />
+          <End Role="Chatroom" Type="Self.Chatroom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserManage">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Chatroom">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -337,18 +349,6 @@
             </Principal>
             <Dependent Role="Collect">
               <PropertyRef Name="ArticleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Expert answer questions">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
-          <End Role="ExpertAnswer" Type="Self.ExpertAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="ExpertAnswer">
-              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -510,18 +510,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="RUserID">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
-          <End Role="ReportMember" Type="Self.ReportMember" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="ReportMember">
-              <PropertyRef Name="RUserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="User applies to be an expert">
           <End Role="UserManage" Type="Self.UserManage" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -572,18 +560,6 @@
               <PropertyRef Name="UserID" />
             </Principal>
             <Dependent Role="Report">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="User Send Message">
-          <End Role="UserManage" Type="Self.UserManage" Multiplicity="1" />
-          <End Role="ChatroomLog" Type="Self.ChatroomLog" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserManage">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="ChatroomLog">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -683,17 +659,21 @@
     [QA].[回覆時間] AS [回覆時間]
     FROM [dbo].[QA] AS [QA]</DefiningQuery>
           </EntitySet>
-          <AssociationSet Name="Chat_OtherUserID" Association="Self.Chat_OtherUserID">
+          <AssociationSet Name="Article_Article_UID" Association="Self.Article_Article_UID">
             <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="Chatroom" EntitySet="Chatroom" />
+            <End Role="Article" EntitySet="Article" />
           </AssociationSet>
-          <AssociationSet Name="Chat_UserID" Association="Self.Chat_UserID">
+          <AssociationSet Name="Chat_OtherUserID" Association="Self.Chat_OtherUserID">
             <End Role="UserManage" EntitySet="UserManage" />
             <End Role="Chatroom" EntitySet="Chatroom" />
           </AssociationSet>
           <AssociationSet Name="chatLog" Association="Self.chatLog">
             <End Role="Chatroom" EntitySet="Chatroom" />
             <End Role="ChatroomLog" EntitySet="ChatroomLog" />
+          </AssociationSet>
+          <AssociationSet Name="ChatUID" Association="Self.ChatUID">
+            <End Role="UserManage" EntitySet="UserManage" />
+            <End Role="Chatroom" EntitySet="Chatroom" />
           </AssociationSet>
           <AssociationSet Name="CheckinReward Record" Association="Self.CheckinReward Record">
             <End Role="CheckinRewards" EntitySet="CheckinRewards" />
@@ -702,10 +682,6 @@
           <AssociationSet Name="CollectArticle" Association="Self.CollectArticle">
             <End Role="Article" EntitySet="Article" />
             <End Role="Collect" EntitySet="Collect" />
-          </AssociationSet>
-          <AssociationSet Name="Expert answer questions" Association="Self.Expert answer questions">
-            <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="ExpertAnswer" EntitySet="ExpertAnswer" />
           </AssociationSet>
           <AssociationSet Name="Expert received Question" Association="Self.Expert received Question">
             <End Role="UserQuestion" EntitySet="UserQuestion" />
@@ -755,10 +731,6 @@
             <End Role="Report_Message" EntitySet="Report_Message" />
             <End Role="RReportMessage" EntitySet="RReportMessage" />
           </AssociationSet>
-          <AssociationSet Name="RUserID" Association="Self.RUserID">
-            <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="ReportMember" EntitySet="ReportMember" />
-          </AssociationSet>
           <AssociationSet Name="User applies to be an expert" Association="Self.User applies to be an expert">
             <End Role="UserManage" EntitySet="UserManage" />
             <End Role="ExpertApply" EntitySet="ExpertApply" />
@@ -774,10 +746,6 @@
           <AssociationSet Name="User reports" Association="Self.User reports">
             <End Role="UserManage" EntitySet="UserManage" />
             <End Role="Report" EntitySet="Report" />
-          </AssociationSet>
-          <AssociationSet Name="User Send Message" Association="Self.User Send Message">
-            <End Role="UserManage" EntitySet="UserManage" />
-            <End Role="ChatroomLog" EntitySet="ChatroomLog" />
           </AssociationSet>
           <AssociationSet Name="UserCheckin" Association="Self.UserCheckin">
             <End Role="UserManage" EntitySet="UserManage" />

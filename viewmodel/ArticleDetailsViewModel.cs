@@ -30,6 +30,8 @@ namespace postArticle.viewmodel
 
         public bool iStatus { get; set; }
 
+        public bool IsLiked { get; set; }
+
 
         //[獲取使用者檢舉留言紀錄]
         public IEnumerable<Report_Message> RM {get; set;}

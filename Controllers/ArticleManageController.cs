@@ -571,12 +571,73 @@ namespace postArticle.Controllers
             db.SaveChanges();
         }
 
-   
-    
-    
-    
-    
-    
-    
+
+
+        [HttpGet]
+        public ActionResult GetLikeCount(int articleID)
+        {
+            // 獲取指定文章的點讚數量
+            int likeCount = db.Likes.Count(l => l.ArticleID == articleID);
+            return Json(new { likeCount }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult LikeArticle(int articleID)
+        {
+            if (CheckLoggedIn())
+            {
+                int userID = GetUserID();
+
+                // 檢查用戶是否已經點讚文章
+                var likes = db.Likes.FirstOrDefault(l => l.UserID == userID && l.ArticleID == articleID);
+
+                Article article = db.Articles.Find(articleID);
+
+                int? authorUserID = article.UserID;
+                UserManage userManage = db.UserManages.FirstOrDefault(u => u.UserID == authorUserID);
+
+                if (likes != null)
+                {
+                    // 用戶已經點讚，取消點讚
+                    db.Likes.Remove(likes);
+                    article.Likes--;
+                }
+                else
+                {
+                    // 用戶未點讚，進行點讚
+                    Like like = new Like
+                    {
+                        UserID = userID,
+                        ArticleID = articleID,
+                        Status = 1
+
+                    };
+                    db.Likes.Add(like);
+                    article.Likes++;
+                    // 增加作者的经验值
+                    if (userManage.Experience >-1 && article.Likes <= 100)
+                    {
+                        userManage.Experience += 10;
+                    }
+
+                }
+
+                db.SaveChanges();
+
+                // 獲取更新後的點讚數量
+                int likeCount = db.Likes.Count(l => l.ArticleID == articleID);
+
+                // 返回 JSON 數據，包括是否已讚和新的讚數
+                return Json(new { isLiked = likes == null, likeCount });
+            }
+
+            return RedirectToAction(basicData.HomeViewString, basicData.HomeControllerString);
+        }
+
+
+
+
+
+
+
     }
 }
