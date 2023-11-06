@@ -144,6 +144,11 @@
                 background-color: #2f863a;
             }
 
+    .btn.report:hover , .btn.copyButton:hover, .ms_report:hover, .btn.edit:hover, .btn.delete:hover{
+        color: #c0ffc8;
+        cursor: pointer; 
+    }
+
 
 
     /*reportArticle css */
@@ -166,7 +171,7 @@
         left: 50%;
         top: 50%;
         background-color: azure;
-        width: 100%;
+        width: 500px;
         height: 30%;
         z-index: 4;
         transform: translate(-50%,-50%); /*畫面至中*/
@@ -217,21 +222,25 @@
         transform: translate(-50%,-50%); /*畫面至中*/
     }
 
-    @@media only screen and (max-width: 500px) {
-        .reportms_alert {
-            width: 100%;
-        }
-    }
-
-    .reportms_alert button .reportms_cancel {
-        position: absolute;
-        bottom: 0;
-    }
-
 
     .remove_message {
         opacity: 0.5;
         font-style: italic;
+    }
+
+    @@media only screen and (max-width: 500px) {
+        .reportms_alert {
+            width: 100%;
+        }
+
+        .report_alert {
+            width: 100%;
+        }
+
+        .reportms_alert button .reportms_cancel {
+            position: absolute;
+            bottom: 0;
+        }
     }
 </style>
 
@@ -272,18 +281,18 @@
             <p class="article-time">@Html.DisplayFor(model => article.Time)</p>
             @if (Model.isCreatedByUser)
             {
-                <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleEdit")','@Model.article.ArticleID','編輯')">
+                <button class="btn bi-star-fill edit" style="border:none; background-color:#8be55f; border-radius:10px;" onclick="ArticleManage('@Url.Action("ArticleEdit")','@Model.article.ArticleID','編輯')">
                     編輯文章
                 </button>
-                <button class="btn bi-star-fill" onclick="ArticleManage('@Url.Action("ArticleDelete")','@Model.article.ArticleID','刪除')">
+                <button class="btn bi-star-fill delete" style="border:none; background-color:#eb8989; border-radius:10px;" onclick="ArticleManage('@Url.Action("ArticleDelete")','@Model.article.ArticleID','刪除')">
                     刪除文章
                 </button>
             }
             else if (Model.isUser)
             {
-                <button class="btn bi-star-fill report">檢舉文章</button>
+                <button class="btn bi-star-fill report" style="border:none; background-color:#b2f094; border-radius:10px;">檢舉文章</button>
             }
-            <button class="btn bi-star-fill" id="copyButton">分享文章</button>
+            <button class="btn bi-star-fill copyButton" id="copyButton" style="border:none; background-color:#b2f094; border-radius:10px;">分享文章</button>
             <input type="text" id="urlText" style="position: absolute; left: -9999px;">
 
 
@@ -330,11 +339,11 @@
                         {
                             if (!getRM.Any(i => i.Message_ID == item.MessageID))
                             {
-                                <button class="ms_report" id="ms_report" value="@item.MessageID">檢舉</button>
+                                <button class="ms_report" id="ms_report"  style="border:none; background-color:#ffdf57; border-radius:10px;" value="@item.MessageID">檢舉</button>
                             }
                             else
                             {
-                                <button>已檢舉成功</button>
+                                <button style="border:none; background-color:#b2f094; border-radius:10px;">檢舉成功</button>
                             }
 
                         }
@@ -386,22 +395,31 @@
     <div class="report_alert">
 
 
-        <form method="post">
+        <form method="post" >
+
+            <div style="margin-left:5px;">
             @Html.Label("不實文章")
             <input type="checkbox" name="report" value="不實文章">
-            <br>
+                </div>
+            <div style="margin-left:5px;">
             @Html.Label("不當發言")
             <input type="checkbox" name="report" value="不當發言">
-            <br>
+                </div>
+            <div style="margin-left:5px;">
             @Html.Label("謾罵字眼")
             <input type="checkbox" name="report" value="謾罵字眼">
-            <br>
+            </div>
+            <div style="margin-left:5px;">
             @Html.Label("其他")
-            <br>
-            @Html.TextArea("report_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
+            </div>
+            <div style="margin-left:5px;">
+            @Html.TextArea("report_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:200px; high:80px;; resize:none;" })
+            </div>
 
+            <div style="width:150px; margin:auto;">
             <button class="report_cancel btn btn-danger">取消</button>
             <button class="report_submit btn btn-success">送出</button>
+            </div>
 
         </form>
     </div>
@@ -426,29 +444,32 @@
         <form method="post">
 
             <div style="width:100%; height:100%;">
-                <div style="margin: auto;">
+                <div style="margin-left:5px;">
                     <input type="checkbox" name="reportms" value="不雅字眼">
                     @Html.Label("不雅字眼")
                 </div>
-                <div style="margin: auto;">
+                <div style="margin-left:5px;">
 
                     <input type="checkbox" name="reportms" value="恐嚇字詞">
                     @Html.Label("恐嚇字詞")
                 </div>
-                <div style="margin: auto;">
+                <div style="margin-left:5px;">
                     <input type="checkbox" name="reportms" value="不當發言">
                     @Html.Label("不當發言")
                 </div>
-                <div style="margin: auto;">
+                <div style="margin-left:5px;">
                     @Html.Label("其他")
-                </div><div style="margin: auto;">
+                </div><div style="margin-left:5px;">
                     @Html.TextArea("reportms_other", new { placeholder = "請輸入想要檢舉內容(限制字數50字)", maxlength = "50", @style = "width:50%; high:50%; resize:none;" })
                 </div>
-                <button class="reportms_cancel btn btn-danger">取消</button>
-                <button class="reportms_submit btn btn-success">送出</button>
-                <span id="result"></span>
-            </div>
-        </form>
+
+                <div style="width:100%; text-align:center;">
+                    <button class="reportms_cancel btn btn-danger">取消</button>
+                    <button class="reportms_submit btn btn-success">送出</button>
+                    </div>
+                    <span id="result"></span>
+                </div>
+</form>
     </div>
 </div>
 

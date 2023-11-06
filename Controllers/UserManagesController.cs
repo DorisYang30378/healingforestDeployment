@@ -568,7 +568,14 @@ namespace postArticle.Controllers
             };
 
             db.UserQuestions.Add(newQuestion);
-            db.SaveChanges();
+            
+            if (db.SaveChanges() > 0)
+            {
+                //發布成功家專家的經驗值
+                var experience = db.UserManages.Find(UserID);
+                experience.Experience += 2;
+                db.SaveChanges();
+            }
 
             QM.NewQ = InputText;
             QM.Date = DateTime.Now.ToString("G");

@@ -62,15 +62,27 @@ namespace postArticle.Controllers
             {
                 ExpertAnswer Reponse = new ExpertAnswer { QuestionID = QuestionID, UserID = UserID, AnswerContent = AnserContext, AnswerTime = DateTime.Now };
                 db.ExpertAnswers.Add(Reponse);
-                db.SaveChanges();
-                ResponesEmail(UserName, UQEmail, UQcontext);
 
-                ExpertAnser send = new ExpertAnser();
-                send.Name = db.UserManages.Find(UserID).UserName;
-                send.Anser = AnserContext;
-                send.Time = DateTime.Now.ToString("d");
+                if (db.SaveChanges() > 0)
+                {
+                    ResponesEmail(UserName, UQEmail, UQcontext);
 
-                return Json(new { success= true, send});
+                    ExpertAnser send = new ExpertAnser();
+                    send.Name = db.UserManages.Find(UserID).UserName;
+                    send.Anser = AnserContext;
+                    send.Time = DateTime.Now.ToString("d");
+
+                    //專家解答加經驗
+                    var Experience = db.UserManages.Find(UserID);
+                    Experience.ExpertExperience += 5;
+                    db.SaveChanges();
+
+
+                    return Json(new { success = true, send });
+                }
+
+                return Json(new { success = false});
+
 
             }
             else

@@ -437,12 +437,12 @@ namespace postArticle.Controllers
         [ValidateInput(true)]
         public ActionResult ArticlePost(ArticleManageViewModel articlePost, HttpPostedFileBase file)
         {
+            var UserID = Convert.ToInt32(Session["UserID"]);
             if (CheckLoggedIn())
             {
                 if (ModelState.IsValid)
                 {
                     #region ===搜尋userID===
-                    var UserID = Convert.ToInt32(Session["UserID"]);
                     var queryUserSQL = from UserManagedb in db.UserManages.Include(u => u.ThanksfulThing)
                                        where UserManagedb.UserID == UserID
                                        select new
@@ -484,7 +484,15 @@ namespace postArticle.Controllers
                     #endregion
                     //
                     db.Articles.Add(articlePost.article);
-                    db.SaveChanges();
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("發布成功");
+                        var experience= db.UserManages.Find(UserID);
+                        experience.Experience += 10;
+                        db.SaveChanges();
+                    }
+
                 }
                 else
                 {

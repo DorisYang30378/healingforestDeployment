@@ -35,7 +35,7 @@ namespace postArticle.Controllers
                 db.Checkins.Add(p);
                 //加經驗
                 var experience = db.UserManages.Find(id);
-                experience.Experience += 10;
+                experience.Experience += 5;
 
                 //更新資料庫
                 db.SaveChanges();

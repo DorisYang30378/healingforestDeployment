@@ -43,6 +43,11 @@
         margin-bottom: 300px;
     }
 
+
+    .article-title a:hover{
+        color:rgb(86 180 42 / 0.75);
+    }
+
     .article-image img {
         width: 100%;
         height: 100%;
@@ -141,6 +146,14 @@
         position: relative;
     }
 
+    #experienceBar2 {
+        max-width: 300px;
+        width: 90%;
+        height: 20px;
+        border: 1px solid #000;
+        position: relative;
+        margin-top: -10px;
+    }
 
     #experienceFill {
         height: 100%;
@@ -150,6 +163,34 @@
     }
 
     #experienceText {
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        line-height: 20px;
+        color: #000;
+    }
+
+    #ExpertExperienceBar {
+        width: 90%;
+        max-width: 300px;
+        height: 20px;
+        border: 1px solid #000;
+        position: relative;
+        margin-top: -10px;
+    }
+
+
+    #ExpertExperienceFill {
+        height: 100%;
+        width: 0;
+        background-color: #97CD7D; /* 綠色 */
+        position: absolute;
+    }
+
+    #ExpertExperienceText {
         text-align: center;
         position: absolute;
         top: 0;
@@ -189,10 +230,15 @@
     <span class="container-header" style="text-align: center; font-size: 20px; font-weight: 500; background-color: rgb(86 180 42 / 0.75); border-radius: 5px; padding:5px;">@usertype</span>
     <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })">資料修改</a>
     <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })">密碼修改</a>
+    @if (Session["UserType"].ToString() == "Member")
+    {
+        <a href="@Url.Action("Index", "Expert")">審查狀態</a>
+    }
     <a href="@Url.Action("TreeHole", "UserManages")" }>我的樹洞</a>
     <a href="#my-question">我的提問</a>
     <a href="#">我的文章</a>
     <a href="#mood_container">心情紀錄</a>
+
     <!-- 在这里添加更多按钮 -->
 </div>
 
@@ -226,13 +272,52 @@
             </div>
         </div>
 
-        <div style="position: relative; width:300px; float:left; margin: 40px 0 0 58px; ">
+        <div style="position: relative; width:300px; float:left; margin: 0px 0 0 58px; ">
 
-            <p>等級:@ViewBag.level</p>
-            <div id="experienceBar">
-                <div id="experienceFill"></div>
-                <div id="experienceText"> </div>
-            </div>
+
+            @if (Model.UserManagesDetail.UserType == "Member")
+            {
+                <div style="margin-top:30px;"></div>
+                <p>等級:@ViewBag.level</p>
+                <div id="experienceBar">
+                    <div id="experienceFill"></div>
+                    <div id="experienceText"></div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        updateExperienceBar();
+                    });
+                   
+                </script>
+
+            }
+            @if (Model.UserManagesDetail.UserType == "Expert")
+            {
+
+
+                <p> 會員等級: <span id="levelValue">@ViewBag.level</span></p>
+                <div id="experienceBar2">
+                    <div id="experienceFill"></div>
+                    <div id="experienceText"> </div>
+                </div>
+
+                <p> 專家等級: @ViewBag.expertLevel</p>
+
+
+                <div id="ExpertExperienceBar">
+                    <div id="ExpertExperienceFill"></div>
+                    <div id="ExpertExperienceText"></div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        updateExperienceBar();
+                        updateExpertExperienceBar();
+                    });
+                </script>
+            }
+
 
             <div class="box">
                 @switch (nowmood)
@@ -302,13 +387,13 @@
                 <div style="width: 800px; height: 170px; background-color: rgb(241 239 239 / 0.90); margin:10px auto 0 auto; ">
 
 
-                    <div class="row" >
-                    	<div class="col-6" style="width:400px; height:170px; margin:5px 0 0 10px;">
-						    <div class="article-title" style="font-weight:600;">
-							    <a href="@Url.Action("ArticleDetails", "ArticleManage", new { id =ma.ArticleID })">
-								    @Html.DisplayFor(modelItem => ma.Title)
-							    </a>
-						    </div>
+                    <div class="row">
+                        <div class="col-6" style="width:400px; height:170px; margin:5px 0 0 10px;">
+                            <div class="article-title" style="font-weight:600;">
+                                <a href="@Url.Action("ArticleDetails", "ArticleManage", new { id =ma.ArticleID })">
+                                    @Html.DisplayFor(modelItem => ma.Title)
+                                </a>
+                            </div>
                             <div class="article-content">
 
                                 @{
@@ -319,16 +404,16 @@
                                 <p>@content</p>
 
                             </div>
-						    <div class="article-info">
-							    @Html.DisplayFor(modelItem => ma.UserManage.UserName)
-							    @Html.DisplayFor(modelItem => ma.Time)
-						    </div>
+                            <div class="article-info">
+                                @Html.DisplayFor(modelItem => ma.UserManage.UserName)
+                                @Html.DisplayFor(modelItem => ma.Time)
+                            </div>
 
-					    </div>
-					    <div class="col-6  article-image" style="width:340px; height:170px; overflow:hidden; margin-left: 40px;" >
-						    <img src="~/Uploads/@Html.DisplayFor(modelItem => ma.ImageURL)" alt="Article Image">
-						    @Html.HiddenFor(modelItem => ma.ImageURL)
-					    </div>
+                        </div>
+                        <div class="col-6  article-image" style="width:340px; height:170px; overflow:hidden; margin-left: 40px;">
+                            <img src="~/Uploads/@Html.DisplayFor(modelItem => ma.ImageURL)" alt="Article Image">
+                            @Html.HiddenFor(modelItem => ma.ImageURL)
+                        </div>
 
                     </div>
                 </div>
@@ -479,6 +564,7 @@
 
     $(document).ready(function () {
 
+
         //初始化
         $(".Question-info").hide();
 
@@ -623,34 +709,24 @@
 
     //////////////////////////////////////////
 
-    	// 当前经验值和下一个等级所需经验值（示例值，你需要根据实际情况替换）
-	var currentExperience = @ViewBag.currentLevelExperience;
-	var nextLevelExperience = @ViewBag.toNextLevelExperience;
 
-	// 更新经验条
-	function updateExperienceBar() {
+
+    function updateExperienceBar() {
+        var currentExperience = @ViewBag.currentLevelExperience;
+	    var nextLevelExperience = @ViewBag.toNextLevelExperience;
 		var fillWidth = (currentExperience / nextLevelExperience) * 100;
 		document.getElementById("experienceFill").style.width = fillWidth + "%";
 		document.getElementById("experienceText").textContent = currentExperience + " / " + nextLevelExperience ;
-	}
+    }
 
-	// 调用函数以更新经验条
-	updateExperienceBar();
-</script>
-<script>
-	// 当前经验值和下一个等级所需经验值（示例值，你需要根据实际情况替换）
-	var currentExpertExperience = @ViewBag.currentExpertLevelExperience;
-	var nextExpertLevelExperience = @ViewBag.toNextExpertLevelExperience;
 
-	// 更新经验条
-	function updateExpertExperienceBar() {
+        function updateExpertExperienceBar() {
+        var currentExpertExperience = @ViewBag.currentExpertLevelExperience;
+	    var nextExpertLevelExperience = @ViewBag.toNextExpertLevelExperience;
 		var fillWidth = (currentExpertExperience / nextExpertLevelExperience) * 100;
         document.getElementById("ExpertExperienceFill").style.width = fillWidth + "%";
 		document.getElementById("ExpertExperienceText").textContent = currentExpertExperience + " / " + nextExpertLevelExperience ;
-	}
-
-	// 调用函数以更新经验条
-    updateExpertExperienceBar();
+        };
 
 
 
@@ -660,3 +736,7 @@
 
 
 </script>
+
+
+
+

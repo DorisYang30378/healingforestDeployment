@@ -29,48 +29,48 @@
     @foreach (var item in Model)
 {
     <div>
-        <h4>ExpertApply</h4>
+        <h1 style="text-align:center;">專家申請</h1>
         <br />
-        <h2>審核結果</h2>
+        <h3 style="text-align:center;">審核結果</h3>
         <hr />
-        <dl class="dl-horizontal">
+        <dl class="dl-horizontal" style="margin-left:42%;">
             <dt>
-                @Html.DisplayNameFor(model => item.ExpertField)
+                專業領域
             </dt>
             <dd>
                 @Html.DisplayFor(model => item.ExpertField)
             </dd>
 
             <dt style="font-size: 20px;">
-                @Html.DisplayNameFor(model => item.ExpertInfo)
+                個人簡介
             </dt>
             <dd style="font-size: 20px;">
                 @Html.DisplayFor(model => item.ExpertInfo)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => item.Status)
+                審查狀態
             </dt>
             <dd>
                 @Html.DisplayFor(model => item.Status)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => item.ExpertImgURL)
+                證明文件
             </dt>
             <dd>
                 @Html.DisplayFor(model => item.ExpertImgURL)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => item.Remark)
+                備註
             </dt>
             <dd>
                 @Html.DisplayFor(model => item.Remark)
             </dd>
         </dl>
     </div>
-    <p>
+    <p style="text-align:center;">
         @Html.ActionLink("資料修改", "Edit", new { id = item.ExpertApplyID }, new { @class = "btn btn-success" })
 
     </p>
