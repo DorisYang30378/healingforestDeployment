@@ -268,10 +268,77 @@
 
     @foreach (var item in Model.articles)
     {
+        if(item.ArticleType == "是")
+                {
+                    <div class="container">
+                        <div class="row justify-content-evenly" id="article-item"  style="background-color:#97CD7D;">
+                        <div class="col-xl-6">
+                        <div style="color: #888; font-size: 15px; font-weight:bolder;">--專業文章--</div>
+                        <div class="article-title">
+                        <a href="@Url.Action("ArticleDetails", "ArticleManage", new { id = item.ArticleID })" style="color:black" ;>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </a>
+                    </div>
+                
+                    <div class="article-content">
 
-        <div class="container">
-            <div class="row justify-content-evenly" id="article-item">
+                            @Html.Raw(HttpUtility.HtmlDecode(item.Content))
+
+                    </div>
+                
+                    <div class="article-info">
+
+
+                            @Html.DisplayFor(modelItem => item.UserManage.UserName)
+
+
+                            @Html.DisplayFor(modelItem => item.Time)
+
+                    </div>
+             
+                            @if (Model.isUser)
+                            {
+                    
+                                <div id="article-actions">
+                        
+                                    @if (!Model.IsCollect[index])
+                        
+                                    {
+                            
+                                        <button class="btn bi-star-fill" onclick="handleCollect('@Url.Action("ArticleCollect", new { id = item.ArticleID })', '@Model.Page', '收藏')">收藏|</button>
+                        
+                                        }
+                        
+                                    else
+                        
+                                    {
+                            
+                                        <button class="btn bi-star-fill" onclick="handleCollect('@Url.Action("CancelCollect", new { id = item.ArticleID })', '@Model.Page', '取消收藏')">取消收藏|</button>
+                        
+                                        }
+
+                    
+                                </div>
+                
+                                }
+            
+                        </div>
+            <div class="col-xl-6 " id="article-image">
+                <img src="~/Uploads/@Html.DisplayFor(modelItem => item.ImageURL)" alt="Article Image">
+                @Html.HiddenFor(modelItem => item.ImageURL)
+            </div>
+        </div>
+
+    </div>
+                }
+
+
+        else
+                {
+                    <div class="container">
+            <div class="row justify-content-evenly" id="article-item" style="background-color:rgb(151 205 125 / 0.50)">
                 <div class="col-xl-6">
+                    <div style="color: #888; font-size: 15px; font-weight:bolder;">--會員文章--</div>
                     <div class="article-title">
                         <a href="@Url.Action("ArticleDetails", "ArticleManage", new { id = item.ArticleID })" style="color:black" ;>
                             @Html.DisplayFor(modelItem => item.Title)
@@ -314,6 +381,8 @@
             </div>
 
         </div>
+                }
+
         index += 1;
 
     }

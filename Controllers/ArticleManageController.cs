@@ -471,6 +471,17 @@ namespace postArticle.Controllers
                     articlePost.article.UserID = UserID;
                     #endregion
                     articlePost.article.Status = 0;
+                    
+                    if (articlePost.IsChecked == true)
+                    {
+                        articlePost.article.ArticleType = "是";
+                    }
+                    else
+                    {
+                        articlePost.article.ArticleType = "否";
+                    }
+                    
+                    
 
                     #region ===上傳圖片====
                     if (file != null && file.ContentLength > 0)
