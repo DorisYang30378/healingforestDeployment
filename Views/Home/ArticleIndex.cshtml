@@ -17,6 +17,9 @@
 
 
 <style>
+    #search-container{
+        padding-top:20px;
+    }
     body {
         background-color: #DBF0D0;
         font-family: Arial, sans-serif;
@@ -33,12 +36,12 @@
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        background-color: #97CD7D;
+        background-color: #fff;
         color: #333;
     }
 
         #classificationDropdown option, #classificationDropdown2 option {
-            background-color: #cbf9b5;
+            background-color: #fff;
             font-size: 16px;
         }
 
@@ -63,10 +66,10 @@
     #selectArticle button {
         margin-right: 10px;
         padding: 5px 10px;
-        background-color: #97C;
+        background-color: #fff;
         border: none;
         border-radius: 5px;
-        color: #fff;
+        color: black;
         cursor: pointer;
         margin-bottom: 20px;
     }
@@ -130,25 +133,21 @@
         color: #216f24;
     }
 
-    #search-container {
-        display: flex;
-        align-items: center;
-
-    }
+   
 
     #search-input {
-        margin-right: 50px;
+        margin-right: 10px;
     }
 
         #search-input input[type="text"] {
-            width: 120%;
+            width: 100%;
             padding: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
     #search-button button {
-        padding: 5px 10px;
+       
         background-color: #97CD7D;
         border: none;
         border-radius: 5px;
@@ -182,79 +181,78 @@
 {
 
 <div>
+    
+	<div class="row" id="selectArticle" style="margin-top:-10px;">
 
-    <div class="justify-content-end " id="search-container">
-        <div id="search-input">
-            @Html.TextBoxFor(model => model.ShowSearch, new { id="SearchInput", value = Model.ShowSearch, placeholder = "輸入關鍵字" })
-        </div>
-        <div id="search-button">
-            @Html.HiddenFor(model => model.IsShowSearch, new { id = "SearchInput", value = false })
-            <button type="button" onclick="changeClass(true, '@SearchInput')">搜尋</button>
-        </div>
-    </div>
+		<div class="col-md-2">
+			<h>分類</h>
+			<select id="classificationDropdown" onchange="changeClass(this.value, '@ClassificationInput')">
+				<option value="ALL">全部</option>
+				<option value="工作">工作</option>
+				<option value="健康">健康</option>
+				<option value="學業">學業</option>
+				<option value="家庭">家庭</option>
+				<option value="經濟">經濟</option>
+			</select>
 
-    <div style="padding-left:50px;">
-        @if (Model.isUser)
-        {
+			@Html.HiddenFor(model => model.Classification, new { id = "ClassificationInput", value = "" })
+		</div>
 
+		<div class="col-md-2">
+			<h>排序</h>
+			<select id="classificationDropdown2" onchange="changeClass(this.value, '@OrderInput')">
 
-            <input type="text" name="username" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
-            <input type="password" name="password" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
+				<option value="Default">默認</option>
+				<option value="時間">時間</option>
+				<option value="人氣">人氣</option>
+			</select>
 
-            if (Model.IsShowCollect)
-            {
-                @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
-                <button onclick="changeClass('false','@CollectInput')" type="button" class="btnn">顯示全部</button>
-            }
-            else
-            {
-                @Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
-                <button onclick="changeClass('true','@CollectInput')" type="button" class="btnn">我的收藏</button>
-            }
-
-            if (Model.IsShowMyArticle)
-            {
-                @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
-                <button onclick="changeClass('false','@MyArticleInput')" type="button" class="btnn">所有文章</button>
-            }
-            else
-            {
-                @Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
-                <button onclick="changeClass('true','@MyArticleInput')" type="button" class="btnn">我的文章</button>
-            }
-        }
-    </div>
+			@Html.HiddenFor(model => model.Order, new { id = "OrderInput", value = "" })
+		</div>
+		<div class="col-md-4" style="padding-left:50px; padding-top:20px;">
+			@if (Model.isUser)
+			{
 
 
-    <div  class="row" id="selectArticle">
+				<input type="text" name="username" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
+				<input type="password" name="password" style="position:absolute; width:0; height:0; overflow:hidden; opacity:0;" autocomplete="on">
 
-        <div class="col-md-3">
-        <h>分類</h>
-        <select  id="classificationDropdown" onchange="changeClass(this.value, '@ClassificationInput')">
-            <option value="ALL">全部</option>
-            <option value="工作">工作</option>
-            <option value="健康">健康</option>
-            <option value="學業">學業</option>
-            <option value="家庭">家庭</option>
-            <option value="經濟">經濟</option>
-        </select>
+				if (Model.IsShowCollect)
+				{
+					@Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+					<button onclick="changeClass('false','@CollectInput')" type="button" class="btnn">顯示全部</button>
+				}
+				else
+				{
+					@Html.HiddenFor(model => model.ShowCollect, new { id = "CollectInput", value = "" })
+					<button onclick="changeClass('true','@CollectInput')" type="button" class="btnn">我的收藏</button>
+				}
 
-        @Html.HiddenFor(model => model.Classification, new { id = "ClassificationInput", value = "" })
-        </div>
+				if (Model.IsShowMyArticle)
+				{
+					@Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+					<button onclick="changeClass('false','@MyArticleInput')" type="button" class="btnn">所有文章</button>
+				}
+				else
+				{
+					@Html.HiddenFor(model => model.ShowMyArticle, new { id = "MyArticleInput", value = "" })
+					<button onclick="changeClass('true','@MyArticleInput')" type="button" class="btnn">我的文章</button>
+				}
+			}
+		</div>
+		<div class="col-md-4 d-flex" id="search-container" >
+			<div id="search-input" class="flex-grow-1">
+				@Html.TextBoxFor(model => model.ShowSearch, new { id = "SearchInput", value = Model.ShowSearch, placeholder = "輸入關鍵字" })
 
-        <div class="col-md-3">
-        <h>排序</h>
-        <select id="classificationDropdown2" onchange="changeClass(this.value, '@OrderInput')">
+			</div>
+			<div id="search-button">
+				@Html.HiddenFor(model => model.IsShowSearch, new { id = "SearchInput", value = false })
+				<button type="button" onclick="changeClass(true, '@SearchInput')">搜尋</button>
+			</div>
+		</div>
 
-            <option value="Default">默認</option>
-            <option value="時間">時間</option>
-            <option value="人氣">人氣</option>
-        </select>
-
-        @Html.HiddenFor(model => model.Order, new { id = "OrderInput", value = "" })
-        </div>    
-        </div>
-
+	</div>
+	
 </div>
 
 }
@@ -271,7 +269,7 @@
         if(item.ArticleType == "是")
                 {
                     <div class="container">
-                        <div class="row justify-content-evenly" id="article-item"  style="background-color:#97CD7D;">
+                        <div class="row justify-content-evenly" id="article-item"  style="background-color:#fff;">
                         <div class="col-xl-6">
                         <div style="color: #888; font-size: 15px; font-weight:bolder;">--專業文章--</div>
                         <div class="article-title">
@@ -336,7 +334,7 @@
         else
                 {
                     <div class="container">
-            <div class="row justify-content-evenly" id="article-item" style="background-color:rgb(151 205 125 / 0.50)">
+            <div class="row justify-content-evenly" id="article-item" style="background-color:#fff">
                 <div class="col-xl-6">
                     <div style="color: #888; font-size: 15px; font-weight:bolder;">--會員文章--</div>
                     <div class="article-title">

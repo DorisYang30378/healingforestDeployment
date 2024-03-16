@@ -226,7 +226,7 @@
 
 }
 @Html.AntiForgeryToken()
-<div style="margin-top: 35px; position: fixed; z-index: 999; background-color: #DBF0D0; width: 100%; padding: 10px;">
+<div style="margin-top: 7px; position: fixed; z-index: 999; background-color: #DBF0D0; width: 100%; padding: 10px;">
     <span class="container-header" style="text-align: center; font-size: 20px; font-weight: 500; background-color: rgb(86 180 42 / 0.75); border-radius: 5px; padding:5px;">@usertype</span>
     <a href="@Url.Action("MemberEdit", "UserManages", new { id = Model.UserManagesDetail.UserID })">資料修改</a>
     <a href="@Url.Action("EditPassword", "UserManages", new { id = Model.UserManagesDetail.UserID })">密碼修改</a>

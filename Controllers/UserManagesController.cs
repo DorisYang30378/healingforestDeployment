@@ -682,7 +682,7 @@ namespace postArticle.Controllers
             int userID = GetUserID();
             UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
             int experience = (int)user.Experience; // 替换为你要计算的经验值
-
+           
             int level = (int)(Math.Floor(Math.Sqrt(experience / 100)));
             return level;
         }
@@ -714,8 +714,8 @@ namespace postArticle.Controllers
 
             int userID = GetUserID();
             UserManage user = db.UserManages.FirstOrDefault(u => u.UserID == userID);
-            int ExpertExperience = (int)user.ExpertExperience; // 替换为你要计算的经验值
-
+            int ExpertExperience = user?.ExpertExperience ?? 0; // 替换为你要计算的经验值
+           
             int level = (int)(Math.Floor(Math.Sqrt(ExpertExperience / 100)));
             return level;
         }
